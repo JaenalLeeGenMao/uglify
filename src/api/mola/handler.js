@@ -1,19 +1,31 @@
-import { get } from 'axios';
-import { HOME_PLAYLIST_ENDPOINT } from './endpoints';
+import { get, post, delete as axiosDelete } from 'axios';
+import {
+  HISTORY_ENDPOINT
+} from './endpoints';
 import utils from './util';
 
-const getHomePlaylist = payload => {
-    return get(`${HOME_PLAYLIST_ENDPOINT}/mola-home`, { ...payload }).then(
-        response => {
-            const result = utils.normalizeHomePlaylist(response);
-            return {
-                meta: {
-                    status: result[0].length > 0 ? "success" : "no_result"
-                },
-                data: [...result[0]] || []
-                }
-            }
-    );
+const getAllHistory = ({ userId }) => {
+  return get(`${HISTORY_ENDPOINT}/${userId}/videos/histories`)
+    .then(response => {
+      const result = utils.normalizeHistory(response);
+      return {
+        meta: {
+          status: result.length > 0 ? 'success' : 'no_result'
+        },
+        data: [...result] || []
+      };
+    })
+    .catch(error => {
+      return {
+        meta: {
+          status: 'error',
+          text: `history/getAllHistory - ${error}`
+        },
+        data: []
+      };
+    });
 };
 
-export default { getHomePlaylist };
+export default {
+  getAllHistory
+};
