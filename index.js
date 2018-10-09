@@ -1,6 +1,6 @@
 const path = require('path');
 
-class Gandalf {
+export class Gandalf {
   static getWebpack = () => {
     console.log("webpack");
   }
@@ -20,5 +20,3 @@ class Gandalf {
     return path.resolve(__dirname, `src/api/${name}`);
   }
 }
-
-module.exports = Gandalf;
