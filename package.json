@@ -4,7 +4,9 @@
   "description": "this is MOLA npm library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node .dev/webpack.dev.server.js",
+    "dev-prod": "node .dev/webpack.dev.server.js --production",
+    "build": "rimraf ./dist && webpack --config .dev/webpack.config.production.js --colors"
   },
   "keywords": [
     "gandalf",
@@ -12,8 +14,36 @@
   ],
   "author": "SupersoccerTV <admin@supersoccertv.com> (http://www.supersoccer.tv)",
   "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "7.0.0-beta.38",
+    "@babel/runtime": "^7.0.0-beta.38",
+    "react": "^16.5.2"
+  },
   "devDependencies": {
+    "@babel/core": "7.0.0-beta.38",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.38",
+    "@babel/plugin-proposal-decorators": "7.0.0-beta.38",
+    "@babel/plugin-transform-classes": "7.0.0-beta.38",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.38",
+    "@babel/preset-env": "7.0.0-beta.38",
+    "@babel/preset-react": "7.0.0-beta.38",
+    "@babel/preset-stage-0": "7.0.0-beta.38",
+    "babel-loader": "8.0.0-beta.0",
+    "css-loader": "0.28.9",
     "eslint": "5.6.1",
-    "eslint-config-airbnb": "17.1.0"
+    "eslint-config-airbnb": "17.1.0",
+    "html-webpack-plugin": "git://github.com/Graham42/html-webpack-plugin.git#feat/webpack-4",
+    "image-webpack-loader": "4.0.0",
+    "progress-bar-webpack-plugin": "1.10.0",
+    "react-hot-loader": "4.0.0-beta.18",
+    "react-hot-loader-loader": "^0.0.3",
+    "uglifyjs-webpack-plugin": "1.1.6",
+    "webpack": "4.0.0-beta.0",
+    "webpack-bundle-analyzer": "2.9.2",
+    "webpack-cli": "^2.0.4",
+    "webpack-dev-middleware": "^2.0.4",
+    "webpack-hot-middleware": "^2.21.0",
+    "webpack-notifier": "1.5.1",
+    "yargs": "^11.0.0"
   }
 }
