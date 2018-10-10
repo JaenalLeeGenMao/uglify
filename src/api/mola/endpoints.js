@@ -2,6 +2,8 @@
 // import { api } from '@source/config';
 // const { config } = api;
 
+// import config from '../../config.base';
+
 const api = 'http://mola.lukitomo.com/v2';
 
 export const HOME_PLAYLIST_ENDPOINT = `${api}/videos/playlists`;

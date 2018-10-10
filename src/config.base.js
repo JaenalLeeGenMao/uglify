@@ -1,8 +1,4 @@
-'use strict';
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var Config = module.exports = {
+const Config = module.exports = {
   default: {
     development: {
       setting: {
@@ -38,12 +34,12 @@ var Config = module.exports = {
       }
     }
   },
-  updateConfig: function updateConfig(Obj) {
-    Object.keys(Obj).forEach(function (key) {
+  updateConfig: (Obj) => {
+    Object.keys(Obj).forEach(key => {
       debugger;
       console.log(key);
       console.log(Obj[key], Config.default[key]);
-      Config.default[key] = _extends({}, Config.default[key], Obj[key]);
+      Config.default[key] = { ...Config.default[key], ...Obj[key] }
     });
   }
 };
