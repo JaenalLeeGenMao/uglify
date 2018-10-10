@@ -45,7 +45,9 @@ const Config = module.exports = {
 };
 
 /* how to use */
-// import gandalf from 'gandalf';
+// import { config as baseConfig } from 'gandalf';
+//  OR
+// const baseConfig = require('gandalf').config;
 
 // var options = {
 //   development: {
@@ -82,4 +84,6 @@ const Config = module.exports = {
 //     }
 //   }
 // }
-// var mainConfig = gandalf.updateConfig(options);
+
+// baseConfig.updateConfig(options);
+// var mainConfig = baseConfig.default[process.node.NODE_ENV || "development"];
