@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'react-emotion'
 
-export const fade = css` {
+export const fade = css`{
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }`;
