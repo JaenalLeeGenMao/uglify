@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import history from '../../history';
-// import Layout from '@components/Molalayout';
+// import history from '../../history';
+import Layout from '../Layout';
 import Helmet from 'react-helmet';
 
 import playerArrow from './assets/arrowback.png';
@@ -30,14 +30,14 @@ class Theoplayer extends Component {
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
-    playerBtnImg: playerArrow
+    playerBtnImg: '',//playerArrow
   };
 
   handleGoBack = () => {
-    const { goBack } = history;
-    if (goBack) {
-      goBack();
-    }
+    // const { goBack } = history;
+    // if (goBack) {
+    //   goBack();
+    // }
   };
 
   movieConfig(player) {
@@ -107,7 +107,7 @@ class Theoplayer extends Component {
           onChangeClientState={(newState, addedTags) => this.handleScriptInject(addedTags)}
           script={[{ src: 'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/THEOplayer.js', type:"text/javascript" }]} />
         <Helmet/>
-        <Fragment>
+        <Layout>
           <div
             className="video-container video-js theoplayer-skin"
             onMouseEnter={this.getToggleArrow}
@@ -119,7 +119,7 @@ class Theoplayer extends Component {
               </div>
             )}
           </div>
-        </Fragment>
+        </Layout>
       </Fragment>
     );
   }

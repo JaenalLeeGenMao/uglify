@@ -1,5 +1,5 @@
-import React, { Fragment, Component } from 'react';
-// import normalizeCss from 'normalize.css';
+import React, { Fragment } from 'react';
+import 'normalize.css';
 import { injectGlobal } from 'emotion';
 
 injectGlobal`

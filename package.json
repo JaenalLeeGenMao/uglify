@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel src -d lib --copy-files"
   },
   "keywords": [
     "gandalf"
@@ -25,7 +25,8 @@
     "babel-loader": "^8.0.4",
     "babel-preset-react": "^6.24.1",
     "emotion": "^9.2.12",
-    "history": "^4.7.2",
+    "file-loader": "^2.0.0",
+    "normalize.css": "^8.0.0",
     "react": "^16.5.2",
     "react-emotion": "^9.2.12",
     "react-helmet": "^5.2.0",
