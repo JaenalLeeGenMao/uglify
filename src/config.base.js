@@ -1,89 +1,113 @@
+/* how to use */
+
+/**
+ * TAKE NOTE
+ * IMPORTANT!!
+ * Please make sure to change
+ * all config.api.clientUrl and config.endpoints.serverUrl
+ * all config.api.serverUrl and config.endpoints.serverUrl
+ */
+
+/*
+ * const baseConfig = require('gandalf').config;
+ *
+ * var options = {
+ *   development: {
+ *     port: 3000,
+ *     endpoints: {
+ *       clientUrl: '',
+ *       serverUrl: 'http://jaenal.mola.tv',
+ *       api: 'http://mola.lukitomo.com/v2',
+ *       auth: 'http://jaenal.mola.tv/accounts/_',
+ *       domain: 'http://jaenal.mola.tv',
+ *       setting: {
+ *         timeout: 10000,
+ *         maxRedirects: 1
+ *       }
+ *     }
+ *   },
+ *   staging: {
+ *     port: 3000,
+ *     endpoints: {
+ *       clientUrl: '',
+ *       serverUrl: 'https://staging.mola.tv',
+ *       api: 'https://api.staging.mola.tv/v2',
+ *       auth: 'http://staging.mola.tv/accounts/_',
+ *       domain: 'https://staging.mola.tv',
+ *       setting: {
+ *         timeout: 10000,
+ *         maxRedirects: 1
+ *       }
+ *     }
+ *   },
+ *   production: {
+ *     port: 3000,
+ *     endpoints: {
+ *       clientUrl: '',
+ *       serverUrl: 'https://www.mola.tv',
+ *       api: 'https://api.supersoccer.tv/v2',
+ *       auth: 'https://www.mola.tv/accounts/_',
+ *       domain: 'https://www.mola.tv',
+ *       setting: {
+ *         timeout: 10000,
+ *         maxRedirects: 1
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * baseConfig.updateConfig(options);
+ * var mainConfig = baseConfig.default[process.node.NODE_ENV || "development"];
+ */
+
 const Config = module.exports = {
   default: {
     development: {
-      setting: {
-        timeout: 10000,
-        maxRedirects: 1
-      },
+      port: 3000,
       endpoints: {
+        clientUrl: '',
+        serverUrl: 'http://jaenal.mola.tv',
         api: 'http://mola.lukitomo.com/v2',
         auth: 'http://jaenal.mola.tv/accounts/_',
-        domain: 'http://jaenal.mola.tv'
+        domain: 'http://jaenal.mola.tv',
+        setting: {
+          timeout: 10000,
+          maxRedirects: 1
+        }
       }
     },
     staging: {
-      setting: {
-        timeout: 10000,
-        maxRedirects: 1
-      },
+      port: 3000,
       endpoints: {
+        clientUrl: '',
+        serverUrl: 'https://staging.mola.tv',
         api: 'https://api.staging.mola.tv/v2',
         auth: 'http://staging.mola.tv/accounts/_',
-        domain: 'https://staging.mola.tv'
+        domain: 'https://staging.mola.tv',
+        setting: {
+          timeout: 10000,
+          maxRedirects: 1
+        }
       }
     },
     production: {
-      setting: {
-        timeout: 10000,
-        maxRedirects: 1
-      },
+      port: 3000,
       endpoints: {
+        clientUrl: '',
+        serverUrl: 'https://www.mola.tv',
         api: 'https://api.supersoccer.tv/v2',
         auth: 'https://www.mola.tv/accounts/_',
-        domain: 'https://www.mola.tv'
+        domain: 'https://www.mola.tv',
+        setting: {
+          timeout: 10000,
+          maxRedirects: 1
+        }
       }
     }
   },
   updateConfig: (Obj) => {
     Object.keys(Obj).forEach(key => {
-      debugger;
-      console.log(key);
-      console.log(Obj[key], Config.default[key]);
       Config.default[key] = { ...Config.default[key], ...Obj[key] }
     });
   }
 };
-
-/* how to use */
-// import { config as baseConfig } from 'gandalf';
-//  OR
-// const baseConfig = require('gandalf').config;
-
-// var options = {
-//   development: {
-//     api: {
-//       timeout: 10000,
-//       maxRedirects: 1
-//     },
-//     endpoints: {
-//       api: 'http://mola.lukitomo.com/v2',
-//       auth: 'http://jaenal.mola.tv/accounts/_',
-//       domain: 'http://jaenal.mola.tv'
-//     }
-//   },
-//   staging: {
-//     api: {
-//       timeout: 10000,
-//       maxRedirects: 1
-//     },
-//     endpoints: {
-//       api: 'https://api.staging.mola.tv/v2',
-//       auth: 'http://staging.mola.tv/accounts/_',
-//       domain: 'https://staging.mola.tv'
-//     }
-//   },
-//   production: {
-//     api: {
-//       timeout: 10000,
-//       maxRedirects: 1
-//     },
-//     endpoints: {
-//       api: 'https://api.supersoccer.tv/v2',
-//       auth: 'https://www.mola.tv/accounts/_',
-//       domain: 'https://www.mola.tv'
-//     }
-//   }
-// }
-
-// baseConfig.updateConfig(options);
-// var mainConfig = baseConfig.default[process.node.NODE_ENV || "development"];
