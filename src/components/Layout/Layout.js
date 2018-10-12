@@ -8,6 +8,10 @@ injectGlobal`
     font-size: 62.5%;
     font-family: Futura, Trebuchet MS, Arial, sans-serif;
   }
+
+  * {
+    box-sizing: border-box;
+  }
   
   @media screen and (min-height: 1080px) {
     html {

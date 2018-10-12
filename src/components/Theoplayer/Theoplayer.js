@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-// import history from '../../history';
+import history from '../../history';
 import Layout from '../Layout';
 import Helmet from 'react-helmet';
 
@@ -30,14 +30,14 @@ class Theoplayer extends Component {
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
-    playerBtnImg: '',//playerArrow
+    playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
   };
 
   handleGoBack = () => {
-    // const { goBack } = history;
-    // if (goBack) {
-    //   goBack();
-    // }
+    const { goBack } = history;
+    if (goBack) {
+      goBack();
+    }
   };
 
   movieConfig(player) {
@@ -116,6 +116,7 @@ class Theoplayer extends Component {
             {!isTrailer && (
               <div className={`${arrow} ${toggleArrow}`} onClick={this.handleGoBack}>
                 <img src={playerBtnImg} />
+                AAAAAAAA
               </div>
             )}
           </div>

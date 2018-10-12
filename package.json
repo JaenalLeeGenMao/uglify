@@ -27,6 +27,7 @@
     "babel-preset-react": "^6.24.1",
     "emotion": "^9.2.12",
     "emotion-normalize": "^8.0.0",
+    "history": "^4.7.2",
     "normalize.css": "^8.0.0",
     "react": "^16.5.2",
     "react-emotion": "^9.2.12",
