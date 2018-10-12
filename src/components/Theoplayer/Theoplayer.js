@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Layout from '../Layout';
 import Helmet from 'react-helmet';
 
-import playerArrow from './assets/arrowback.png';
+// import playerArrow from './assets/arrowback.png';
 
 import { arrow, arrow_show } from './style';
 

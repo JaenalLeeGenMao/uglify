@@ -2,7 +2,6 @@
 // import constants from "./constants"
 // import reducers from "./reducers"
 // import api from "./api/mola"
-// import LoadingPlaceholder from "./components/LoadingPlaceholder"
 import LazyLoad from "./components/LazyLoad";
 import LoadingPlaceholder from "./components/LoadingPlaceholder";
 import Layout from "./components/Layout";

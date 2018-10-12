@@ -1,13 +1,14 @@
 import React, { Fragment } from 'react';
-import 'normalize.css';
-import { injectGlobal } from 'emotion';
-
+import emotionNormalize from 'emotion-normalize';
+import {injectGlobal} from 'emotion';
+ 
 injectGlobal`
+  ${emotionNormalize}
   html {
     font-size: 62.5%;
     font-family: Futura, Trebuchet MS, Arial, sans-serif;
   }
-
+  
   @media screen and (min-height: 1080px) {
     html {
       font-size: 187.5%;

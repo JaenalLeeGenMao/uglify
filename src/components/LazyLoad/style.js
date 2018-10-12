@@ -1,5 +1,4 @@
 import styled, { css, keyframes } from 'react-emotion'
-import imgUrl from './assets/no_img.png'
 export const fade = css`{
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
@@ -49,7 +48,7 @@ export const fadeInCss = css`{
 }`;
 
 export const errorBg = css`{
-  background-image: url(${imgUrl});
+  /*background-image: url('https://cdn.pixabay.com/photo/2016/06/18/17/42/image-1465348_960_720.jpg');*/
   display: block;
   width: 100%;
   height: 100%;

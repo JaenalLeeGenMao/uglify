@@ -131,7 +131,6 @@ class LazyLoad extends PureComponent {
       if (this.image.current) {
         this.setState({ sources: imageUrl });
         this.handleImageChange('success');
-        console.log("MASUK SINI SUKSES")
       }
     };
     image.onerror = () => {
@@ -142,7 +141,6 @@ class LazyLoad extends PureComponent {
         this.handleImageChange('default');
         error = true;
         if (error && onErrorShowDefault) {
-          console.log("MASUK ERROR")
           this.setState({ isError: true });
         }
       }
@@ -181,7 +179,6 @@ class LazyLoad extends PureComponent {
       className,
       src
     } = this.props;
-    console.log("iserror", errorBg)
     return (
       <div
         className={`${containerClassName || ''} ${this.className}`}
