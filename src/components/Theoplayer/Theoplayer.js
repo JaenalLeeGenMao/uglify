@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-// import Layout from '@components/Molalayout';
+import Layout from '../Layout';
 import Helmet from 'react-helmet';
 
-import playerArrow from './assets/arrowback.png';
+// import playerArrow from './assets/arrowback.png';
 
 import { arrow, arrow_show } from './style';
 
@@ -30,7 +30,7 @@ class Theoplayer extends Component {
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
-    playerBtnImg: playerArrow
+    playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
   };
 
   handleGoBack = () => {
@@ -107,7 +107,7 @@ class Theoplayer extends Component {
           onChangeClientState={(newState, addedTags) => this.handleScriptInject(addedTags)}
           script={[{ src: 'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/THEOplayer.js', type:"text/javascript" }]} />
         <Helmet/>
-        <Fragment>
+        <Layout>
           <div
             className="video-container video-js theoplayer-skin"
             onMouseEnter={this.getToggleArrow}
@@ -116,10 +116,11 @@ class Theoplayer extends Component {
             {!isTrailer && (
               <div className={`${arrow} ${toggleArrow}`} onClick={this.handleGoBack}>
                 <img src={playerBtnImg} />
+                AAAAAAAA
               </div>
             )}
           </div>
-        </Fragment>
+        </Layout>
       </Fragment>
     );
   }

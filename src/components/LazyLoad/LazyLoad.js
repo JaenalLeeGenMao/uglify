@@ -134,6 +134,7 @@ class LazyLoad extends PureComponent {
       }
     };
     image.onerror = () => {
+      console.log("MASUK SINI ERROR")
       if (isWebP) {
         this.loadImage();
       } else {
@@ -178,7 +179,6 @@ class LazyLoad extends PureComponent {
       className,
       src
     } = this.props;
-
     return (
       <div
         className={`${containerClassName || ''} ${this.className}`}
