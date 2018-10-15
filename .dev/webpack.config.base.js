@@ -7,37 +7,37 @@
  *
  *
  * step 2
- * add .babelrc files on consumer repo
+ * add babel.config.js files on ROOT folder of consumer repo
  * with settings below
  *
- *  {
- *    "presets": [
+ *  module.exports = {
+ *    presets: [
  *      [
- *        "@babel/preset-env",
+ *        '@babel/preset-env',
  *        {
- *           "targets": {
- *             "node": "current"
- *           }
+ *          targets: {
+ *            node: 'current'
+ *          }
  *        }
  *      ],
- *       "@babel/preset-flow",
- *       "@babel/preset-react"
+ *      '@babel/preset-flow',
+ *      '@babel/preset-react'
  *    ],
- *    "ignore": ["node_modules", "build"],
- *    "plugins": [
- *       // Stage 2
- *       ["@babel/plugin-proposal-decorators", { "legacy": true }],
- *       "@babel/plugin-proposal-function-sent",
- *       "@babel/plugin-proposal-export-namespace-from",
- *       "@babel/plugin-proposal-numeric-separator",
- *       "@babel/plugin-proposal-throw-expressions",
- *       // Stage 3
- *       "@babel/plugin-syntax-dynamic-import",
- *       "@babel/plugin-syntax-import-meta",
- *       ["@babel/plugin-proposal-class-properties", { "loose": false }],
- *       "@babel/plugin-proposal-json-strings"
+ *    ignore: ['node_modules', 'build'],
+ *    plugins: [
+ *      // Stage 2
+ *      ['@babel/plugin-proposal-decorators', { legacy: true }],
+ *      '@babel/plugin-proposal-function-sent',
+ *      '@babel/plugin-proposal-export-namespace-from',
+ *      '@babel/plugin-proposal-numeric-separator',
+ *      '@babel/plugin-proposal-throw-expressions',
+ *      // Stage 3
+ *      '@babel/plugin-syntax-dynamic-import',
+ *      '@babel/plugin-syntax-import-meta',
+ *      ['@babel/plugin-proposal-class-properties', { loose: false }],
+ *      '@babel/plugin-proposal-json-strings'
  *    ]
- *  }
+ *  };
  */
 
 /**
