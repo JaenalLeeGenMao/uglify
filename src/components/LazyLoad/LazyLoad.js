@@ -134,7 +134,6 @@ class LazyLoad extends PureComponent {
       }
     };
     image.onerror = () => {
-      console.log("MASUK SINI ERROR")
       if (isWebP) {
         this.loadImage();
       } else {

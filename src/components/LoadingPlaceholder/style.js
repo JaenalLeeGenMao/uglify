@@ -1,21 +1,9 @@
 import styled, { keyframes } from 'react-emotion'
 
 export const Placeholder = styled('div')`
-  -webkit-animation-duration: 3.6s;
-  -moz-animation-duration: 3.6s;
-  -o-animation-duration: 3.6s;
   animation-duration: 3.6s;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  -o-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
-  -webkit-animation-timing-function: ease-in-out;
-  -moz-animation-timing-function: ease-in-out;
-  -o-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
-  -webkit-animation-name: ${props => props.isLight ? lightShimmerAnimation : darkShimmerAnimation};
-  -moz-animation-name: ${props => props.isLight ? lightShimmerAnimation : darkShimmerAnimation};
-  -o-animation-name: ${props => props.isLight ? lightShimmerAnimation : darkShimmerAnimation};
   animation-name: ${props => props.isLight ? lightShimmerAnimation : darkShimmerAnimation};
 `;
 

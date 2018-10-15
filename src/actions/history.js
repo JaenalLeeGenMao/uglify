@@ -12,19 +12,18 @@ export const getAllHistory = userId => dispatch => {
       data: []
     }
   });
-  return Mola.getAllHistory({ userId }).then(result => {
-    if (result.meta.status === 'error') {
-      console.log('ERRORRR');
-      dispatch({
-        type: types.GET_HISTORY_ERROR,
-        payload: result
-      });
-    } else {
-      console.log('SUKSSESSS');
-      dispatch({
-        type: types.GET_HISTORY_SUCCESS,
-        payload: result
-      });
-    }
-  });
+  return Mola.getAllHistory({ userId })
+    .then(result => {
+      if (result.meta.status === "error") {
+        dispatch({
+          type: types.GET_HISTORY_ERROR,
+          payload: result,
+        });
+      } else {
+        dispatch({
+          type: types.GET_HISTORY_SUCCESS,
+          payload: result,
+        });
+      }
+    });
 };

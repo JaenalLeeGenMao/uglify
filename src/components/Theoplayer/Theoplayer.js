@@ -6,7 +6,7 @@ import Helmet from 'react-helmet';
 
 // import playerArrow from './assets/arrowback.png';
 
-import { arrow, arrow_show } from './style';
+import { arrow, arrow_show, videoPlayer } from './style';
 
 let scriptLoadedCount = 0;
 let scriptTagCount = 0;
@@ -23,10 +23,12 @@ class Theoplayer extends Component {
     showBackBtn: PropTypes.bool,
     fullscreen: PropTypes.bool,
     playerBtnImg: PropTypes.string,
+    className: PropTypes.string
   };
 
   static defaultProps = {
     autoPlay: true,
+    className: '',
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
@@ -56,7 +58,6 @@ class Theoplayer extends Component {
     const { toggleArrow } = this.state;
     const { showBackBtn } = this.props;
     if(showBackBtn) {
-      console.log("MASUK SHOWBACK", showBackBtn)
       this.setState({
         toggleArrow: toggleArrow === '' ? arrow_show : ''
       });
@@ -94,29 +95,26 @@ class Theoplayer extends Component {
 
   render() {
     const { toggleArrow } = this.state;
-    const { playerBtnImg, isTrailer } = this.props;
+    const { playerBtnImg, isTrailer, className } = this.props;
     return (
       <Fragment>
         <Helmet
           link={[{ href:'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/ui.css', type:"text/css", rel:"stylesheet" }]}
           script={[{ src: '//imasdk.googleapis.com/js/sdkloader/ima3.js' }]} />
         <Helmet
-          // onChangeClientState={(newState, addedTags) => this.handleScriptInject(addedTags)}
           script={[{ src: 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1', type:"text/javascript" }]} />
         <Helmet
           onChangeClientState={(newState, addedTags) => this.handleScriptInject(addedTags)}
           script={[{ src: 'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/THEOplayer.js', type:"text/javascript" }]} />
-        <Helmet/>
         <Layout>
           <div
-            className="video-container video-js theoplayer-skin"
+            className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
             onMouseEnter={this.getToggleArrow}
             onMouseLeave={this.getToggleArrow}
           >
             {!isTrailer && (
               <div className={`${arrow} ${toggleArrow}`} onClick={this.handleGoBack}>
                 <img src={playerBtnImg} />
-                AAAAAAAA
               </div>
             )}
           </div>

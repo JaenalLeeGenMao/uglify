@@ -20,3 +20,9 @@ export const arrow_show = css`{
   display: block;
   cursor: pointer;
 }`;
+
+export const videoPlayer = css`{
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+}`
