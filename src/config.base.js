@@ -8,6 +8,12 @@
  * all config.api.serverUrl and config.endpoints.serverUrl
  */
 
+ /**
+  * Installing key dependencies
+  * yarn add --dev svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
+  *
+  * yarn remove svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
+  */
 /*
  * const baseConfig = require('gandalf').config;
  *
