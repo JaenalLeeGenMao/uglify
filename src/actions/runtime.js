@@ -2,7 +2,7 @@
 
 import types from '../constants';
 
-export function setRuntimeVariable({ name, value }) {
+function setRuntimeVariable({ name, value }) {
   return {
     type: types.SET_RUNTIME_VARIABLE,
     payload: {
@@ -10,4 +10,8 @@ export function setRuntimeVariable({ name, value }) {
       value,
     },
   };
+}
+
+export {
+  setRuntimeVariable
 }

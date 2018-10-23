@@ -1,7 +1,7 @@
 import Mola from '../api/mola';
 import types from '../constants';
 
-export const getMovieStream = (id) => dispatch => {
+const getMovieStream = (id) => dispatch => {
   dispatch({
     type: types.GET_MOVIE_STREAM_LOADING,
     payload: {
@@ -27,3 +27,7 @@ export const getMovieStream = (id) => dispatch => {
       }
     });
 };
+
+export {
+  getMovieStream
+}

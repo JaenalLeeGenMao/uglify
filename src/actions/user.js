@@ -1,8 +1,8 @@
 import types from '../constants';
-import { put } from '../lib/request';
-import { toastr } from 'react-redux-toastr'
+// import { put } from '../lib/request';
+// import { toastr } from 'react-redux-toastr'
 
-export const updateSetting = params => {
+const updateSetting = params => {
   return (dispatch, getState) => {
     const { token } = getState().user
     dispatch(request())
@@ -13,7 +13,7 @@ export const updateSetting = params => {
     return { type: types.UPDATE_SETTING_REQUEST }
   }
   function success (payload) {
-    toastr.success('Notification', 'Config success to updated')
+    // toastr.success('Notification', 'Config success to updated')
     return { type: types.UPDATE_SETTING_SUCCESS, payload: payload }
   }
   function failure (error) {
@@ -21,7 +21,7 @@ export const updateSetting = params => {
   }
 }
 
-export const updateProfile = params => {
+const updateProfile = params => {
   return (dispatch, getState) => {
     const { token } = getState().user
     dispatch(request())
@@ -40,7 +40,7 @@ export const updateProfile = params => {
     return { type: types.UPDATE_PROFILE_REQUEST }
   }
   function success (payload) {
-    toastr.success('Notification', 'Profile success to updated')
+    // toastr.success('Notification', 'Profile success to updated')
     return { type: types.UPDATE_PROFILE_SUCCESS, payload: payload }
   }
   function failure (error) {
@@ -48,7 +48,7 @@ export const updateProfile = params => {
   }
 }
 
-export function setUserVariable({ name, value }) {
+function setUserVariable({ name, value }) {
   return {
     type: types.SET_USER_VARIABLE,
     payload: {
@@ -56,4 +56,10 @@ export function setUserVariable({ name, value }) {
       value,
     },
   };
+}
+
+export {
+  updateSetting,
+  updateProfile,
+  setUserVariable
 }

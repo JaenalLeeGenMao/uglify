@@ -3,7 +3,7 @@ import types from '../constants';
 import searchDb from '../database/searchDb';
 import Dexie from 'dexie';
 
-export const getSearchResult = searchText => dispatch => {
+const getSearchResult = searchText => dispatch => {
   dispatch({
     type: types.GET_SEARCH_LOADING,
     payload: {
@@ -199,7 +199,7 @@ export const getSearchResult = searchText => dispatch => {
   });
 };
 
-export const getSearchGenre = () => dispatch => {
+const getSearchGenre = () => dispatch => {
   dispatch({
     type: types.GET_SEARCH_GENRE_LOADING,
     payload: {
@@ -225,7 +225,7 @@ export const getSearchGenre = () => dispatch => {
   });
 };
 
-export const getRecentSearch = sessionId => dispatch => {
+const getRecentSearch = sessionId => dispatch => {
   dispatch({
     type: types.GET_RECENT_SEARCH_LOADING,
     payload: {
@@ -250,3 +250,9 @@ export const getRecentSearch = sessionId => dispatch => {
     }
   });
 };
+
+export {
+  getSearchResult,
+  getSearchGenre,
+  getRecentSearch
+}
