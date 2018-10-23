@@ -38,6 +38,23 @@
  *      '@babel/plugin-proposal-json-strings'
  *    ]
  *  };
+ *
+ * this is how to use gandalf by overiding the config!!
+ * `~/src/tools/webpack.config.js`
+ * import { webpackBaseConfig } from 'gandalf';
+ * let config = webpackBaseConfig.updateConfig({
+ *   isDebug,
+ *   isVerbose,
+ *   ROOT_DIR,
+ *   env: process.env.REACT_APP_ENV
+ * });
+ * config = {
+ *   ...config,
+ *   resolve: {
+ *     ...config.resolve,
+ *     alias
+ *   }
+ * }
  */
 
 /**

@@ -1,24 +1,23 @@
 /* eslint-disable import/prefer-default-export */
-// import { api } from '@source/config';
-// const { config } = api;
+import baseConfig from '../../config.base';
+const config = baseConfig.default[process.env.REACT_APP_ENV || 'production'];
+// console.log("ENV: ", process.env.REACT_APP_ENV);
+// console.log("CONFIG: ", baseConfig.default);
 
-// import config from '../../config.base';
+const endpoints = config.endpoints;
 
-const api = 'http://mola.lukitomo.com/v2';
+export const HOME_PLAYLIST_ENDPOINT = `${endpoints.api}/videos/playlists`;
 
-export const HOME_PLAYLIST_ENDPOINT = `/videos/playlists`;
+export const VIDEOS_ENDPOINT = `${endpoints.api}/videos/videos`;
 
-export const VIDEOS_ENDPOINT = `/videos/videos`;
+export const HISTORY_ENDPOINT = `${endpoints.api}/userdata`;
 
-export const HISTORY_ENDPOINT = `/userdata`;
-
-export const SEARCH_ENDPOINT = `/search/`;
-export const SEARCH_GENRE_ENDPOINT = `/videos/playlists/genre`;
+export const SEARCH_ENDPOINT = `${endpoints.api}/search/`;
+export const SEARCH_GENRE_ENDPOINT = `${endpoints.api}/videos/playlists/genre`;
 export const RECENT_SEARCH_ENDPOINT = `${SEARCH_ENDPOINT}histories`;
-//'https://private-697ce-search103.apiary-mock.com/recentsearch'; //'http://lukitomo.com:1111/histories?project=molatv&sessionId=abc';
 
-export const MOVIE_DETAIL_ENDPOINT = `/videos`;
-export const MOVIE_STREAMING = `/videos`;
+export const MOVIE_DETAIL_ENDPOINT = `${endpoints.api}/videos`;
+export const MOVIE_STREAMING = `${endpoints.api}/videos`;
 
 // export const MOVIE_DETAIL_ENDPOINT = 'https://private-55a17-molawebver3.apiary-mock.com/videos';
 // export const MOVIE_STREAMING = 'https://private-55a17-molawebver3.apiary-mock.com/videos';

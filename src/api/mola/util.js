@@ -1,5 +1,3 @@
-// import dummyBg from '@global/style/icons/dummybg.jpg';
-
 const normalizeHomePlaylist = response => {
   const { data } = response.data;
   if (data && data.length > 0) {
@@ -17,19 +15,7 @@ const normalizeHomePlaylist = response => {
               iconUrl,
               isDark,
               images: {
-                cover: {
-                  title: coverTitle,
-                  body: coverBody,
-                  background: coverBG,
-                  backgroundColor: coverBGColor,
-                  backgroundRepeat,
-                  poster
-                },
-                large,
-                big,
-                medium,
-                small,
-                tiny
+                cover: { title: coverTitle, background: coverBG, backgroundColor: coverBGColor }
               }
             }
           } = playlist;
@@ -40,12 +26,9 @@ const normalizeHomePlaylist = response => {
             description,
             shortDescription: shortDescription || '',
             iconUrl: iconUrl || '',
-            poster: poster || '',
-            coverTitle: coverTitle || '',
-            coverBody: coverBody || '',
-            background: coverBG || '',
+            coverTitle: coverTitle,
+            background: coverBG,
             backgroundColor: coverBGColor || '#000622',
-            backgroundRepeat: backgroundRepeat || '',
             isDark: isDark || 0,
             isActive: false,
             type
@@ -73,19 +56,7 @@ const normalizeHomeVideo = response => {
               displayOrder,
               isDark,
               images: {
-                cover: {
-                  title: coverTitle,
-                  body: coverBody,
-                  background: coverBG,
-                  backgroundColor: coverBGColor,
-                  backgroundRepeat,
-                  poster
-                },
-                large,
-                big,
-                medium,
-                small,
-                tiny
+                cover: { title: coverTitle, background: coverBG, backgroundColor: coverBGColor }
               }
             }
           } = video;
@@ -95,12 +66,9 @@ const normalizeHomeVideo = response => {
             displayOrder,
             description,
             shortDescription: shortDescription || '',
-            poster: poster || '',
-            coverTitle: coverTitle || '',
-            coverBody: coverBody || '',
-            background: coverBG || dummyBg,
+            coverTitle: coverTitle,
+            background: coverBG,
             backgroundColor: coverBGColor || '#000622',
-            backgroundRepeat: backgroundRepeat || '',
             isDark: isDark || 0,
             type
           };
@@ -278,10 +246,7 @@ const normalizeVideoStream = response => {
   const { data } = response.data;
   if (data && data.length > 0) {
     return data.map(result => {
-      const {
-        id,
-        attributes: { streamSourceUrl, subtitles }
-      } = result;
+      const { id, attributes: { streamSourceUrl, subtitles } } = result;
       return {
         id,
         streamSourceUrl,

@@ -1,7 +1,7 @@
 import Mola from '../api/mola';
 import types from '../constants';
 
-export const getMovieLibrary = id => dispatch => {
+const getMovieLibrary = id => dispatch => {
   dispatch({
     type: types.GET_MOVIE_LIBRARY_LOADING,
     payload: {
@@ -27,3 +27,7 @@ export const getMovieLibrary = id => dispatch => {
       }
     });
 };
+
+export {
+  getMovieLibrary
+}

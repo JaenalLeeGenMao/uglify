@@ -8,7 +8,11 @@
   },
   "scripts": {
     "dev": "watch 'npm run build' src",
-    "build": "babel src -d lib --copy-files"
+    "build": "babel src -d lib --copy-files",
+    "build-dev": "REACT_APP_ENV=development npm run build",
+    "build-stag": "REACT_APP_ENV=staging npm run build",
+    "build-prod": "REACT_APP_ENV=production npm run build",
+    "prepare": "npm run build"
   },
   "keywords": [
     "gandalf"
@@ -25,6 +29,7 @@
     "axios": "^0.18.0",
     "babel-loader": "^8.0.4",
     "babel-preset-react": "^6.24.1",
+    "dexie": "2.0.4",
     "emotion": "^9.2.12",
     "emotion-normalize": "^8.0.0",
     "history": "^4.7.2",

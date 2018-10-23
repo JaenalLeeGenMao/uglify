@@ -1,7 +1,7 @@
 import types from '../constants';
 import Mola from '../api/mola';
 
-export const getAllHistory = userId => dispatch => {
+const getAllHistory = userId => dispatch => {
   dispatch({
     type: types.GET_HISTORY_LOADING,
     payload: {
@@ -30,3 +30,6 @@ export const getAllHistory = userId => dispatch => {
     });
 };
 
+export {
+  getAllHistory
+}
