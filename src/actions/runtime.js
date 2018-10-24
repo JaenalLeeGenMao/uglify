@@ -2,16 +2,12 @@
 
 import types from '../constants';
 
-function setRuntimeVariable({ name, value }) {
+export function setRuntimeVariable({ name, value }) {
   return {
     type: types.SET_RUNTIME_VARIABLE,
     payload: {
       name,
-      value,
-    },
+      value
+    }
   };
-}
-
-export {
-  setRuntimeVariable
 }
