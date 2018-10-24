@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+// import { combineReducers } from 'redux';
 import user from './user';
 import runtime from './runtime';
 import home from './home';
@@ -8,16 +8,6 @@ import movieDetail from './movie-detail';
 import movieLibrary from './movie-library';
 import movieStream from './movie-stream';
 
-import { reducer as toastrReducer } from 'react-redux-toastr';
+import { reducer as toastr } from 'react-redux-toastr';
 
-export default combineReducers({
-  user,
-  runtime,
-  home,
-  history,
-  search,
-  movieDetail,
-  movieLibrary,
-  movieStream,
-  toastr: toastrReducer
-});
+export { user, runtime, home, history, search, movieDetail, movieLibrary, movieStream, toastr };

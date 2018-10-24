@@ -33,12 +33,20 @@ export default {
 
 `~/src/reducers/index.js`
 ```
-import { getReducer } from '../../../gandalf'
-const home = getReducer('home').default
+import { getReducer } from '../../../gandalf';
+const { user, runtime, home, history, search, movieDetail, movieLibrary, movieStream, toastr } = getReducer();
 
 *IMPORT ALL REDUCERS*
 export default combineReducers({
-  home
+  user,
+  runtime,
+  home,
+  history,
+  search,
+  movieLibrary,
+  movieDetail,
+  toastr,
+  movieStream
 });
 ```
 
