@@ -47,7 +47,11 @@ const getHomeVideo = playlist => dispatch => {
 
 const updateActivePlaylist = id => (dispatch, getState) => {
   const store = getState(),
-    { home: { playlists: { meta, data: playlistsData } } } = store,
+    {
+      home: {
+        playlists: { meta, data: playlistsData }
+      }
+    } = store,
     data = playlistsData.map(playlist => {
       if (playlist.id === id) {
         return { ...playlist, isActive: true };
@@ -63,8 +67,4 @@ const updateActivePlaylist = id => (dispatch, getState) => {
   });
 };
 
-export {
-  getHomePlaylist,
-  getHomeVideo,
-  updateActivePlaylist
-}
+export { getHomePlaylist, getHomeVideo, updateActivePlaylist };
