@@ -12,11 +12,12 @@ cd `~/mola-web/node_modules && npm link gandalf`
 
 if you encounter issue on import gandalf
 
+
 `~/src/actions/[YOUR__FILE].js`
 ```
 *IMPORT ALL ACTION*
-import { getAction } from '../../../gandalf'
-const home = getAction('home')
+import { getAction } from '../../../gandalf';
+const { home } = getAction();
 
 export default {
   ...home
@@ -24,12 +25,13 @@ export default {
 
 *IMPORT SINGLE ACTION*
 import { getAction } from '../../../gandalf'
-const { getHomePlaylist } = getAction('home')
+const { home: { getHomePlaylist } } = getAction('home')
 
 export default {
   getHomePlaylist
 };
 ```
+
 
 `~/src/reducers/index.js`
 ```
@@ -49,6 +51,7 @@ export default combineReducers({
   movieStream
 });
 ```
+
 
 `~/components/Header/Header.js`
 ```
