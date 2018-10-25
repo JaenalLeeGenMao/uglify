@@ -21,7 +21,7 @@ export const getSearchResult = searchText => dispatch => {
     },
     data: []
   };
-  Dexie.exists('mola-search-cache-database').then(function(exists) {
+  Dexie.exists('search-cache-database').then(function (exists) {
     if (exists) {
       searchDb
         .transaction('r', searchDb.moviesResult, searchDb.castsResult, searchDb.searchKeyword, async () => {
@@ -29,7 +29,7 @@ export const getSearchResult = searchText => dispatch => {
           await searchDb.searchKeyword
             .where('keyword')
             .equalsIgnoreCase(searchText)
-            .each(function(res) {
+            .each(function (res) {
               isExist = true; //if exist
               if (res.movieId) {
                 const movieIdArr = res.movieId.split(',');
@@ -37,7 +37,7 @@ export const getSearchResult = searchText => dispatch => {
                   searchDb.moviesResult
                     .where('movieId')
                     .equals(id)
-                    .each(function(res) {
+                    .each(function (res) {
                       cacheResult.data.push({
                         id: res.movieId,
                         type: res.type,
@@ -54,7 +54,7 @@ export const getSearchResult = searchText => dispatch => {
                   searchDb.castsResult
                     .where('castId')
                     .equals(id)
-                    .each(function(res) {
+                    .each(function (res) {
                       cacheResult.data.push({
                         id: res.castId,
                         type: res.type,
@@ -99,7 +99,7 @@ export const getSearchResult = searchText => dispatch => {
                       await searchDb.moviesResult
                         .where('movieId')
                         .equals(dt.id)
-                        .count(function(cnt) {
+                        .count(function (cnt) {
                           isMovieIdExist = cnt > 0;
                         })
                         .then(() => {
@@ -121,7 +121,7 @@ export const getSearchResult = searchText => dispatch => {
                       await searchDb.castsResult
                         .where('castId')
                         .equals(dt.id)
-                        .count(function(cnt) {
+                        .count(function (cnt) {
                           isCastIdExist = cnt > 0;
                         })
                         .then(() => {
