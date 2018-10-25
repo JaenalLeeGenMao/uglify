@@ -1,10 +1,6 @@
 import webpackBaseConfig from './webpack.config.base';
 import config from './config.base';
 
-import LazyLoad from "./components/LazyLoad";
-import LoadingPlaceholder from "./components/LoadingPlaceholder";
-import Layout from "./components/Layout";
-import Theoplayer from "./components/Theoplayer";
 const getComponent = name => require(`./components/${name}`).default;
 const getReducer = () => require(`./reducers`);
 const getAction = () => require(`./actions`);
@@ -19,9 +15,5 @@ export {
   getReducer,
   getAction,
   getApi,
-  LazyLoad,
-  LoadingPlaceholder,
-  Layout,
-  Theoplayer,
   getComponent
 };
