@@ -1,16 +1,11 @@
 import { get, post, delete as axiosDelete } from 'axios';
-import {
-  HOME_PLAYLIST_ENDPOINT,
-  HISTORY_ENDPOINT,
-  SEARCH_ENDPOINT,
-  SEARCH_GENRE_ENDPOINT,
-  RECENT_SEARCH_ENDPOINT,
-  MOVIE_DETAIL_ENDPOINT,
-  MOVIE_STREAMING
-} from './endpoints';
+import { HOME_PLAYLIST_ENDPOINT, HISTORY_ENDPOINT, SEARCH_ENDPOINT, SEARCH_GENRE_ENDPOINT, RECENT_SEARCH_ENDPOINT, MOVIE_DETAIL_ENDPOINT, MOVIE_STREAMING } from './endpoints';
 import utils from './util';
 
-import { endpoints } from '@source/config';
+import baseConfig from '../../config.base';
+const config = baseConfig.default[process.env.REACT_APP_ENV || 'production'];
+
+const endpoints = config.endpoints;
 
 const getHomePlaylist = () => {
   return get(`${HOME_PLAYLIST_ENDPOINT}/mola-home`, {
