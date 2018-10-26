@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+
 import {
   Label,
   inputContainer,
@@ -6,7 +7,8 @@ import {
   passWordVisibility,
   passwordNotVisible,
   passwordVisible,
-  transparent,
+  mdClass,
+  boxClass,
   hasValue,
   underline
 } from './style'
@@ -22,6 +24,7 @@ class TextInput extends React.Component {
     this.setState({
       [target]: !this.state[target]
     })
+    // console.log("target", target, this.state.visible)
     this.toggleVisible(this.state.visible)
   }
 
@@ -65,24 +68,24 @@ class TextInput extends React.Component {
         <div className={`${inputContainer} ${className || ''}`}>
           <input
             type={inputType}
-            className={`${inputClass} ${materialDesign && transparent} ${isEmptyValue || hasValue}`}
+            className={`${inputClass} ${materialDesign ? mdClass : boxClass} ${isEmptyValue || hasValue}`}
             id={id}
             name={id}
             onChange={this.handleOnChange}
             placeholder={placeholder}
             disabled={disabled || false} />
-          <Label htmlFor={id}>{label}</Label>
-          <div className={underline} />
+          {materialDesign && <Label htmlFor={id}>{label}</Label>}
+          {materialDesign && <div className={underline} />}
           {
             (propsType === 'password' && !isEmptyValue) &&
-            <Fragment>
+            <div className={passWordVisibility}>
               {
                 (visible) ?
-                  <div className={passWordVisibility}><span className={passwordVisible} onClick={() => this.toggle('visible')} /></div>
+                  <span className={passwordVisible} onClick={() => this.toggle('visible')} />
                   :
-                  <div className={passWordVisibility}><span className={passwordNotVisible} onClick={() => this.toggle('visible')} /></div>
+                  <span className={passwordNotVisible} onClick={() => this.toggle('visible')} />
               }
-            </Fragment>
+            </div>
           }
         </div>
       </Fragment>
