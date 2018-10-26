@@ -64,17 +64,31 @@ export const inputClass = css`{
   }
 }`;
 
-export const transparent = css`{
+export const mdClass = css`{
   border: none;
   outline: none;
   background: none;
   border-bottom: 1px solid #1a202f;
 }`;
 
+export const boxClass = css`{
+  border: none;
+  outline: none;
+  background-color: #fff;
+  border-radius: 3px;
+  height: 5rem;
+  width: 100%;
+  border: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: .5rem 0 1.5rem;
+  padding: 1.2rem 1.5rem;
+}`;
+
 export const passWordVisibility = css`{
   cursor: pointer;
   position: absolute;
-  top: 15px;
+  top: 30%;
   right: 15px;
 }`;
 
