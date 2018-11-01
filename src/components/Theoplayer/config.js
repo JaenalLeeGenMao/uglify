@@ -5,7 +5,7 @@ let script = [
     id: 'castsenderjs'
   },
   {
-    src: `https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/THEOplayer.js`,
+    src: `https://cdn.theoplayer.com/dash/theoplayer/THEOplayer.js`,
     id: 'theoplayerjs'
   }
 ]
@@ -13,11 +13,11 @@ let script = [
 export const theoScripts = script;
 
 let style = [
-  { id: 'uiTheo', rel: 'stylesheet', type: 'text/css', href: `https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/ui.css`, media: 'all' }
+  { id: 'uiTheo', rel: 'stylesheet', type: 'text/css', href: `https://cdn.theoplayer.com/dash/theoplayer/ui.css`, media: 'all' }
 ]
 
 export const theoStyle = style;
 
-export const theoLibraryLocation = 'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/';
+export const theoLibraryLocation = 'https://cdn.theoplayer.com/dash/theoplayer/';
 //theoplayer --> license key for dummy video
-//5acd847e-4a8d-4a7b-85a4-ccfd12d5562d --> licensekey real
+//theoplayer --> licensekey real
