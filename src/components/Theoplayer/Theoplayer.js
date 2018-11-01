@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
 import { theoScripts, theoStyle, theoLibraryLocation } from './config'
-import { Arrow, videoPlayer, arrowIcon } from './style';
+import { Arrow, videoPlayer, arrowIcon, AudioButton } from './style';
 
 // let player;
 class Theoplayer extends Component {
   state = {
     toggleArrow: false,
+    isMuted: this.props.allowMutedAutoplay
   };
 
   static propTypes = {
@@ -16,22 +17,28 @@ class Theoplayer extends Component {
     isTrailer: PropTypes.bool,
     theoConfig: PropTypes.array,
     autoPlay: PropTypes.bool,
+    allowMutedAutoplay: PropTypes.bool,
     showBackBtn: PropTypes.bool,
     fullscreen: PropTypes.bool,
     playerBtnImg: PropTypes.string,
     className: PropTypes.string,
-    noPause: PropTypes.bool
+    noPause: PropTypes.bool,
+    handleOnVideoLoad: PropTypes.func,
+    showAudioButton: PropTypes.bool
   };
 
   static defaultProps = {
     licenseKey: '',//theoplayer
     autoPlay: true,
+    allowMutedAutoplay: true,
     className: '',
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
     playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
-    noPause: false
+    noPause: false,
+    handleOnVideoLoad: () => { },
+    showAudioButton: false
   };
 
   handleGoBack = () => {
@@ -56,7 +63,7 @@ class Theoplayer extends Component {
   getToggleArrow = () => {
     const { toggleArrow } = this.state;
     const { showBackBtn } = this.props;
-    if(showBackBtn) {
+    if (showBackBtn) {
       this.setState({
         toggleArrow: !toggleArrow
       });
@@ -77,15 +84,15 @@ class Theoplayer extends Component {
     theoStyle.map((dt) => {
       const el = document.getElementById(dt.id);
       const elExist = el ? true : false;
-      existingStyle = existingStyle &&  elExist;
+      existingStyle = existingStyle && elExist;
     });
 
     if (!existingStyle) {
       theoStyle.map((dt) => {
-        const head  = document.getElementsByTagName('head')[0];
-        const link  = document.createElement('link');
-        link.id   = dt.id;
-        link.rel  = dt.rel;
+        const head = document.getElementsByTagName('head')[0];
+        const link = document.createElement('link');
+        link.id = dt.id;
+        link.rel = dt.rel;
         link.type = dt.type;
         link.href = dt.href;
         link.media = dt.media;
@@ -118,17 +125,20 @@ class Theoplayer extends Component {
   }
 
   loadTheoPlayer() {
-    const { autoPlay, noPause } = this.props;
+    const { autoPlay, noPause, allowMutedAutoplay } = this.props;
 
     this.player = this.configTheoPlayer();
     this.configVideoPlayer();
     this.player.muted = true;
-    if(autoPlay) {
+    if (autoPlay) {
+      if (allowMutedAutoplay) {
+        this.player.muted = true;
+      }
       this.player.play();
     }
     const that = this;
-    this.player.addEventListener('pause', function() {
-      if(noPause) {
+    this.player.addEventListener('pause', function () {
+      if (noPause) {
         that.player.play();
       }
     });
@@ -139,7 +149,7 @@ class Theoplayer extends Component {
     theoScripts.map((dt) => {
       const el = document.getElementById(dt.id);
       const elExist = el ? true : false;
-      existingScript = existingScript &&  elExist;
+      existingScript = existingScript && elExist;
     });
 
     if (!existingScript) {
@@ -150,9 +160,9 @@ class Theoplayer extends Component {
         script.src = dt.src;
         script.id = dt.id;
         document.body.appendChild(script);
-        script.onload =  () => {
+        script.onload = () => {
           loadedScriptCount += 1;
-          if(loadedScriptCount >= scriptCount) {
+          if (loadedScriptCount >= scriptCount) {
             this.loadTheoPlayer();
             // if(this.props.handleOnVideoLoad) {
             //   this.props.handleOnVideoLoad(this.player);
@@ -177,9 +187,18 @@ class Theoplayer extends Component {
     this.player.destroy();
   }
 
+  handleAudioBtn = () => {
+    const { isMuted } = this.state;
+    // if (showBackBtn) {
+    this.setState({
+      isMuted: !isMuted
+    });
+    // }
+  };
+
   render() {
-    const { toggleArrow } = this.state;
-    const { className, showBackBtn } = this.props;
+    const { toggleArrow, isMuted } = this.state;
+    const { className, showBackBtn, showAudioButton } = this.props;
     return (
 
       <div
@@ -192,9 +211,15 @@ class Theoplayer extends Component {
       >
         {showBackBtn && (
           <Arrow isShow={toggleArrow} onClick={this.handleGoBack}>
-            <span className={arrowIcon}/>
+            <span className={arrowIcon} />
           </Arrow>
         )}
+        {showAudioButton &&
+          <AudioButton onClick={this.handleAudioBtn}>
+            {/* <span className={isMuted ? audioMutedIcon : audioIcon} /> */}
+            {isMuted ? 'MUTED' : 'SOUND'}
+          </AudioButton>
+        }
       </div>
     );
   }

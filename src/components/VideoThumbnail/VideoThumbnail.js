@@ -23,11 +23,11 @@ import {
 class VideoThumbnail extends Component {
   static propTypes = {
     onClick: func,
-    children: node
+    children: node,
   };
 
   static defaultProps = {
-    onClick: () => {},
+    onClick: () => { },
     children: null,
   };
 
@@ -39,12 +39,12 @@ class VideoThumbnail extends Component {
   getDurationFormatted = () => {
     const { duration } = this.props;
     let durationTotal = duration;
-    const sec =  durationTotal % 60;
+    const sec = durationTotal % 60;
     durationTotal -= sec;
-    const minRemain = Math.floor(durationTotal/60);
+    const minRemain = Math.floor(durationTotal / 60);
     const min = minRemain % 60;
     let hour = 0;
-    if(minRemain > 60) {
+    if (minRemain > 60) {
       hour = (minRemain - min) / 60;
     }
 
@@ -56,33 +56,34 @@ class VideoThumbnail extends Component {
   }
 
   render() {
-    const { children, thumbnailPosition, duration, className, thumbnailUrl } = this.props;
+    const { children, thumbnailPosition, duration, className, thumbnailUrl, thumbnailStyle, detailStyle } = this.props;
     let thumbnailPos = '';
-    if(thumbnailPosition === 'right') {
+    if (thumbnailPosition === 'right') {
       thumbnailPos = rightThumbnail;
-    } else if(thumbnailPosition === 'top') {
+    } else if (thumbnailPosition === 'top') {
       thumbnailPos = topThumbnail;
-    } else if(thumbnailPosition === 'bottom') {
+    } else if (thumbnailPosition === 'bottom') {
       thumbnailPos = bottomThumbnail;
-    } else if(thumbnailPosition === 'wrap') {
+    } else if (thumbnailPosition === 'wrap') {
       thumbnailPos = wrapThumbnail;
     }
 
     return (
-      <div onClick={this.handleOnClick} className={`${wrapper} ${className||''}`}>
+      <div onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
         {thumbnailPosition === 'bottom' &&
-          <div className={`${detailWrapper} ${bottomDetail}`}>
+          <div className={`${detailWrapper} ${bottomDetail}`} style={detailStyle}>
             {children}
           </div>
         }
         <LazyLoad
           src={thumbnailUrl}
           className={`${imgThumbnail}`}
+          style={thumbnailStyle}
           containerClassName={`${wrapperThumbnail} ${thumbnailPos}`}
         >
           {duration && <div className={durationClass}>{this.getDurationFormatted()}</div>}
           {thumbnailPosition !== 'bottom' &&
-            <div className={detailWrapper}>
+            <div className={detailWrapper} style={detailStyle}>
               {children}
             </div>
           }
