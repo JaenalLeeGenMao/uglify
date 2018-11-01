@@ -8,18 +8,21 @@ export const wrapper = css`{
 export const wrapperThumbnail = css`{
   position: relative;
   cursor: pointer;
-  display: block;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: row;
   overflow: hidden;
 }`;
 
 export const imgThumbnail = css`{
   border-radius: 3px;
   width: 50%;
-  float: left;
   vertical-align: middle;
   cursor: pointer;
+  flex: none;
+  height: 94px;
+  width: 168px;
 }`;
 
 export const durationClass = css`{
@@ -37,17 +40,17 @@ export const durationClass = css`{
 }`;
 
 export const detailWrapper = css`{
-  width: 50%;
-  float: right;
   vertical-align: middle;
   padding-left: 15px;
+  padding-right: 0;
   cursor: pointer;
+  flex: 1;
+  flex-basis: 0.000000001px;
 }`;
 
-
 export const rightThumbnail = css`{
-  .${imgThumbnail} {
-    float: right;
+  &.${wrapperThumbnail} {
+    flex-direction: row-reverse;
   }
 
   .${durationClass} {
@@ -56,13 +59,19 @@ export const rightThumbnail = css`{
   }
 
   .${detailWrapper} {
-    float: left;
+    padding-right: 15px;
+    padding-left: 0;
   }
 }`;
 
 export const bottomThumbnail = css`{
+  &.${wrapperThumbnail} {
+    display: block;
+  }
+
   .${imgThumbnail} {
     width: 100%;
+    height: 100%;
     float: none;
     clear: both;
     padding: 0;
@@ -89,8 +98,13 @@ export const bottomDetail = css`{
 }`;
 
 export const topThumbnail = css`{
+  &.${wrapperThumbnail} {
+    display: block;
+  }
+
   .${imgThumbnail} {
     width: 100%;
+    height: 100%;
     float: none;
     clear: both;
     padding: 0;
@@ -111,8 +125,13 @@ export const topThumbnail = css`{
 
 
 export const wrapThumbnail = css`{
+  &.${wrapperThumbnail} {
+    display: block;
+  }
+
   .${imgThumbnail} {
     width: 100%;
+    height: 100%;
     float: none;
     clear: both;
     padding: 0;

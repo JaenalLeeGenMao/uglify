@@ -19,3 +19,5 @@ let style = [
 export const theoStyle = style;
 
 export const theoLibraryLocation = 'https://cdn.theoplayer.com/dash/5acd847e-4a8d-4a7b-85a4-ccfd12d5562d/';
+//theoplayer --> license key for dummy video
+//5acd847e-4a8d-4a7b-85a4-ccfd12d5562d --> licensekey real
