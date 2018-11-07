@@ -4,13 +4,5 @@
     "react",
     "stage-0"
   ],
-  "plugins": [
-    "transform-es2015-destructuring",
-    "transform-object-rest-spread",
-    // [
-    //   "@babel/plugin-proposal-class-properties",
-    //   { loose: false
-    //   }
-    // ]
-  ]
+  "plugins": ["transform-es2015-destructuring","transform-object-rest-spread"]
 }

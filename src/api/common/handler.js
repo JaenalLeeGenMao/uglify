@@ -305,7 +305,7 @@ const getMovieStream = ({ id }) => {
     });
 };
 
-export default {
+export {
   getHomePlaylist,
   getHomeVideo,
   getAllHistory,
