@@ -157,7 +157,12 @@ const emailForgotPassword = ({ email = '', csrf = '' }) => {
     });
 };
 
-const verifyPasswordToken = ({ email = '', token = '', csrf = '', password = '' }) => {
+const verifyPasswordToken = ({
+  email = '',
+  token = '',
+  csrf = '',
+  password = ''
+}) => {
   const body = { email, token, password };
   return post(`${AUTH_BASE_ENDPOINT}/v1/password/token`, body, {
     headers: {
@@ -293,7 +298,7 @@ const updateProfile = ({
     });
 };
 
-export default {
+export {
   createNewUser,
   verifyUserToken,
   resendUserToken,
