@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import emotionNormalize from 'emotion-normalize';
-import {injectGlobal} from 'emotion';
- 
+import { injectGlobal } from 'emotion';
+
 injectGlobal`
   ${emotionNormalize}
   html {
@@ -13,17 +13,15 @@ injectGlobal`
     box-sizing: border-box;
   }
   
-  @media screen and (min-height: 1080px) {
+  @media screen and (min-height: 1801px) {
     html {
       font-size: 187.5%;
     }
   }
-`
+`;
 
 const Layout = ({ children }) => {
-  return (
-    <Fragment>{children}</Fragment>
-  )
-}
+  return <Fragment>{children}</Fragment>;
+};
 
 export default Layout;
