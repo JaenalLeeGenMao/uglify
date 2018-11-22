@@ -1,5 +1,5 @@
 {
-  "name": "gandalf",
+  "name": "@supersoccer/gandalf",
   "version": "1.0.0",
   "description": "shared-package",
   "main": "lib/index.js",
