@@ -1,0 +1,57 @@
+{
+  "name": "@supersoccer/gandalf",
+  "version": "1.0.0",
+  "description": "shared-package",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "watch 'npm run build' src",
+    "build": "babel src -d lib --copy-files",
+    "build-dev": "REACT_APP_ENV=development npm run build",
+    "build-stag": "REACT_APP_ENV=staging npm run build",
+    "build-prod": "REACT_APP_ENV=production npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "gandalf"
+  ],
+  "author": "SupersoccerTV <admin@supersoccertv.com> (http://www.supersoccer.tv)",
+  "license": "ISC",
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-loader": "^8.0.4",
+    "babel-preset-react": "^6.24.1",
+    "dexie": "^2.0.4",
+    "emotion": "^9.2.12",
+    "emotion-normalize": "^8.0.0",
+    "history": "^4.7.2",
+    "normalize.css": "^8.0.0",
+    "react": "^16.5.2",
+    "react-emotion": "^9.2.12",
+    "react-helmet": "^5.2.0",
+    "react-redux": "^5.0.7",
+    "react-redux-toastr": "^7.4.0",
+    "redux": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.3",
+    "babel-plugin-transform-es2015-destructuring": "6.23.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.7.0",
+    "babel-preset-latest": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "eslint": "5.6.1",
+    "eslint-config-airbnb": "17.1.0",
+    "prettier": "1.14.3",
+    "watch": "1.0.2"
+  }
+}
