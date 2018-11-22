@@ -3,14 +3,12 @@
 Gandalf is a shared packages and library to be consumed by multi purposes Apps. Likely MOLA, SSTV, interTV and so forth..
 
 ## Getting Started
-npm link
-npm link gandalf
+`yarn add @supersoccer/gandalf`
 
 ## How to use
-cd `~/gandalf/lib && npm link`
-cd `~/mola-web/node_modules && npm link gandalf`
-
-if you encounter issue on import gandalf
+const gandalf = process.env.REACT_APP_ENV === 'development ? `require('~/gandalf')` : `require('@supersoccer/gandalf')`
+const { getAction, getReducer, getComponent } = gandalf;
+const LazyLoad = getComponent('LazyLoad');
 
 
 `~/src/actions/[YOUR__FILE].js`
@@ -56,7 +54,7 @@ export default combineReducers({
 `~/components/Header/Header.js`
 ```
 import { getComponent } from '../../../../gandalf';
-const LazyLoad = getComponent('LazyLoad')
+const LazyLoad = getComponent('LazyLoad');
 ```
 
 simply follow the steps on *How to use*
