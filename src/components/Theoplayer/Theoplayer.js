@@ -48,18 +48,6 @@ class Theoplayer extends Component {
     }
   };
 
-  movieConfig() {
-    this.player.source = {
-      sources: [
-        {
-          src: this.props.movieUrl,
-          type: 'application/x-mpegurl' // sets type to HLS
-        }
-      ],
-      textTracks: this.props.theoConfig
-    };
-  }
-
   getToggleArrow = () => {
     const { toggleArrow } = this.state;
     const { showBackBtn } = this.props;
@@ -177,10 +165,25 @@ class Theoplayer extends Component {
     return false;
   };
 
+  loadFullscreenEvent = () => {
+    ['', 'webkit', 'moz', 'ms'].forEach(prefix => document.addEventListener(prefix + 'fullscreenchange', this.handleFullscreen, false));
+  };
+
+  handleFullscreen = () => {
+    const { isFullscreen } = this.state;
+    this.setState({ isFullscreen: !isFullscreen }, () => {
+      if (!isFullscreen) {
+        window.screen.orientation.lock('landscape');
+      } else {
+        window.screen.orientation.unlock();
+      }
+    });
+  };
 
   componentDidMount() {
     this.loadDynamicStyle();
     this.loadDynamicScript();
+    this.loadFullscreenEvent();
   }
 
   componentWillUnmount() {
