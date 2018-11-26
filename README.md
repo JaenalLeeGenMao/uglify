@@ -55,6 +55,9 @@ export default combineReducers({
 ```
 import { getComponent } from '../../../../gandalf';
 const LazyLoad = getComponent('LazyLoad');
+
+const { getComponent } = require('@supersoccer/gandalf');
+const Theoplayer = getComponent('theoplayer');
 ```
 
 simply follow the steps on *How to use*
