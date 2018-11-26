@@ -1,4 +1,4 @@
-import Mola from '../api/mola';
+import Mola from '../api/common';
 import types from '../constants';
 
 export const getMovieDetail = id => dispatch => {

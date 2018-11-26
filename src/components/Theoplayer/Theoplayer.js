@@ -56,6 +56,18 @@ class Theoplayer extends Component {
         toggleArrow: !toggleArrow
       });
     }
+    if (toggleArrow) {
+      this.setState(
+        {
+          toggleArrow: true
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({ toggleArrow: false });
+          }, 5000);
+        }
+      );
+    }
   };
 
   handleScriptInject({ scriptTags }) {
@@ -217,6 +229,7 @@ class Theoplayer extends Component {
       <div
         className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
         onMouseEnter={this.getToggleArrow}
+        onMouseMove={this.getToggleArrow}
         onMouseLeave={this.getToggleArrow}
         ref={el => {
           this.containerPlayer = el;
