@@ -5,6 +5,9 @@ Gandalf is a shared packages and library to be consumed by multi purposes Apps. 
 ## Getting Started
 `yarn add @supersoccer/gandalf`
 
+if folders are not updated, copy and paste this into terminal root folder.
+> git config core.ignorecase false
+
 ## How to use
 const gandalf = process.env.REACT_APP_ENV === 'development ? `require('~/gandalf')` : `require('@supersoccer/gandalf')`
 const { getAction, getReducer, getComponent } = gandalf;
