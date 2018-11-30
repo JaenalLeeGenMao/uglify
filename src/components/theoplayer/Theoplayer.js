@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import { theoScripts, theoStyle, theoLibraryLocation } from './config';
-import { Arrow, videoPlayer, arrowIcon, AudioButton } from './style';
+import { theoScripts, theoStyle, theoLibraryLocation } from './config'
+import { Arrow, videoPlayer, arrowIcon } from './style';
 
-// let player;
 class Theoplayer extends Component {
   state = {
     toggleArrow: false,
-    isMuted: this.props.allowMutedAutoplay
   };
 
   static propTypes = {
@@ -24,12 +22,19 @@ class Theoplayer extends Component {
     className: PropTypes.string,
     noPause: PropTypes.bool,
     handleOnVideoLoad: PropTypes.func,
-    showAudioButton: PropTypes.bool
+    showAudioButton: PropTypes.bool,
+    showReplayButton: PropTypes.bool,
+    handleOnVideoPlaying: PropTypes.func,
+    handleOnVideoEnded: PropTypes.func,
+    isMobile: PropTypes.bool,
+    videoType: PropTypes.string,
+    poster: PropTypes.string
   };
 
   static defaultProps = {
-    licenseKey: '', //theoplayer
+    licenseKey: '',//theoplayer
     autoPlay: true,
+    isMobile: false,
     allowMutedAutoplay: true,
     className: '',
     fullscreen: true,
@@ -37,8 +42,13 @@ class Theoplayer extends Component {
     showBackBtn: true,
     playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
     noPause: false,
-    handleOnVideoLoad: () => {},
-    showAudioButton: false
+    handleOnVideoLoad: () => { },
+    showAudioButton: false,
+    showReplayButton: false,
+    handleOnVideoPlaying: () => { },
+    handleOnVideoEnded: () => { },
+    videoType: 'application/x-mpegurl',
+    poster: ''
   };
 
   handleGoBack = () => {
@@ -56,39 +66,18 @@ class Theoplayer extends Component {
         toggleArrow: !toggleArrow
       });
     }
-    if (toggleArrow) {
-      this.setState(
-        {
-          toggleArrow: true
-        },
-        () => {
-          setTimeout(() => {
-            this.setState({ toggleArrow: false });
-          }, 5000);
-        }
-      );
-    }
   };
-
-  handleScriptInject({ scriptTags }) {
-    if (scriptTags) {
-      scriptTagCount = scriptTags.length;
-      scriptTags.map(tag => {
-        tag.onload = this.handleOnLoad;
-      });
-    }
-  }
 
   loadDynamicStyle = () => {
     let existingStyle = true;
-    theoStyle.map(dt => {
+    theoStyle.map((dt) => {
       const el = document.getElementById(dt.id);
       const elExist = el ? true : false;
       existingStyle = existingStyle && elExist;
     });
 
     if (!existingStyle) {
-      theoStyle.map(dt => {
+      theoStyle.map((dt) => {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
         link.id = dt.id;
@@ -99,85 +88,85 @@ class Theoplayer extends Component {
         head.appendChild(link);
       });
     }
-  };
+  }
 
-  configTheoPlayer = () => {
+  initTheoPlayer = () => {
     const playerConfig = {
       libraryLocation: theoLibraryLocation,
       ui: {
-        fluid: true
-      }
+        fluid: true,
+      },
     };
-    this.theoPlayer = new window.THEOplayer.Player(
-      this.containerPlayer,
-      playerConfig
-    );
+    this.theoPlayer = new window.THEOplayer.Player(this.containerPlayer, playerConfig);
     return this.theoPlayer;
-  };
+  }
 
   configVideoPlayer = () => {
+    const { videoType, movieUrl, theoConfig } = this.props;
     this.player.source = {
       sources: [
         {
-          src: this.props.movieUrl,
-          type: 'application/x-mpegurl' // sets type to HLS
+          src: movieUrl,
+          type: videoType // sets type to HLS
         }
       ],
-      textTracks: this.props.theoConfig
+      textTracks: theoConfig
     };
-  };
+  }
 
   loadTheoPlayer() {
-    const { autoPlay, noPause, allowMutedAutoplay } = this.props;
-
-    this.player = this.configTheoPlayer();
+    const { autoPlay,
+      allowMutedAutoplay,
+      handleOnVideoPlaying,
+      handleOnVideoEnded,
+      poster
+    } = this.props;
+    this.player = this.initTheoPlayer();
     this.configVideoPlayer();
-    this.player.muted = true;
+    this.player.poster = poster;
     if (autoPlay) {
       if (allowMutedAutoplay) {
         this.player.muted = true;
+        this.player.loop = false;
       }
       this.player.play();
     }
     const that = this;
-    this.player.addEventListener('pause', function() {
-      if (noPause) {
-        that.player.play();
+    this.player.addEventListener('pause', function () {
+    });
+
+    this.player.addEventListener('play', function () {
+    })
+
+    this.player.addEventListener('ended', function () {
+      if (handleOnVideoPlaying) {
+        handleOnVideoPlaying(false, that.player);
+      }
+      if (handleOnVideoEnded) {
+        handleOnVideoEnded(true, that.player);
+      }
+    });
+
+    this.player.addEventListener('playing', function () {
+      // console.log("Width:", that.player.videoWidth,  that.player.videoHeight)
+      if (handleOnVideoPlaying) {
+        handleOnVideoPlaying(true, that.player);
       }
     });
   }
 
-  loadDynamicScript = () => {
-    let existingScript = true;
-    theoScripts.map(dt => {
-      const el = document.getElementById(dt.id);
-      const elExist = el ? true : false;
-      existingScript = existingScript && elExist;
-    });
-
-    if (!existingScript) {
-      const scriptCount = theoScripts.length;
-      let loadedScriptCount = 0;
-      theoScripts.map(dt => {
-        const script = document.createElement('script');
-        script.src = dt.src;
-        script.id = dt.id;
-        document.body.appendChild(script);
-        script.onload = () => {
-          loadedScriptCount += 1;
-          if (loadedScriptCount >= scriptCount) {
-            this.loadTheoPlayer();
-            // if(this.props.handleOnVideoLoad) {
-            //   this.props.handleOnVideoLoad(this.player);
-            // }
-          }
-        };
-      });
-    } else {
-      this.loadTheoPlayer();
-    }
-    return false;
-  };
+  // componentDidUpdate() {
+  //   const { isMobile } = this.props;
+  //   if (isMobile) {
+  //     const screen = window.screen;
+  //     screen.lockOrientationUniversal = (mode) =>
+  //       screen.orientation && screen.orientation.lock(mode)
+  //         .then(() => { }, err => { })
+  //       || screen.mozLockOrientation && screen.mozLockOrientation(mode)
+  //       || screen.msLockOrientation && screen.msLockOrientation(mode);
+  //     screen.lockOrientationUniversal('landscape');
+  //   }
+  // }
 
   loadFullscreenEvent = () => {
     ['', 'webkit', 'moz', 'ms'].forEach(prefix =>
@@ -206,32 +195,61 @@ class Theoplayer extends Component {
     this.loadFullscreenEvent();
   }
 
+  loadDynamicScript = () => {
+    let existingScript = true;
+    theoScripts.map((dt) => {
+      const el = document.getElementById(dt.id);
+      const elExist = el ? true : false;
+      existingScript = existingScript && elExist;
+    });
+
+    if (!existingScript) {
+      const scriptCount = theoScripts.length;
+      let loadedScriptCount = 0;
+      theoScripts.map((dt) => {
+        const script = document.createElement('script');
+        script.src = dt.src;
+        script.id = dt.id;
+        document.body.appendChild(script);
+        script.onload = () => {
+          loadedScriptCount += 1;
+          if (loadedScriptCount >= scriptCount) {
+            this.loadTheoPlayer();
+            if (this.props.handleOnVideoLoad) {
+              this.props.handleOnVideoLoad(this.player);
+            }
+          }
+
+        };
+      })
+    } else {
+      this.loadTheoPlayer();
+    }
+    return false;
+  };
+
+
+  componentDidMount() {
+    this.loadDynamicStyle();
+    this.loadDynamicScript();
+  }
+
   componentWillUnmount() {
     if (this.player) {
-      window.screen.orientation.unlock();
       this.player.destroy();
     }
   }
 
-  handleAudioBtn = () => {
-    const { isMuted } = this.state;
-    // if (showBackBtn) {
-    this.setState({
-      isMuted: !isMuted
-    });
-    // }
-  };
-
   render() {
-    const { toggleArrow, isMuted } = this.state;
-    const { className, showBackBtn, showAudioButton } = this.props;
+    const { toggleArrow } = this.state;
+    const { className, showBackBtn } = this.props;
     return (
+
       <div
         className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
         onMouseEnter={this.getToggleArrow}
-        onMouseMove={this.getToggleArrow}
         onMouseLeave={this.getToggleArrow}
-        ref={el => {
+        ref={(el) => {
           this.containerPlayer = el;
         }}
       >
@@ -239,12 +257,6 @@ class Theoplayer extends Component {
           <Arrow isShow={toggleArrow} onClick={this.handleGoBack}>
             <span className={arrowIcon} />
           </Arrow>
-        )}
-        {showAudioButton && (
-          <AudioButton onClick={this.handleAudioBtn}>
-            {/* <span className={isMuted ? audioMutedIcon : audioIcon} /> */}
-            {isMuted ? 'MUTED' : 'SOUND'}
-          </AudioButton>
         )}
       </div>
     );
