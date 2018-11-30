@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LazyLoad from '@components/lazyload';
+import LazyLoad from '../lazyload';
 import { func, node } from 'prop-types';
 import {
   wrapper,
