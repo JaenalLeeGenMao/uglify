@@ -38,8 +38,6 @@ export const imgThumbnail = css`{
 
 export const imgThumbnailWrapper = css`{
   flex: none;
-  height: 94px;
-  width: 168px;
   position: relative;
 
   &:hover .durationStat {
