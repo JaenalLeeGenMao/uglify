@@ -24,6 +24,11 @@ export const videoPlayer = css`{
   box-sizing: border-box;
   position: relative;
 
+  &.theoplayer-skin:hover .vjs-big-play-button,
+  &.theoplayer-skin .vjs-big-play-button:focus {
+    background: none;
+  }
+
   .theo-primary-color { 
     color: #DF0024 !important;
   }

@@ -21,14 +21,17 @@ class Theoplayer extends Component {
     playerBtnImg: PropTypes.string,
     className: PropTypes.string,
     noPause: PropTypes.bool,
-    handleOnVideoLoad: PropTypes.func,
     showAudioButton: PropTypes.bool,
     showReplayButton: PropTypes.bool,
+    handleOnVideoLoad: PropTypes.func,
     handleOnVideoPlaying: PropTypes.func,
     handleOnVideoEnded: PropTypes.func,
+    handleOnVideoPause: PropTypes.func,
+    handleOnVideoPlay: PropTypes.func,
     isMobile: PropTypes.bool,
     videoType: PropTypes.string,
-    poster: PropTypes.string
+    poster: PropTypes.string,
+    adsSource: PropTypes.string
   };
 
   static defaultProps = {
@@ -42,13 +45,16 @@ class Theoplayer extends Component {
     showBackBtn: true,
     playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
     noPause: false,
-    handleOnVideoLoad: () => { },
     showAudioButton: false,
     showReplayButton: false,
+    handleOnVideoLoad: () => { },
     handleOnVideoPlaying: () => { },
     handleOnVideoEnded: () => { },
+    handleOnVideoPause: () => { },
+    handleOnVideoPlay: () => { },
     videoType: 'application/x-mpegurl',
-    poster: ''
+    poster: '',
+    adsSource: null
   };
 
   handleGoBack = () => {
@@ -102,7 +108,7 @@ class Theoplayer extends Component {
   }
 
   configVideoPlayer = () => {
-    const { videoType, movieUrl, theoConfig } = this.props;
+    const { videoType, movieUrl, theoConfig, adsSource } = this.props;
     this.player.source = {
       sources: [
         {
@@ -110,7 +116,13 @@ class Theoplayer extends Component {
           type: videoType // sets type to HLS
         }
       ],
-      textTracks: theoConfig
+      // ads: [
+      //   {
+      //     sources: 'https://cdn-mxs-01.akamaized.net/Content/HLS/VOD/7711b7f2-bc2e-4730-9038-595c18eb2279/c0de6451-cd85-84e0-fcd7-ea805ff7a6f2/index.m3u8?hdnts=st=1544005334~exp=1544008934~acl=/*~hmac=7ae75d09ea7f0c322fcf4bf4de2175f930acc15c468bccc12de57140708f1737',
+      //   }
+      // ],
+      textTracks: theoConfig,
+      // preload: 'auto'
     };
   }
 
@@ -123,8 +135,15 @@ class Theoplayer extends Component {
     } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
-    this.player.poster = poster;
-    if (autoPlay) {
+
+    if (poster) {
+      this.player.poster = poster;
+      this.player.autoplay = false;
+    }
+
+    if (!poster && autoPlay) {
+      //if poster is set
+      //video must not be autoplay
       if (allowMutedAutoplay) {
         this.player.muted = true;
         this.player.loop = false;
@@ -133,9 +152,15 @@ class Theoplayer extends Component {
     }
     const that = this;
     this.player.addEventListener('pause', function () {
+      if (handleOnVideoPause) {
+        handleOnVideoPause(true, that.player);
+      }
     });
 
     this.player.addEventListener('play', function () {
+      if (handleOnVideoPlay) {
+        handleOnVideoPlay(true, that.player);
+      }
     })
 
     this.player.addEventListener('ended', function () {
@@ -144,6 +169,9 @@ class Theoplayer extends Component {
       }
       if (handleOnVideoEnded) {
         handleOnVideoEnded(true, that.player);
+      }
+      if (handleOnVideoPlay) {
+        handleOnVideoPlay(false, that.player);
       }
     });
 
@@ -154,19 +182,6 @@ class Theoplayer extends Component {
       }
     });
   }
-
-  // componentDidUpdate() {
-  //   const { isMobile } = this.props;
-  //   if (isMobile) {
-  //     const screen = window.screen;
-  //     screen.lockOrientationUniversal = (mode) =>
-  //       screen.orientation && screen.orientation.lock(mode)
-  //         .then(() => { }, err => { })
-  //       || screen.mozLockOrientation && screen.mozLockOrientation(mode)
-  //       || screen.msLockOrientation && screen.msLockOrientation(mode);
-  //     screen.lockOrientationUniversal('landscape');
-  //   }
-  // }
 
   loadFullscreenEvent = () => {
     ['', 'webkit', 'moz', 'ms'].forEach(prefix =>
@@ -242,9 +257,8 @@ class Theoplayer extends Component {
 
   render() {
     const { toggleArrow } = this.state;
-    const { className, showBackBtn } = this.props;
+    const { className, showBackBtn, children } = this.props;
     return (
-
       <div
         className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
         onMouseEnter={this.getToggleArrow}
@@ -258,6 +272,7 @@ class Theoplayer extends Component {
             <span className={arrowIcon} />
           </Arrow>
         )}
+        {children}
       </div>
     );
   }

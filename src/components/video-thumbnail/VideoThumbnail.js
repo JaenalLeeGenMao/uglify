@@ -19,7 +19,7 @@ import {
 
 /* PROPS:
  * children, className, thumbnailUrl
- * thumbnailPosition (image position) = top, bottom, left, right (by default left)
+ * thumbnailPosition (image position) = top, bottom, left, right (by default left), wrap
  * duration (in second)
  */
 
