@@ -55,7 +55,6 @@ export const imgThumbnailWrapper = css`{
 }`;
 
 export const overlayDetail = css`{
-  background-color: #16161A;
   font-size: 1.3rem;
   font-weight: bold;
   line-height: 2.2rem;
@@ -185,12 +184,12 @@ export const wrapThumbnail = css`{
   }
 
   &:hover {
+    .durationStat {
+      display: none;
+    }
     .${overlayDetail} {
       opacity: 1;
       transition: .2s;
-    }
-    .${durationClass} {
-      display: none;
     }
     .${imgThumbnail} {
       background-color:#000;
