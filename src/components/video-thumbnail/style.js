@@ -1,7 +1,7 @@
 import { css } from 'react-emotion';
 
 export const wrapper = css`{
-  padding: 7px 0;
+  display: block;
   clear: both;
 }`;
 
@@ -34,8 +34,6 @@ export const imgThumbnail = css`{
   vertical-align: middle;
   cursor: pointer;
   flex: none;
-  height: 94px;
-  width: 168px;
 }`;
 
 export const imgThumbnailWrapper = css`{
