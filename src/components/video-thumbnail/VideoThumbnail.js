@@ -5,13 +5,16 @@ import {
   wrapper,
   imgThumbnail,
   wrapperThumbnail,
+  imgThumbnailWrapper,
   durationClass,
   detailWrapper,
   rightThumbnail,
   topThumbnail,
   bottomThumbnail,
   bottomDetail,
-  wrapThumbnail
+  wrapThumbnail,
+  overlayDetail,
+  playButton
 } from './style'
 
 /* PROPS:
@@ -56,7 +59,15 @@ class VideoThumbnail extends Component {
   }
 
   render() {
-    const { children, thumbnailPosition, duration, className, thumbnailUrl, thumbnailStyle, detailStyle } = this.props;
+    const {
+      children,
+      thumbnailPosition,
+      duration,
+      className,
+      thumbnailUrl,
+      thumbnailStyle,
+      imgWrapperClassName = '',
+      detailStyle } = this.props;
     let thumbnailPos = '';
     if (thumbnailPosition === 'right') {
       thumbnailPos = rightThumbnail;
@@ -69,26 +80,33 @@ class VideoThumbnail extends Component {
     }
 
     return (
-      <div onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
+      <a onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
         {thumbnailPosition === 'bottom' &&
-          <div className={`${detailWrapper} ${bottomDetail}`} style={detailStyle}>
+          <LazyLoad className={`${detailWrapper} ${bottomDetail}`} style={detailStyle}>
             {children}
-          </div>
+          </LazyLoad>
         }
-        <LazyLoad
-          src={thumbnailUrl}
-          className={`${imgThumbnail}`}
-          style={thumbnailStyle}
-          containerClassName={`${wrapperThumbnail} ${thumbnailPos}`}
-        >
-          {duration && <div className={durationClass}>{this.getDurationFormatted()}</div>}
+        <div className={`${wrapperThumbnail} ${thumbnailPos}`}>
+          <LazyLoad
+            src={thumbnailUrl}
+            className={`${imgThumbnail}`}
+            style={thumbnailStyle}
+            containerClassName={`${imgThumbnailWrapper} ${imgWrapperClassName}`}
+          // containerClassName={`${wrapperThumbnail} ${thumbnailPos}`}
+          >
+            {thumbnailPosition === 'wrap' && <div className={overlayDetail} > {children} </div>}
+            {duration && <div className={`${durationClass} durationStat`}>{this.getDurationFormatted()}</div>}
+            {thumbnailPosition !== 'wrap' &&
+              <div className={`${playButton} playIcon`} />
+            }
+          </LazyLoad>
           {thumbnailPosition !== 'bottom' &&
-            <div className={detailWrapper} style={detailStyle}>
+            <LazyLoad containerClassName={detailWrapper} style={detailStyle}>
               {children}
-            </div>
+            </LazyLoad>
           }
-        </LazyLoad>
-      </div>
+        </div>
+      </a>
     );
   }
 }
