@@ -41,7 +41,8 @@ export const imgThumbnailWrapper = css`{
   position: relative;
 
   &:hover .durationStat {
-    display: none;
+    opacity: 0;
+    transition: .2s;
   }
 
   &:hover .playIcon {
@@ -181,7 +182,8 @@ export const wrapThumbnail = css`{
 
   &:hover {
     .durationStat {
-      display: none;
+      opacity: 0;
+      transition: .2s;
     }
     .${overlayDetail} {
       opacity: 1;

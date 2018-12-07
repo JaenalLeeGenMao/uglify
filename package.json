@@ -1,6 +1,6 @@
 {
   "name": "@supersoccer/gandalf",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "shared-package",
   "main": "lib/index.js",
   "directories": {
@@ -36,7 +36,6 @@
     "normalize.css": "^8.0.0",
     "react": "^16.5.2",
     "react-emotion": "^9.2.12",
-    "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "react-redux-toastr": "^7.4.0",
     "redux": "^4.0.0"
