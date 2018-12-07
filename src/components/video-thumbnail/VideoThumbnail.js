@@ -92,7 +92,6 @@ class VideoThumbnail extends Component {
             className={`${imgThumbnail}`}
             style={thumbnailStyle}
             containerClassName={`${imgThumbnailWrapper} ${imgWrapperClassName}`}
-          // containerClassName={`${wrapperThumbnail} ${thumbnailPos}`}
           >
             {thumbnailPosition === 'wrap' && <div className={overlayDetail} > {children} </div>}
             {duration && <div className={`${durationClass} durationStat`}>{this.getDurationFormatted()}</div>}
