@@ -131,6 +131,8 @@ class Theoplayer extends Component {
       allowMutedAutoplay,
       handleOnVideoPlaying,
       handleOnVideoEnded,
+      handleOnVideoPause,
+      handleOnVideoPlay,
       poster
     } = this.props;
     this.player = this.initTheoPlayer();
