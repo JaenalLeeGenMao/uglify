@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import { theoScripts, theoStyle, theoLibraryLocation } from './config'
+import { theoScripts, theoStyle, theoLibraryLocation } from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
 
 class Theoplayer extends Component {
   state = {
-    toggleArrow: false,
+    toggleArrow: false
   };
 
   static propTypes = {
@@ -35,7 +35,7 @@ class Theoplayer extends Component {
   };
 
   static defaultProps = {
-    licenseKey: '',//theoplayer
+    licenseKey: '', //theoplayer
     autoPlay: true,
     isMobile: false,
     allowMutedAutoplay: true,
@@ -47,11 +47,11 @@ class Theoplayer extends Component {
     noPause: false,
     showAudioButton: false,
     showReplayButton: false,
-    handleOnVideoLoad: () => { },
-    handleOnVideoPlaying: () => { },
-    handleOnVideoEnded: () => { },
-    handleOnVideoPause: () => { },
-    handleOnVideoPlay: () => { },
+    handleOnVideoLoad: () => {},
+    handleOnVideoPlaying: () => {},
+    handleOnVideoEnded: () => {},
+    handleOnVideoPause: () => {},
+    handleOnVideoPlay: () => {},
     videoType: 'application/x-mpegurl',
     poster: '',
     adsSource: null
@@ -76,14 +76,14 @@ class Theoplayer extends Component {
 
   loadDynamicStyle = () => {
     let existingStyle = true;
-    theoStyle.map((dt) => {
+    theoStyle.map(dt => {
       const el = document.getElementById(dt.id);
       const elExist = el ? true : false;
       existingStyle = existingStyle && elExist;
     });
 
     if (!existingStyle) {
-      theoStyle.map((dt) => {
+      theoStyle.map(dt => {
         const head = document.getElementsByTagName('head')[0];
         const link = document.createElement('link');
         link.id = dt.id;
@@ -94,18 +94,21 @@ class Theoplayer extends Component {
         head.appendChild(link);
       });
     }
-  }
+  };
 
   initTheoPlayer = () => {
     const playerConfig = {
       libraryLocation: theoLibraryLocation,
       ui: {
-        fluid: true,
-      },
+        fluid: true
+      }
     };
-    this.theoPlayer = new window.THEOplayer.Player(this.containerPlayer, playerConfig);
+    this.theoPlayer = new window.THEOplayer.Player(
+      this.containerPlayer,
+      playerConfig
+    );
     return this.theoPlayer;
-  }
+  };
 
   configVideoPlayer = () => {
     const { videoType, movieUrl, theoConfig, adsSource } = this.props;
@@ -121,13 +124,14 @@ class Theoplayer extends Component {
       //     sources: 'https://cdn-mxs-01.akamaized.net/Content/HLS/VOD/7711b7f2-bc2e-4730-9038-595c18eb2279/c0de6451-cd85-84e0-fcd7-ea805ff7a6f2/index.m3u8?hdnts=st=1544005334~exp=1544008934~acl=/*~hmac=7ae75d09ea7f0c322fcf4bf4de2175f930acc15c468bccc12de57140708f1737',
       //   }
       // ],
-      textTracks: theoConfig,
+      textTracks: theoConfig
       // preload: 'auto'
     };
-  }
+  };
 
   loadTheoPlayer() {
-    const { autoPlay,
+    const {
+      autoPlay,
       allowMutedAutoplay,
       handleOnVideoPlaying,
       handleOnVideoEnded,
@@ -153,19 +157,19 @@ class Theoplayer extends Component {
       this.player.play();
     }
     const that = this;
-    this.player.addEventListener('pause', function () {
+    this.player.addEventListener('pause', function() {
       if (handleOnVideoPause) {
         handleOnVideoPause(true, that.player);
       }
     });
 
-    this.player.addEventListener('play', function () {
+    this.player.addEventListener('play', function() {
       if (handleOnVideoPlay) {
         handleOnVideoPlay(true, that.player);
       }
-    })
+    });
 
-    this.player.addEventListener('ended', function () {
+    this.player.addEventListener('ended', function() {
       if (handleOnVideoPlaying) {
         handleOnVideoPlaying(false, that.player);
       }
@@ -177,7 +181,7 @@ class Theoplayer extends Component {
       }
     });
 
-    this.player.addEventListener('playing', function () {
+    this.player.addEventListener('playing', function() {
       // console.log("Width:", that.player.videoWidth,  that.player.videoHeight)
       if (handleOnVideoPlaying) {
         handleOnVideoPlaying(true, that.player);
@@ -214,7 +218,7 @@ class Theoplayer extends Component {
 
   loadDynamicScript = () => {
     let existingScript = true;
-    theoScripts.map((dt) => {
+    theoScripts.map(dt => {
       const el = document.getElementById(dt.id);
       const elExist = el ? true : false;
       existingScript = existingScript && elExist;
@@ -223,7 +227,7 @@ class Theoplayer extends Component {
     if (!existingScript) {
       const scriptCount = theoScripts.length;
       let loadedScriptCount = 0;
-      theoScripts.map((dt) => {
+      theoScripts.map(dt => {
         const script = document.createElement('script');
         script.src = dt.src;
         script.id = dt.id;
@@ -236,24 +240,18 @@ class Theoplayer extends Component {
               this.props.handleOnVideoLoad(this.player);
             }
           }
-
         };
-      })
+      });
     } else {
       this.loadTheoPlayer();
     }
     return false;
   };
 
-
-  componentDidMount() {
-    this.loadDynamicStyle();
-    this.loadDynamicScript();
-  }
-
   componentWillUnmount() {
     if (this.player) {
       this.player.destroy();
+      window.screen.orientation.unlock();
     }
   }
 
@@ -265,7 +263,7 @@ class Theoplayer extends Component {
         className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
         onMouseEnter={this.getToggleArrow}
         onMouseLeave={this.getToggleArrow}
-        ref={(el) => {
+        ref={el => {
           this.containerPlayer = el;
         }}
       >

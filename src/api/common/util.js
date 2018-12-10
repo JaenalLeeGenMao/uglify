@@ -1,3 +1,6 @@
+import _get from 'lodash/get';
+import _sample from 'lodash/sample';
+
 const normalizeHomePlaylist = response => {
   const { data } = response.data;
   if (data && data.length > 0) {
@@ -15,7 +18,12 @@ const normalizeHomePlaylist = response => {
               iconUrl,
               isDark,
               images: {
-                cover: { title: coverTitle, background: coverBG, backgroundColor: coverBGColor }
+                cover: {
+                  // title: coverTitle,
+                  background,
+                  details,
+                  backgroundColor: coverBGColor
+                }
               }
             }
           } = playlist;
@@ -26,9 +34,10 @@ const normalizeHomePlaylist = response => {
             description,
             shortDescription: shortDescription || '',
             iconUrl: iconUrl || '',
-            coverTitle: coverTitle,
-            background: coverBG,
+            // coverTitle: coverTitle,
+            background,
             backgroundColor: coverBGColor || '#000622',
+            details,
             isDark: isDark || 0,
             isActive: false,
             type
@@ -47,29 +56,47 @@ const normalizeHomeVideo = response => {
       videos
         .map(video => {
           const {
-            id,
-            type,
-            attributes: {
-              title,
-              description,
-              shortDescription,
-              displayOrder,
-              isDark,
-              images: {
-                cover: { title: coverTitle, background: coverBG, backgroundColor: coverBGColor }
+              id,
+              type,
+              attributes: {
+                title,
+                description,
+                shortDescription,
+                displayOrder,
+                isDark,
+                images: {
+                  cover: {
+                    // title: coverTitle,
+                    details,
+                    background,
+                    backgroundColor: coverBGColor
+                  }
+                },
+                quotes: quoteLists
               }
-            }
-          } = video;
+            } = video,
+            dummyQuote = {
+              attributes: {
+                author: 'Comming Soon',
+                imageUrl: '',
+                role: 'Media',
+                text: title
+              },
+              id: 1,
+              type: 'quotes'
+            };
           return {
             id,
             title,
             displayOrder,
             description,
             shortDescription: shortDescription || '',
-            coverTitle: coverTitle,
-            background: coverBG,
+            // coverTitle: coverTitle,
+            background,
             backgroundColor: coverBGColor || '#000622',
+            details,
             isDark: isDark || 0,
+            quotes: quoteLists.length > 0 ? quoteLists[0] : dummyQuote,
             type
           };
         })
@@ -187,26 +214,32 @@ const normalizeVideoDetail = response => {
         id,
         attributes: {
           title,
-          playlists,
           images,
           quotes,
           trailers,
-          shortDescription,
+          description,
+          source,
+          streamSourceUrl,
+          subtitles,
           people,
           isDark,
-          year
+          year,
+          duration
         }
       } = result;
       return {
         id,
         title,
-        playlists,
         quotes,
         trailers,
-        shortDescription,
+        description,
+        source,
+        streamSourceUrl,
+        subtitles,
         people,
         isDark,
         year,
+        duration,
         images
       };
     });
@@ -224,14 +257,58 @@ const normalizeMovieLibrary = response => {
   if (data && data.length > 0) {
     return data.map(({ attributes: { videos, title: genreTitle } }) =>
       videos.map(({ id, attributes }) => {
-        const { title, thumbnail, coverUrl } = attributes;
+        const { title } = attributes;
+        const random = () => {
+          return (
+            Math.floor(Math.random() * (Math.floor(1) - Math.ceil(0) + 1)) +
+            Math.ceil(0)
+          );
+        };
+
+        const thumbnail = _get(
+          attributes,
+          'images.cover.library.desktop.portrait',
+          ''
+        );
+
         return {
           genreTitle,
           id,
           title,
-          thumbnail: thumbnail || coverUrl
+          thumbnail
         };
       })
+    );
+  }
+  return {
+    meta: {
+      status: 'no_result'
+    },
+    data: []
+  };
+};
+
+const normalizeMovieLibraryList = response => {
+  const { data } = response.data;
+  if (data && data.length > 0) {
+    return data.map(
+      ({
+        id,
+        type,
+        attributes: {
+          title: genreTitle,
+          description: videoDesc,
+          images: videoImg
+        }
+      }) => {
+        return {
+          id,
+          type,
+          genreTitle,
+          videoDesc,
+          thumbnail: videoImg.cover.library.desktop.portrait
+        };
+      }
     );
   }
   return {
@@ -246,7 +323,10 @@ const normalizeVideoStream = response => {
   const { data } = response.data;
   if (data && data.length > 0) {
     return data.map(result => {
-      const { id, attributes: { streamSourceUrl, subtitles } } = result;
+      const {
+        id,
+        attributes: { streamSourceUrl, subtitles }
+      } = result;
       return {
         id,
         streamSourceUrl,
@@ -266,5 +346,6 @@ export default {
   normalizeRecentSearch,
   normalizeVideoDetail,
   normalizeMovieLibrary,
+  normalizeMovieLibraryList,
   normalizeVideoStream
 };

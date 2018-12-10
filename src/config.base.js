@@ -8,12 +8,12 @@
  * all config.api.serverUrl and config.endpoints.serverUrl
  */
 
- /**
-  * Installing key dependencies
-  * yarn add --dev svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
-  *
-  * yarn remove svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
-  */
+/**
+ * Installing key dependencies
+ * yarn add --dev svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
+ *
+ * yarn remove svg-url-loader url-loader file-loader raw-loader file-loader babel-loader @babel/preset-env @babel/preset-flow @babel/preset-react @babel/plugin-transform-react-constant-elements @babel/plugin-transform-react-inline-elements babel-plugin-transform-react-remove-prop-types @babel/plugin-proposal-decorators @babel/plugin-proposal-function-sent @babel/plugin-proposal-export-namespace-from @babel/plugin-proposal-numeric-separator @babel/plugin-proposal-throw-expressions @babel/plugin-syntax-dynamic-import @babel/plugin-syntax-import-meta @babel/plugin-proposal-class-properties @babel/plugin-proposal-json-strings isomorphic-style-loader css-loader postcss-loader null-loader
+ */
 /*
  * const baseConfig = require('gandalf').config;
  *
@@ -66,7 +66,7 @@
  * var mainConfig = baseConfig.default[process.node.NODE_ENV || "development"];
  */
 
-const Config = module.exports = {
+const Config = (module.exports = {
   default: {
     development: {
       port: 3000,
@@ -86,10 +86,10 @@ const Config = module.exports = {
       port: 3000,
       endpoints: {
         clientUrl: '',
-        serverUrl: 'https://staging.mola.tv',
-        api: 'https://staging.mola.tv/api/v2',
-        auth: 'http://staging.mola.tv/accounts/_',
-        domain: 'https://staging.mola.tv',
+        serverUrl: 'https://stag.mola.tv',
+        api: 'https://stag.mola.tv/api/v2',
+        auth: 'https://stag.mola.tv/accounts/_',
+        domain: 'https://stag.mola.tv',
         setting: {
           timeout: 10000,
           maxRedirects: 1
@@ -111,9 +111,9 @@ const Config = module.exports = {
       }
     }
   },
-  updateConfig: (Obj) => {
+  updateConfig: Obj => {
     Object.keys(Obj).forEach(key => {
-      Config.default[key] = { ...Config.default[key], ...Obj[key] }
+      Config.default[key] = { ...Config.default[key], ...Obj[key] };
     });
   }
-};
+});
