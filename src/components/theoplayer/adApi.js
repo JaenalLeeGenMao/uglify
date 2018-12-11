@@ -12,7 +12,8 @@ class AdBanner {
         ipaTimeOffset = 0,
         araRefreshTime = 60,
         araResume = true,
-        araEnabled = false }) {
+        araEnabled = false,
+        resizeBannerAndCBarEnabled = true }) {
 
         // constructor props
         this.player = player;
@@ -28,6 +29,7 @@ class AdBanner {
         this.ipaNoAdsTime = typeof ipaNoAdsTime === 'number' ? ipaNoAdsTime : this.hmsToSecondsOnly(ipaNoAdsTime) || 30;
         this.araRefreshTime = typeof araRefreshTime === 'number' ? araRefreshTime : this.hmsToSecondsOnly(araRefreshTime) || 60;
         this.araResume = araResume;
+        this.resizeBannerAndCBarEnabled = resizeBannerAndCBarEnabled;
 
         // IPA banner dimension
         this.BANNER_ASPECT_WIDTH = 377;
@@ -299,7 +301,10 @@ class AdBanner {
         const bannerContainer = wrapper.querySelector('.theoplayer-ad-nonlinear');
         const controlBar = wrapper.querySelector('.vjs-control-bar');
 
-        let dimensionChangeListener = this.resizeBannerAndControlBar.bind(this, playerContainer, wrapper, bannerContainer, controlBar);
+        let dimensionChangeListener;
+        if (this.resizeBannerAndCBarEnabled) {
+            this.resizeBannerAndControlBar.bind(this, playerContainer, wrapper, bannerContainer, controlBar);
+        }
         let presentationModeChangeListener = this.updateWrapperHeight.bind(this, wrapper);
 
         if (this.playerControls && this.playerControls.bannerContainer && this.visibility) {
@@ -313,7 +318,7 @@ class AdBanner {
                     playerContainer: playerContainer,
                     wrapper: wrapper,
                     controlBar: controlBar,
-                    // dimensionChangeListener: dimensionChangeListener,
+                    dimensionChangeListener: dimensionChangeListener,
                     presentationModeChangeListener: presentationModeChangeListener,
                     bannerContainer: bannerContainer
                 };
@@ -377,7 +382,9 @@ class AdBanner {
         controlBar.style.width = 'initial';
 
         this.updateWrapperHeight(wrapper);
-        this.resizeBannerAndControlBar(playerContainer, wrapper, bannerContainer, controlBar);
+        if (this.resizeBannerAndCBarEnabled) {
+            this.resizeBannerAndControlBar(playerContainer, wrapper, bannerContainer, controlBar);
+        }
     }
 
     updateBannerContainerSizeAndPosition(bannerContainer) {
@@ -424,7 +431,7 @@ class AdBanner {
             margin += 'px';
         }
 
-        // bannerContainer.style.right = bannerContainer.style.left = controlBar.style.right = controlBar.style.left = margin;
+        bannerContainer.style.right = bannerContainer.style.left = controlBar.style.right = controlBar.style.left = margin;
     }
 
     reAttachBannerContainerToWrapper(wrapper, bannerContainer) {

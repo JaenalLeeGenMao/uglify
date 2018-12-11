@@ -33,7 +33,8 @@ class Theoplayer extends Component {
     poster: PropTypes.string,
     adsSource: PropTypes.string,
     adsBannerUrl: PropTypes.string,
-    adsBannerOptions: PropTypes.object
+    adsBannerOptions: PropTypes.object,
+    resizeBannerAndCBarEnabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -58,7 +59,8 @@ class Theoplayer extends Component {
     poster: '',
     adsSource: null,
     adsBannerUrl: null,
-    adsBannerOptions: null
+    adsBannerOptions: null,
+    resizeBannerAndCBarEnabled: true
   };
 
   handleGoBack = () => {
@@ -156,7 +158,8 @@ class Theoplayer extends Component {
       handleOnVideoPlay,
       poster,
       adsBannerUrl,
-      adsBannerOptions
+      adsBannerOptions,
+      resizeBannerAndCBarEnabled
     } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
@@ -210,6 +213,7 @@ class Theoplayer extends Component {
       var AdBannerOptions = {
         player: this.player,
         ipaRequestUrl: adsBannerUrl,
+        resizeBannerAndCBarEnabled: resizeBannerAndCBarEnabled,
         ...adsBannerOptions
       }
       const Advert = new AdBanner(AdBannerOptions);
