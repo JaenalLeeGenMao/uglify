@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import history from '../../history';
 import { theoScripts, theoStyle, theoLibraryLocation } from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
-
+import AdBanner from './adApi'
 class Theoplayer extends Component {
   state = {
     toggleArrow: false
@@ -28,10 +28,14 @@ class Theoplayer extends Component {
     handleOnVideoEnded: PropTypes.func,
     handleOnVideoPause: PropTypes.func,
     handleOnVideoPlay: PropTypes.func,
+    handleVideoTimeUpdate: PropTypes.func,
     isMobile: PropTypes.bool,
     videoType: PropTypes.string,
     poster: PropTypes.string,
-    adsSource: PropTypes.string
+    adsSource: PropTypes.string,
+    adsBannerUrl: PropTypes.string,
+    adsBannerOptions: PropTypes.object,
+    resizeBannerAndCBarEnabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -47,14 +51,18 @@ class Theoplayer extends Component {
     noPause: false,
     showAudioButton: false,
     showReplayButton: false,
-    handleOnVideoLoad: () => {},
-    handleOnVideoPlaying: () => {},
-    handleOnVideoEnded: () => {},
-    handleOnVideoPause: () => {},
-    handleOnVideoPlay: () => {},
+    handleOnVideoLoad: () => { },
+    handleOnVideoPlaying: () => { },
+    handleOnVideoEnded: () => { },
+    handleOnVideoPause: () => { },
+    handleOnVideoPlay: () => { },
+    handleVideoTimeUpdate: () => { },
     videoType: 'application/x-mpegurl',
     poster: '',
-    adsSource: null
+    adsSource: null,
+    adsBannerUrl: null,
+    adsBannerOptions: null,
+    resizeBannerAndCBarEnabled: true
   };
 
   handleGoBack = () => {
@@ -112,22 +120,35 @@ class Theoplayer extends Component {
 
   configVideoPlayer = () => {
     const { videoType, movieUrl, theoConfig, adsSource } = this.props;
-    this.player.source = {
-      sources: [
-        {
-          src: movieUrl,
-          type: videoType // sets type to HLS
-        }
-      ],
-      // ads: [
-      //   {
-      //     sources: 'https://cdn-mxs-01.akamaized.net/Content/HLS/VOD/7711b7f2-bc2e-4730-9038-595c18eb2279/c0de6451-cd85-84e0-fcd7-ea805ff7a6f2/index.m3u8?hdnts=st=1544005334~exp=1544008934~acl=/*~hmac=7ae75d09ea7f0c322fcf4bf4de2175f930acc15c468bccc12de57140708f1737',
-      //   }
-      // ],
-      textTracks: theoConfig
-      // preload: 'auto'
-    };
-  };
+    if (adsSource) {
+      this.player.source = {
+        sources: [
+          {
+            src: movieUrl,
+            type: videoType // sets type to HLS
+          }
+        ],
+        ads: [
+          {
+            sources: adsSource,
+          }
+        ],
+        textTracks: theoConfig,
+        preload: 'auto'
+      };
+    }
+    else {
+      this.player.source = {
+        sources: [
+          {
+            src: movieUrl,
+            type: videoType // sets type to HLS
+          }
+        ],
+        textTracks: theoConfig,
+      };
+    }
+  }
 
   loadTheoPlayer() {
     const {
@@ -137,7 +158,10 @@ class Theoplayer extends Component {
       handleOnVideoEnded,
       handleOnVideoPause,
       handleOnVideoPlay,
-      poster
+      poster,
+      adsBannerUrl,
+      adsBannerOptions,
+      resizeBannerAndCBarEnabled
     } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
@@ -157,19 +181,19 @@ class Theoplayer extends Component {
       this.player.play();
     }
     const that = this;
-    this.player.addEventListener('pause', function() {
+    this.player.addEventListener('pause', function () {
       if (handleOnVideoPause) {
         handleOnVideoPause(true, that.player);
       }
     });
 
-    this.player.addEventListener('play', function() {
+    this.player.addEventListener('play', function () {
       if (handleOnVideoPlay) {
         handleOnVideoPlay(true, that.player);
       }
     });
 
-    this.player.addEventListener('ended', function() {
+    this.player.addEventListener('ended', function () {
       if (handleOnVideoPlaying) {
         handleOnVideoPlaying(false, that.player);
       }
@@ -181,12 +205,30 @@ class Theoplayer extends Component {
       }
     });
 
-    this.player.addEventListener('playing', function() {
-      // console.log("Width:", that.player.videoWidth,  that.player.videoHeight)
+    this.player.addEventListener('playing', function () {
       if (handleOnVideoPlaying) {
         handleOnVideoPlaying(true, that.player);
       }
     });
+
+    this.player.addEventListener('timeupdate', function () {
+      if (handleVideoTimeUpdate) {
+        handleVideoTimeUpdate(this.currentTime, that.player);
+      }
+    });
+
+
+    if (adsBannerUrl) {
+      var AdBannerOptions = {
+        player: this.player,
+        ipaRequestUrl: adsBannerUrl,
+        resizeBannerAndCBarEnabled: resizeBannerAndCBarEnabled,
+        ...adsBannerOptions
+      }
+      const Advert = new AdBanner(AdBannerOptions);
+      Advert.init();
+    }
+
   }
 
   loadFullscreenEvent = () => {

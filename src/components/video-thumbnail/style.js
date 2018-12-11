@@ -85,6 +85,7 @@ export const detailWrapper = css`{
   cursor: pointer;
   flex: 1;
   flex-basis: 0.000000001px;
+  align-self: center;
 }`;
 
 export const rightThumbnail = css`{
