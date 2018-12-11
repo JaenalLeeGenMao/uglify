@@ -28,6 +28,7 @@ class Theoplayer extends Component {
     handleOnVideoEnded: PropTypes.func,
     handleOnVideoPause: PropTypes.func,
     handleOnVideoPlay: PropTypes.func,
+    handleVideoTimeUpdate: PropTypes.func,
     isMobile: PropTypes.bool,
     videoType: PropTypes.string,
     poster: PropTypes.string,
@@ -55,6 +56,7 @@ class Theoplayer extends Component {
     handleOnVideoEnded: () => { },
     handleOnVideoPause: () => { },
     handleOnVideoPlay: () => { },
+    handleVideoTimeUpdate: () => { },
     videoType: 'application/x-mpegurl',
     poster: '',
     adsSource: null,
@@ -208,6 +210,13 @@ class Theoplayer extends Component {
         handleOnVideoPlaying(true, that.player);
       }
     });
+
+    this.player.addEventListener('timeupdate', function () {
+      if (handleVideoTimeUpdate) {
+        handleVideoTimeUpdate(this.currentTime, that.player);
+      }
+    });
+
 
     if (adsBannerUrl) {
       var AdBannerOptions = {
