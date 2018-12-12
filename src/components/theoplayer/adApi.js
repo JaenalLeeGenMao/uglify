@@ -131,7 +131,7 @@ class AdBanner {
             xhttp.onreadystatechange = function () {
                 if (xhttp.readyState === 4 && xhttp.status === 200) {
                     const response = JSON.parse(xhttp.responseText);
-                    const ads = response.data; //ini jadi response.data.data
+                    const ads = response.data.data;
                     let imgURL, clickthroughURL, id;
 
                     if (ads.length <= 0) {
