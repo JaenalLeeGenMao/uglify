@@ -67,7 +67,6 @@ class AdBanner {
         // global binded functions used in even listeners
         this.sheduleAfterFirstStreamLoad = function () {
             // method thats fires up the shedule after first play after the class instance was created
-
             if (!this.streamListener) {
                 this.streamListener = true;
                 this.ipaRequest();

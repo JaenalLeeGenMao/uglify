@@ -176,6 +176,7 @@ class Theoplayer extends Component {
       }
       this.player.play();
     }
+
     const that = this;
     this.player.addEventListener('pause', function () {
       if (handleOnVideoPause) {
@@ -213,18 +214,40 @@ class Theoplayer extends Component {
       }
     });
 
+    // the first banner ad is scheduled upon the first playing event
+    this.player.addEventListener('sourcechange', function () {
+      that.player.removeEventListener('playing', that.firstplay);
+      that.player.addEventListener('playing', that.firstplay);
+    });
+  }
 
-    if (adsBannerUrl) {
-      var AdBannerOptions = {
-        player: this.player,
-        ipaRequestUrl: adsBannerUrl,
-        resizeBannerAndCBarEnabled: resizeBannerAndCBarEnabled,
-        ...adsBannerOptions
+  firstplay = () => {
+    const {
+      adsBannerUrl,
+      adsBannerOptions,
+      resizeBannerAndCBarEnabled
+    } = this.props;
+
+    if (!this.player.ads.playing) { // check that we're not trying to schedule the banner during a preroll
+      this.player.removeEventListener('playing', this.firstplay);
+      if (adsBannerUrl) {
+        var AdBannerOptions = {
+          player: this.player,
+          ipaRequestUrl: adsBannerUrl,
+          resizeBannerAndCBarEnabled: resizeBannerAndCBarEnabled,
+          ...adsBannerOptions
+        }
+        const Advert = new AdBanner(AdBannerOptions);
+        Advert.init();
       }
-      const Advert = new AdBanner(AdBannerOptions);
-      Advert.init();
+      /*
+      the first param (player) is the THEOplayer instance,
+      the second param (adURL) is the requestURL,
+      the third param (0) is the skipOffset, (if you set it to 5, you can close the ad after 5 seconds),
+      the fourth param (0) is the timeOffset, (if you set it to 5, the banner appears after 5 seconds)
+      */
+      //showBannerAdBelowPlayer(player, adURL, 0, 0);
     }
-
   }
 
   loadFullscreenEvent = () => {
@@ -251,7 +274,7 @@ class Theoplayer extends Component {
   componentDidMount() {
     this.loadDynamicStyle();
     this.loadDynamicScript();
-    this.loadFullscreenEvent();
+    // this.loadFullscreenEvent();
   }
 
   loadDynamicScript = () => {
