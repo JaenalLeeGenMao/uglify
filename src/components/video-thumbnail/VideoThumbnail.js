@@ -52,9 +52,7 @@ class VideoThumbnail extends Component {
     }
 
     return `
-      ${hour > 0 ? ('0' + hour).slice(-2) + ':' : ''}
-      ${min > 0 ? ('0' + min).slice(-2) + ':' : ''}
-      ${sec > 0 ? ('0' + sec).slice(-2) : '00'}
+    ${hour > 0 ? ('0' + hour).slice(-2) + ':' : ''}${min > 0 ? ('0' + min).slice(-2) + ':' : ''}${sec > 0 ? ('0' + sec).slice(-2) : '00'}
     `;
   }
 
@@ -78,11 +76,10 @@ class VideoThumbnail extends Component {
     } else if (thumbnailPosition === 'wrap') {
       thumbnailPos = wrapThumbnail;
     }
-
     return (
       <a onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
         {thumbnailPosition === 'bottom' &&
-          <LazyLoad className={`${detailWrapper} ${bottomDetail}`} style={detailStyle}>
+          <LazyLoad className={`${detailWrapper} ${bottomDetail}`} containerStyle={detailStyle}>
             {children}
           </LazyLoad>
         }
@@ -100,7 +97,7 @@ class VideoThumbnail extends Component {
             }
           </LazyLoad>
           {thumbnailPosition !== 'bottom' &&
-            <LazyLoad containerClassName={detailWrapper} style={detailStyle}>
+            <LazyLoad containerClassName={detailWrapper} containerStyle={detailStyle}>
               {children}
             </LazyLoad>
           }
