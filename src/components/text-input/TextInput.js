@@ -24,7 +24,6 @@ class TextInput extends React.Component {
     this.setState({
       [target]: !this.state[target]
     })
-    // console.log("target", target, this.state.visible)
     this.toggleVisible(this.state.visible)
   }
 

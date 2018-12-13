@@ -274,7 +274,7 @@ class Theoplayer extends Component {
   componentDidMount() {
     this.loadDynamicStyle();
     this.loadDynamicScript();
-    // this.loadFullscreenEvent();
+    this.loadFullscreenEvent();
   }
 
   loadDynamicScript = () => {
