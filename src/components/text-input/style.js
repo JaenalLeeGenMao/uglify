@@ -2,7 +2,6 @@ import styled, { css } from 'react-emotion'
 
 export const Label = styled('label')`{
   color: #6f6f6f;
-  background-color: #F5F5F5;
   font-weight: lighter;
   position: absolute;
   bottom: 5px;
