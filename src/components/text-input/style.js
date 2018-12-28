@@ -37,11 +37,9 @@ export const underline = css`{
   }
 }`;
 
-
 export const hasValue = css`{
   & ~ label {
     transform: scale(0.75) translateY(-35px);
-    color: #25A2E4;
   }
 }`;
 
@@ -107,4 +105,29 @@ export const passwordVisible = css`{
   width: 20px;
   height: 20px;
   display: block;
+}`;
+
+export const errorClass = css`{
+  .${mdClass} {
+    border-bottom-color: #D80000;
+
+    &:focus ~ label {
+      color: #D80000;
+    }
+  }
+
+  label {
+    color: #D80000;
+  }
+
+  .${boxClass} {
+    border: 1px solid #D80000;
+  }
+
+  .${underline} {
+    &::before,
+    &::after {
+      background: #D80000;
+    }
+  }
 }`;
