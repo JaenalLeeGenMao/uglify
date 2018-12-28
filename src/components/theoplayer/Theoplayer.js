@@ -35,7 +35,8 @@ class Theoplayer extends Component {
     adsSource: PropTypes.string,
     adsBannerUrl: PropTypes.string,
     adsBannerOptions: PropTypes.object,
-    resizeBannerAndCBarEnabled: PropTypes.bool
+    resizeBannerAndCBarEnabled: PropTypes.bool,
+    skipVideoAdsOffset: PropTypes.number,
   };
 
   static defaultProps = {
@@ -57,7 +58,8 @@ class Theoplayer extends Component {
     adsSource: null,
     adsBannerUrl: null,
     adsBannerOptions: null,
-    resizeBannerAndCBarEnabled: true
+    resizeBannerAndCBarEnabled: true,
+    skipVideoAdsOffset: null
   };
 
   handleGoBack = () => {
@@ -114,7 +116,7 @@ class Theoplayer extends Component {
   };
 
   configVideoPlayer = () => {
-    const { videoType, movieUrl, theoConfig, adsSource } = this.props;
+    const { videoType, movieUrl, theoConfig, adsSource, skipVideoAdsOffset } = this.props;
     if (adsSource) {
       this.player.source = {
         sources: [
@@ -126,6 +128,7 @@ class Theoplayer extends Component {
         ads: [
           {
             sources: adsSource,
+            skipOffset: skipVideoAdsOffset
           }
         ],
         textTracks: theoConfig,
@@ -149,15 +152,7 @@ class Theoplayer extends Component {
     const {
       autoPlay,
       allowMutedAutoplay,
-      handleOnVideoPlaying,
-      handleOnVideoEnded,
-      handleOnVideoPause,
-      handleOnVideoPlay,
-      handleVideoTimeUpdate,
-      poster,
-      adsBannerUrl,
-      adsBannerOptions,
-      resizeBannerAndCBarEnabled
+      poster
     } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
@@ -178,47 +173,57 @@ class Theoplayer extends Component {
     }
 
     const that = this;
-    this.player.addEventListener('pause', function () {
-      if (handleOnVideoPause) {
-        handleOnVideoPause(true, that.player);
-      }
-    });
+    this.player.addEventListener('pause', this.handleVideoPause);
+    this.player.addEventListener('play', this.handleVideoPlay);
+    this.player.addEventListener('ended', this.handleVideoEnded);
 
-    this.player.addEventListener('play', function () {
-      if (handleOnVideoPlay) {
-        handleOnVideoPlay(true, that.player);
-      }
-    });
+    this.player.addEventListener('playing', this.handleVideoPlaying);
 
-    this.player.addEventListener('ended', function () {
-      if (handleOnVideoPlaying) {
-        handleOnVideoPlaying(false, that.player);
-      }
-      if (handleOnVideoEnded) {
-        handleOnVideoEnded(true, that.player);
-      }
-      if (handleOnVideoPlay) {
-        handleOnVideoPlay(false, that.player);
-      }
-    });
-
-    this.player.addEventListener('playing', function () {
-      if (handleOnVideoPlaying) {
-        handleOnVideoPlaying(true, that.player);
-      }
-    });
-
-    this.player.addEventListener('timeupdate', function () {
-      if (handleVideoTimeUpdate) {
-        handleVideoTimeUpdate(this.currentTime, that.player);
-      }
-    });
+    this.player.addEventListener('timeupdate', this.handleVideoTimeUpd);
 
     // the first banner ad is scheduled upon the first playing event
-    this.player.addEventListener('sourcechange', function () {
-      that.player.removeEventListener('playing', that.firstplay);
-      that.player.addEventListener('playing', that.firstplay);
-    });
+    this.player.addEventListener('sourcechange', this.handleVideoSrcChange);
+  }
+
+  handleVideoPause = () => {
+    if (this.props.handleOnVideoPause) {
+      this.props.handleOnVideoPause(true, this.player);
+    }
+  }
+
+  handleVideoPlay = () => {
+    if (this.props.handleOnVideoPlay) {
+      this.props.handleOnVideoPlay(true, this.player);
+    }
+  }
+
+  handleVideoEnded = () => {
+    if (this.props.handleOnVideoPlaying) {
+      this.props.handleOnVideoPlaying(false, this.player);
+    }
+    if (this.props.handleOnVideoEnded) {
+      this.props.handleOnVideoEnded(true, this.player);
+    }
+    if (this.props.handleOnVideoPlay) {
+      this.props.handleOnVideoPlay(false, this.player);
+    }
+  }
+
+  handleVideoPlaying = () => {
+    if (this.props.handleOnVideoPlaying) {
+      this.props.handleOnVideoPlaying(true, this.player);
+    }
+  }
+
+  handleVideoTimeUpd = () => {
+    if (this.props.handleVideoTimeUpdate) {
+      this.props.handleVideoTimeUpdate(this.currentTime, this.player);
+    }
+  }
+
+  handleVideoSrcChange = () => {
+    this.player.removeEventListener('playing', this.firstplay);
+    this.player.addEventListener('playing', this.firstplay);
   }
 
   firstplay = () => {
@@ -314,6 +319,14 @@ class Theoplayer extends Component {
       this.player.destroy();
       window.screen.orientation.unlock();
     }
+
+    this.player.removeEventListener('pause', this.handleVideoPause);
+    this.player.removeEventListener('play', this.handleVideoPlay);
+    this.player.removeEventListener('ended', this.handleVideoEnded);
+    this.player.removeEventListener('playing', this.handleVideoPlaying);
+    this.player.removeEventListener('timeupdate', this.handleVideoTimeUpd);
+    this.player.removeEventListener('sourcechange', this.handleVideoSrcChange);
+
   }
 
   render() {
