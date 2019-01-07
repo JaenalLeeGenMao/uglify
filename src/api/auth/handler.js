@@ -20,7 +20,7 @@ const createNewUser = ({ email = '', password = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -46,7 +46,7 @@ const verifyUserToken = ({ token = '', email = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -72,7 +72,7 @@ const resendUserToken = ({ email = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -98,7 +98,7 @@ const requestLogin = ({ email = '', password = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -124,7 +124,7 @@ const requestLogout = ({ uid = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -150,7 +150,7 @@ const emailForgotPassword = ({ email = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -181,7 +181,7 @@ const verifyPasswordToken = ({
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -207,7 +207,7 @@ const verifyPassword = ({ csrf = '', password = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -233,7 +233,7 @@ const updateNewPassword = ({ password = '', csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -258,7 +258,7 @@ const featchProfile = ({ csrf = '' }) => {
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
@@ -291,7 +291,7 @@ const updateProfile = ({
       return {
         meta: {
           status: 'error',
-          error
+          error: error.response.data
         },
         data: {}
       };
