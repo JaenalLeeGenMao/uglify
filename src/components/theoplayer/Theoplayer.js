@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import history from '../../history';
 import { theoScripts, theoStyle, theoLibraryLocation } from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
-import AdBanner from './adApi'
+import AdBanner from './adApi';
 class Theoplayer extends Component {
   state = {
     toggleArrow: false
@@ -36,7 +36,7 @@ class Theoplayer extends Component {
     adsBannerUrl: PropTypes.string,
     adsBannerOptions: PropTypes.object,
     resizeBannerAndCBarEnabled: PropTypes.bool,
-    skipVideoAdsOffset: PropTypes.number,
+    skipVideoAdsOffset: PropTypes.number
   };
 
   static defaultProps = {
@@ -116,7 +116,13 @@ class Theoplayer extends Component {
   };
 
   configVideoPlayer = () => {
-    const { videoType, movieUrl, theoConfig, adsSource, skipVideoAdsOffset } = this.props;
+    const {
+      videoType,
+      movieUrl,
+      theoConfig,
+      adsSource,
+      skipVideoAdsOffset
+    } = this.props;
     if (adsSource) {
       this.player.source = {
         sources: [
@@ -134,8 +140,7 @@ class Theoplayer extends Component {
         textTracks: theoConfig,
         preload: 'auto'
       };
-    }
-    else {
+    } else {
       this.player.source = {
         sources: [
           {
@@ -143,17 +148,13 @@ class Theoplayer extends Component {
             type: videoType // sets type to HLS
           }
         ],
-        textTracks: theoConfig,
+        textTracks: theoConfig
       };
     }
-  }
+  };
 
   loadTheoPlayer() {
-    const {
-      autoPlay,
-      allowMutedAutoplay,
-      poster
-    } = this.props;
+    const { autoPlay, allowMutedAutoplay, poster } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
 
@@ -189,13 +190,13 @@ class Theoplayer extends Component {
     if (this.props.handleOnVideoPause) {
       this.props.handleOnVideoPause(true, this.player);
     }
-  }
+  };
 
   handleVideoPlay = () => {
     if (this.props.handleOnVideoPlay) {
       this.props.handleOnVideoPlay(true, this.player);
     }
-  }
+  };
 
   handleVideoEnded = () => {
     if (this.props.handleOnVideoPlaying) {
@@ -207,24 +208,24 @@ class Theoplayer extends Component {
     if (this.props.handleOnVideoPlay) {
       this.props.handleOnVideoPlay(false, this.player);
     }
-  }
+  };
 
   handleVideoPlaying = () => {
     if (this.props.handleOnVideoPlaying) {
       this.props.handleOnVideoPlaying(true, this.player);
     }
-  }
+  };
 
   handleVideoTimeUpd = () => {
     if (this.props.handleVideoTimeUpdate) {
       this.props.handleVideoTimeUpdate(this.currentTime, this.player);
     }
-  }
+  };
 
   handleVideoSrcChange = () => {
     this.player.removeEventListener('playing', this.firstplay);
     this.player.addEventListener('playing', this.firstplay);
-  }
+  };
 
   firstplay = () => {
     const {
@@ -233,7 +234,8 @@ class Theoplayer extends Component {
       resizeBannerAndCBarEnabled
     } = this.props;
 
-    if (!this.player.ads.playing) { // check that we're not trying to schedule the banner during a preroll
+    if (!this.player.ads.playing) {
+      // check that we're not trying to schedule the banner during a preroll
       this.player.removeEventListener('playing', this.firstplay);
       if (adsBannerUrl) {
         var AdBannerOptions = {
@@ -241,7 +243,7 @@ class Theoplayer extends Component {
           ipaRequestUrl: adsBannerUrl,
           resizeBannerAndCBarEnabled: resizeBannerAndCBarEnabled,
           ...adsBannerOptions
-        }
+        };
         const Advert = new AdBanner(AdBannerOptions);
         Advert.init();
       }
@@ -253,7 +255,7 @@ class Theoplayer extends Component {
       */
       //showBannerAdBelowPlayer(player, adURL, 0, 0);
     }
-  }
+  };
 
   loadFullscreenEvent = () => {
     ['', 'webkit', 'moz', 'ms'].forEach(prefix =>
@@ -266,14 +268,18 @@ class Theoplayer extends Component {
   };
 
   handleFullscreen = () => {
+    this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+
     const { isFullscreen } = this.state;
-    this.setState({ isFullscreen: !isFullscreen }, () => {
-      if (!isFullscreen) {
-        window.screen.orientation.lock('landscape');
-      } else {
-        window.screen.orientation.unlock();
-      }
-    });
+    if (!this.isSafari) {
+      this.setState({ isFullscreen: !isFullscreen }, () => {
+        if (!isFullscreen) {
+          window.screen.orientation.lock('landscape');
+        } else {
+          window.screen.orientation.unlock();
+        }
+      });
+    }
   };
 
   componentDidMount() {
@@ -317,7 +323,9 @@ class Theoplayer extends Component {
   componentWillUnmount() {
     if (this.player) {
       this.player.destroy();
-      window.screen.orientation.unlock();
+      if (!this.isSafari) {
+        window.screen.orientation.unlock();
+      }
     }
 
     this.player.removeEventListener('pause', this.handleVideoPause);
@@ -326,7 +334,6 @@ class Theoplayer extends Component {
     this.player.removeEventListener('playing', this.handleVideoPlaying);
     this.player.removeEventListener('timeupdate', this.handleVideoTimeUpd);
     this.player.removeEventListener('sourcechange', this.handleVideoSrcChange);
-
   }
 
   render() {
