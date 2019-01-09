@@ -160,10 +160,9 @@ const emailForgotPassword = ({ email = '', csrf = '' }) => {
 const verifyPasswordToken = ({
   email = '',
   token = '',
-  csrf = '',
-  password = ''
+  csrf = ''
 }) => {
-  const body = { email, token, password };
+  const body = { email, token };
   return post(`${AUTH_BASE_ENDPOINT}/v1/password/token`, body, {
     headers: {
       'x-csrf-token': csrf
@@ -240,7 +239,7 @@ const updateNewPassword = ({ password = '', csrf = '' }) => {
     });
 };
 
-const featchProfile = ({ csrf = '' }) => {
+const fetchProfile = ({ csrf = '' }) => {
   return get(`${AUTH_BASE_ENDPOINT}/v1/profile`, {
     headers: {
       'x-csrf-token': csrf
@@ -308,5 +307,5 @@ export {
   verifyPasswordToken,
   updateNewPassword,
   verifyPassword,
-  featchProfile
+  fetchProfile
 };
