@@ -154,7 +154,7 @@ class Theoplayer extends Component {
   };
 
   loadTheoPlayer() {
-    const { autoPlay, allowMutedAutoplay, poster } = this.props;
+    const { autoPlay, allowMutedAutoplay, poster, isMobile } = this.props;
     this.player = this.initTheoPlayer();
     this.configVideoPlayer();
 
@@ -166,14 +166,17 @@ class Theoplayer extends Component {
     if (!poster && autoPlay) {
       //if poster is set
       //video must not be autoplay
-      if (allowMutedAutoplay) {
-        this.player.muted = true;
-        this.player.loop = false;
+      const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+      if (!(isSafari && isMobile)) {
+        //bisa autoplay kecuali di safari mobile (ios)
+        if (allowMutedAutoplay) {
+          this.player.muted = true;
+          this.player.loop = false;
+        }
+        this.player.play();
       }
-      this.player.play();
     }
 
-    const that = this;
     this.player.addEventListener('pause', this.handleVideoPause);
     this.player.addEventListener('play', this.handleVideoPlay);
     this.player.addEventListener('ended', this.handleVideoEnded);
@@ -269,7 +272,6 @@ class Theoplayer extends Component {
 
   handleFullscreen = () => {
     this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-
     const { isFullscreen } = this.state;
     if (!this.isSafari) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
@@ -326,14 +328,14 @@ class Theoplayer extends Component {
       if (!this.isSafari) {
         window.screen.orientation.unlock();
       }
-    }
 
-    this.player.removeEventListener('pause', this.handleVideoPause);
-    this.player.removeEventListener('play', this.handleVideoPlay);
-    this.player.removeEventListener('ended', this.handleVideoEnded);
-    this.player.removeEventListener('playing', this.handleVideoPlaying);
-    this.player.removeEventListener('timeupdate', this.handleVideoTimeUpd);
-    this.player.removeEventListener('sourcechange', this.handleVideoSrcChange);
+      this.player.removeEventListener('pause', this.handleVideoPause);
+      this.player.removeEventListener('play', this.handleVideoPlay);
+      this.player.removeEventListener('ended', this.handleVideoEnded);
+      this.player.removeEventListener('playing', this.handleVideoPlaying);
+      this.player.removeEventListener('timeupdate', this.handleVideoTimeUpd);
+      this.player.removeEventListener('sourcechange', this.handleVideoSrcChange);
+    }
   }
 
   render() {
