@@ -63,6 +63,7 @@ export const inputClass = css`{
 
 export const mdClass = css`{
   border: none;
+  border-radius: 0;
   outline: none;
   background: none;
   border-bottom: 1px solid #1a202f;
