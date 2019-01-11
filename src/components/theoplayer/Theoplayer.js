@@ -13,7 +13,7 @@ class Theoplayer extends Component {
     licenseKey: PropTypes.string.isRequired,
     movieUrl: PropTypes.string.isRequired,
     isTrailer: PropTypes.bool,
-    theoConfig: PropTypes.array,
+    subtitles: PropTypes.array,
     autoPlay: PropTypes.bool,
     allowMutedAutoplay: PropTypes.bool,
     showBackBtn: PropTypes.bool,
@@ -48,7 +48,7 @@ class Theoplayer extends Component {
     fullscreen: true,
     isTrailer: false,
     showBackBtn: true,
-    theoConfig: [],
+    subtitles: [], // [{ kind: 'subtitles', src: url, label: 'id', type: 'srt' }]
     playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
     noPause: false,
     showAudioButton: false,
@@ -119,7 +119,7 @@ class Theoplayer extends Component {
     const {
       videoType,
       movieUrl,
-      theoConfig,
+      subtitles,
       adsSource,
       skipVideoAdsOffset
     } = this.props;
@@ -137,7 +137,7 @@ class Theoplayer extends Component {
             skipOffset: skipVideoAdsOffset
           }
         ],
-        textTracks: theoConfig,
+        textTracks: subtitles,
         preload: 'auto'
       };
     } else {
@@ -148,7 +148,7 @@ class Theoplayer extends Component {
             type: videoType // sets type to HLS
           }
         ],
-        textTracks: theoConfig
+        textTracks: subtitles
       };
     }
   };
@@ -219,9 +219,9 @@ class Theoplayer extends Component {
     }
   };
 
-  handleVideoTimeUpd = () => {
+  handleVideoTimeUpd = timeCallback => {
     if (this.props.handleVideoTimeUpdate) {
-      this.props.handleVideoTimeUpdate(this.currentTime, this.player);
+      this.props.handleVideoTimeUpdate(timeCallback.currentTime, this.player);
     }
   };
 
