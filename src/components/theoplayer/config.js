@@ -1,6 +1,6 @@
-const licenseURL =
-  'https://cdn.theoplayer.com/dash/b1e2bf96-a594-4289-b1f7-1d92c371140d';
-// const licenseURL = 'https://cdn.theoplayer.com/dash/theoplayer';
+// const licenseURL =
+// 'https://cdn.theoplayer.com/dash/b1e2bf96-a594-4289-b1f7-1d92c371140d';
+const licenseURL = 'https://cdn.theoplayer.com/dash/theoplayer';
 
 let script = [
   // {
