@@ -117,40 +117,49 @@ class Theoplayer extends Component {
 
   configVideoPlayer = () => {
     const {
-      videoType,
       movieUrl,
       subtitles,
       adsSource,
-      skipVideoAdsOffset
+      skipVideoAdsOffset,
+      certificateUrl /* yourTitaniumFairplayCertificateURL */
     } = this.props;
-    if (adsSource) {
-      this.player.source = {
-        sources: [
-          {
-            src: movieUrl,
-            type: videoType // sets type to HLS
-          }
-        ],
-        ads: [
-          {
-            sources: adsSource,
-            skipOffset: skipVideoAdsOffset
-          }
-        ],
-        textTracks: subtitles,
-        preload: 'auto'
-      };
-    } else {
-      this.player.source = {
-        sources: [
-          {
-            src: movieUrl,
-            type: videoType // sets type to HLS
-          }
-        ],
-        textTracks: subtitles
-      };
-    }
+
+    const verimatrixDRMConfiguration = {
+      widevine: {
+        licenseAcquisitionURL:
+          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
+      },
+      playready: {
+        /* required for PlayReady playback */
+        licenseAcquisitionURL:
+          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
+      },
+      fairplay: {
+        /* required for Fairplay playback */
+        licenseAcquisitionURL:
+          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
+        certificateURL: certificateUrl
+      }
+    };
+
+    const adsConfiguration = {
+      sources: adsSource,
+      skipOffset: skipVideoAdsOffset
+    };
+
+    this.player.source = {
+      sources: {
+        src: movieUrl,
+        type: certificateUrl
+          ? 'application/dash+xml' /* sets type to Verimetrix */
+          : 'application/x-mpegurl' /* sets type to HLS */,
+        contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
+      },
+      textTracks: subtitles,
+      preload: 'auto'
+    };
+
+    this.player.source.ads = adsSource ? adsConfiguration : null;
   };
 
   loadTheoPlayer() {
@@ -334,7 +343,10 @@ class Theoplayer extends Component {
       this.player.removeEventListener('ended', this.handleVideoEnded);
       this.player.removeEventListener('playing', this.handleVideoPlaying);
       this.player.removeEventListener('timeupdate', this.handleVideoTimeUpd);
-      this.player.removeEventListener('sourcechange', this.handleVideoSrcChange);
+      this.player.removeEventListener(
+        'sourcechange',
+        this.handleVideoSrcChange
+      );
     }
   }
 
