@@ -66,6 +66,20 @@ class TextInput extends React.Component {
     }
   }
 
+  handleOnFocus = e => {
+    const { onFocus } = this.props;
+    if (onFocus) {
+      onFocus(e);
+    }
+  }
+
+  handleOnBlur = e => {
+    const { onBlur } = this.props;
+    if (onBlur) {
+      onBlur(e);
+    }
+  }
+
   handleOnInput = e => {
     const { onInput } = this.props;
     if (onInput) {
@@ -102,6 +116,8 @@ class TextInput extends React.Component {
             onChange={this.handleOnChange}
             onKeyUp={this.handleOnKeyUp}
             onInput={this.handleOnInput}
+            onFocus={this.handleOnFocus}
+            onBlur={this.handleOnBlur}
             placeholder={placeholder}
             disabled={disabled || false} />
           {materialDesign && <Label htmlFor={id}>{label}</Label>}
