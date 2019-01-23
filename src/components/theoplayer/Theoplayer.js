@@ -338,7 +338,6 @@ class Theoplayer extends Component {
     if (this.player) {
       this.player.destroy();
       this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      console.log("SAFARI", this.isSafari)
       if (!this.isSafari) {
         window.screen.orientation.unlock();
       }
