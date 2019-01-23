@@ -155,11 +155,14 @@ class Theoplayer extends Component {
           : 'application/x-mpegurl' /* sets type to HLS */,
         contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
       },
+      ads: [{
+        sources: adsSource ? adsSource : null,
+        skipOffset: skipVideoAdsOffset
+      }],
       textTracks: subtitles,
       preload: 'auto'
     };
-
-    this.player.source.ads = adsSource ? adsConfiguration : null;
+    // this.player.source.ads = adsSource ? adsConfiguration : null;
   };
 
   loadTheoPlayer() {
@@ -280,7 +283,6 @@ class Theoplayer extends Component {
   };
 
   handleFullscreen = () => {
-    this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
     const { isFullscreen } = this.state;
     if (!this.isSafari) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
@@ -297,6 +299,7 @@ class Theoplayer extends Component {
     this.loadDynamicStyle();
     this.loadDynamicScript();
     this.loadFullscreenEvent();
+    this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
   }
 
   loadDynamicScript = () => {
@@ -334,6 +337,8 @@ class Theoplayer extends Component {
   componentWillUnmount() {
     if (this.player) {
       this.player.destroy();
+      this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+      console.log("SAFARI", this.isSafari)
       if (!this.isSafari) {
         window.screen.orientation.unlock();
       }

@@ -33,7 +33,7 @@ class LazyLoad extends PureComponent {
     height: 'auto',
     initial: '',
     lazy: true,
-    onClick: () => {},
+    onClick: () => { },
     style: {},
     webp: true,
     children: null,
@@ -73,7 +73,7 @@ class LazyLoad extends PureComponent {
     const { load } = this.state;
     const { fadeIn, src } = this.props;
     let loadCss;
-    if(load) {
+    if (load) {
       loadCss = load === "success" ? success : defaults;
     } else {
       loadCss = "";
@@ -179,7 +179,8 @@ class LazyLoad extends PureComponent {
       children,
       className,
       src,
-      errorImgClassName
+      errorImgClassName,
+      onErrorShowDefault
     } = this.props;
     return (
       <div
@@ -188,9 +189,9 @@ class LazyLoad extends PureComponent {
         onClick={onClick}
       >
         {src && (
-          <img ref={this.image} className={className} style={style} src={sources} alt={alt} />
+          <img ref={this.image} className={className} style={isError && onErrorShowDefault ? { display: 'none' } : style} src={sources} alt={alt} />
         )}
-        {isError && <div className={`${s.lazyload__errorBg} ${errorImgClassName}`} />}
+        {isError && <div className={`${errorBg} ${errorImgClassName}`} />}
         {children}
       </div>
     );
