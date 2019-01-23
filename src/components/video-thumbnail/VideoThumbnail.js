@@ -64,7 +64,9 @@ class VideoThumbnail extends Component {
       className,
       thumbnailUrl,
       thumbnailStyle,
+      onErrorShowDefault = false,
       imgWrapperClassName = '',
+      errorImgClassName = '',
       detailStyle } = this.props;
     let thumbnailPos = '';
     if (thumbnailPosition === 'right') {
@@ -79,7 +81,11 @@ class VideoThumbnail extends Component {
     return (
       <a onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
         {thumbnailPosition === 'bottom' &&
-          <LazyLoad className={`${detailWrapper} ${bottomDetail}`} containerStyle={detailStyle}>
+          <LazyLoad
+            className={`${detailWrapper}  ${bottomDetail}`}
+            onErrorShowDefault={onErrorShowDefault}
+            containerStyle={detailStyle}
+            errorImgClassName={errorImgClassName}>
             {children}
           </LazyLoad>
         }
@@ -88,6 +94,8 @@ class VideoThumbnail extends Component {
             src={thumbnailUrl}
             className={`${imgThumbnail}`}
             style={thumbnailStyle}
+            onErrorShowDefault={onErrorShowDefault}
+            errorImgClassName={errorImgClassName}
             containerClassName={`${imgThumbnailWrapper} ${imgWrapperClassName}`}
           >
             {thumbnailPosition === 'wrap' && <div className={overlayDetail} > {children} </div>}
@@ -97,7 +105,11 @@ class VideoThumbnail extends Component {
             }
           </LazyLoad>
           {thumbnailPosition !== 'bottom' &&
-            <LazyLoad containerClassName={detailWrapper} containerStyle={detailStyle}>
+            <LazyLoad
+              containerClassName={detailWrapper}
+              containerStyle={detailStyle}
+              onErrorShowDefault={onErrorShowDefault}
+              errorImgClassName={errorImgClassName}>
               {children}
             </LazyLoad>
           }
