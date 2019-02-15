@@ -35,3 +35,20 @@ export const theoStyle = style;
 export const theoLibraryLocation = `${licenseURL}/`;
 //theoplayer --> license key for dummy video
 //theoplayer --> licensekey real
+
+export const verimatrixDRMConf = {
+  fairplay: {
+    certificateURL: 'http://119.73.158.229/fps-s/fairplay_sony195.cer',
+    licenseAcquisitionURL:
+      'http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/'
+
+  },
+  playready: {
+    licenseAcquisitionURL:
+      'https://pr.vmxapac.net:8065/PlayReady/rightsmanager.asmx',
+  },
+  widevine: {
+    licenseAcquisitionURL:
+      'https://vmxapac.net:8063',
+  }
+};

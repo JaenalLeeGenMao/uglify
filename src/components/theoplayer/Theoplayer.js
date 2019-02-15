@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import { theoScripts, theoStyle, theoLibraryLocation } from './config';
+import { theoScripts, theoStyle, theoLibraryLocation, verimatrixDRMConf } from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
 import AdBanner from './adApi';
 class Theoplayer extends Component {
@@ -36,7 +36,9 @@ class Theoplayer extends Component {
     adsBannerUrl: PropTypes.string,
     adsBannerOptions: PropTypes.object,
     resizeBannerAndCBarEnabled: PropTypes.bool,
-    skipVideoAdsOffset: PropTypes.number
+    skipVideoAdsOffset: PropTypes.number,
+    deviceId: PropTypes.string,
+    isDRM: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -59,7 +61,9 @@ class Theoplayer extends Component {
     adsBannerUrl: null,
     adsBannerOptions: null,
     resizeBannerAndCBarEnabled: true,
-    skipVideoAdsOffset: null
+    skipVideoAdsOffset: null,
+    deviceId: '',
+    isDRM: false
   };
 
   handleGoBack = () => {
@@ -121,48 +125,81 @@ class Theoplayer extends Component {
       subtitles,
       adsSource,
       skipVideoAdsOffset,
-      certificateUrl /* yourTitaniumFairplayCertificateURL */
+      deviceId,
+      isDRM
     } = this.props;
 
-    const verimatrixDRMConfiguration = {
-      widevine: {
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
-      },
-      playready: {
-        /* required for PlayReady playback */
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
-      },
-      fairplay: {
-        /* required for Fairplay playback */
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
-        certificateURL: certificateUrl
-      }
-    };
+    // const verimatrixDRMConfiguration = {
+    //   fairplay: {
+    //     certificateURL: 'http://119.73.158.229/fps-s/fairplay_sony195.cer',
+    //     licenseAcquisitionURL:
+    //       'http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
+    //     // headers: {
+    //     //   ETag: 'f71-57faefd0c21d3',
+    //     //   'Accept-Ranges': 'bytes',
+    //     //   'Content-Length': '3953',
+    //     //   'Access-Control-Allow-Origin': '*',
+    //     //   'Content-Type': 'application/vnd.apple.mpegurl'
+    //     // },
+    //     // useCredentials: true
+    //   },
+    //   playready: {
+    //     licenseAcquisitionURL:
+    //       'https://pr.vmxapac.net:8065/PlayReady/rightsmanager.asmx?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
+    //   },
+    //   widevine: {
+    //     licenseAcquisitionURL:
+    //       'https://vmxapac.net:8063?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
+    //   }
+    // };
 
-    const adsConfiguration = {
-      sources: adsSource,
-      skipOffset: skipVideoAdsOffset
+    const verimatrixDRMConfiguration = JSON.parse(JSON.stringify(verimatrixDRMConf));
+
+    verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL = `${verimatrixDRMConf.fairplay.licenseAcquisitionURL}?deviceId=${deviceId}`;
+    verimatrixDRMConfiguration.playready.licenseAcquisitionURL = `${verimatrixDRMConf.playready.licenseAcquisitionURL}?deviceId=${deviceId}`;
+    verimatrixDRMConfiguration.widevine.licenseAcquisitionURL = `${verimatrixDRMConf.widevine.licenseAcquisitionURL}?deviceId=${deviceId}`;
+
+    // console.log("verimatrixDRMConfiguration", verimatrixDRMConfiguration)
+
+    const responseInterceptor = (response) => {
+      // console.log("response.url", response.url)
+      // console.log("verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL", verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
+      // console.log("TEST", response.url == verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
+      // if (response.url.indexOf('') !== -1) {
+      // var laurl = "http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw";
+      if (response.url == verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL) {
+        // console.log("body", body)
+        var body = response.body;
+        var key = JSON.parse(body).ckc;
+        // console.log("key", key)
+        response.respondWith({
+          body: key
+        });
+      }
     };
 
     this.player.source = {
       sources: {
         src: movieUrl,
-        type: certificateUrl
-          ? 'application/dash+xml' /* sets type to Verimetrix */
-          : 'application/x-mpegurl' /* sets type to HLS */,
-        contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
+        // src: isSafari
+        //   ? 'http://119.73.158.229/redbull-fps/stream.m3u8'
+        //   : 'https://cdn-supersoccer-k-01.akamaized.net/Content/DASH/Live/channel(74fa5c1e-bde9-6718-e3ab-11227d90da31)/manifest.mpd?hdnts=st=1550200457~exp=1552792457~acl=/*~hmac=56352d8b8b847dca3f221808343bc03b5bce35733bdb9aa81e135caca496e138',
+        // type: isSafari
+        //   ? 'application/x-mpegurl' /* sets type to HLS */
+        //   : 'application/dash+xml' /* sets type to Verimetrix */,
+        // contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
+        contentProtection: isDRM ? verimatrixDRMConfiguration : null
       },
-      ads: [{
-        sources: adsSource ? adsSource : null,
-        skipOffset: skipVideoAdsOffset
-      }],
+      ads: [
+        {
+          sources: adsSource ? adsSource : null,
+          skipOffset: skipVideoAdsOffset
+        }
+      ],
       textTracks: subtitles,
       preload: 'auto'
     };
-    // this.player.source.ads = adsSource ? adsConfiguration : null;
+    this.player.network.addResponseInterceptor(responseInterceptor);
   };
 
   loadTheoPlayer() {
