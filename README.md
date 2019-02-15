@@ -230,6 +230,7 @@ This is the event properties for Theoplayer component
   </tr>
 </table>
 <br/>
+
 **To use Theoplayer :**
 
 First, import Theoplayer component from Gandalf (and style for player if needed)
