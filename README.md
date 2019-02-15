@@ -29,6 +29,8 @@ render() {
 }
 ```
 
+**Action**
+
 `~/src/actions/[YOUR__FILE].js`
 ```
 *IMPORT ALL ACTION*
@@ -48,6 +50,28 @@ export default {
 };
 ```
 
+**Handler**
+
+`~/src/api/auth/handler.js`
+```
+import { getApi } from '@supersoccer/gandalf';
+import { get } from 'axios';
+const Auth = getApi('auth/handler');
+import { AUTH_BASE_ENDPOINT } from './endpoints';
+
+export default {
+  createNewUser: Auth.createNewUser,
+  verifyUserToken: Auth.verifyUserToken,
+  resendUserToken: Auth.resendUserToken,
+  requestLogin: Auth.requestLogin,
+  requestLogout: Auth.requestLogout,
+  emailForgotPassword: Auth.emailForgotPassword,
+  verifyPasswordToken: Auth.verifyPasswordToken,
+  updateNewPassword: Auth.updateNewPassword,
+};
+```
+
+**Reducer**
 
 `~/src/reducers/index.js`
 ```
