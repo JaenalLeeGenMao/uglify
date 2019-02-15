@@ -273,12 +273,15 @@ render() {
 
 **To run video with DRM you can use this setting:**
 ```
+
 render() {
+   const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+
   const videoSettings = {
     className: videoPlayer,
     showBackBtn: false,
     deviceId: vuid,
-    isMobile: mobileView,
+    isMobile: isMobile, //true / false
     isDRM: true, 
     movieUrl: isSafari ? 'http://119.73.158.229/redbull-fps/stream.m3u8'
         :
