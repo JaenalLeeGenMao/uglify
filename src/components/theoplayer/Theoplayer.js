@@ -15,19 +15,12 @@ class Theoplayer extends Component {
   };
 
   static propTypes = {
-    licenseKey: PropTypes.string.isRequired,
     movieUrl: PropTypes.string.isRequired,
-    isTrailer: PropTypes.bool,
     subtitles: PropTypes.array,
     autoPlay: PropTypes.bool,
     allowMutedAutoplay: PropTypes.bool,
     showBackBtn: PropTypes.bool,
-    fullscreen: PropTypes.bool,
-    playerBtnImg: PropTypes.string,
     className: PropTypes.string,
-    noPause: PropTypes.bool,
-    showAudioButton: PropTypes.bool,
-    showReplayButton: PropTypes.bool,
     handleOnVideoLoad: PropTypes.func,
     handleOnVideoPlaying: PropTypes.func,
     handleOnVideoEnded: PropTypes.func,
@@ -35,7 +28,6 @@ class Theoplayer extends Component {
     handleOnVideoPlay: PropTypes.func,
     handleVideoTimeUpdate: PropTypes.func,
     isMobile: PropTypes.bool,
-    videoType: PropTypes.string,
     poster: PropTypes.string,
     adsSource: PropTypes.string,
     adsBannerUrl: PropTypes.string,
@@ -47,20 +39,12 @@ class Theoplayer extends Component {
   };
 
   static defaultProps = {
-    licenseKey: '', //theoplayer
     autoPlay: true,
     isMobile: false,
     allowMutedAutoplay: true,
     className: '',
-    fullscreen: true,
-    isTrailer: false,
     showBackBtn: true,
     subtitles: [], // [{ kind: 'subtitles', src: url, label: 'id', type: 'srt' }]
-    playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
-    noPause: false,
-    showAudioButton: false,
-    showReplayButton: false,
-    videoType: 'application/x-mpegurl',
     poster: '',
     adsSource: null,
     adsBannerUrl: null,
