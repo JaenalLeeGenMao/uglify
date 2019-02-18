@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import { theoScripts, theoStyle, theoLibraryLocation, verimatrixDRMConf } from './config';
+import {
+  theoScripts,
+  theoStyle,
+  theoLibraryLocation,
+  verimatrixDRMConf
+} from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
 import AdBanner from './adApi';
 class Theoplayer extends Component {
@@ -30,7 +35,7 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: PropTypes.bool,
     skipVideoAdsOffset: PropTypes.number,
     deviceId: PropTypes.string,
-    isDRM: PropTypes.bool,
+    isDRM: PropTypes.bool
   };
 
   static defaultProps = {
@@ -137,21 +142,32 @@ class Theoplayer extends Component {
     //   }
     // };
 
-    const verimatrixDRMConfiguration = JSON.parse(JSON.stringify(verimatrixDRMConf));
+    const verimatrixDRMConfiguration = JSON.parse(
+      JSON.stringify(verimatrixDRMConf)
+    );
 
-    verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL = `${verimatrixDRMConf.fairplay.licenseAcquisitionURL}?deviceId=${deviceId}`;
-    verimatrixDRMConfiguration.playready.licenseAcquisitionURL = `${verimatrixDRMConf.playready.licenseAcquisitionURL}?deviceId=${deviceId}`;
-    verimatrixDRMConfiguration.widevine.licenseAcquisitionURL = `${verimatrixDRMConf.widevine.licenseAcquisitionURL}?deviceId=${deviceId}`;
+    verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL = `${
+      verimatrixDRMConf.fairplay.licenseAcquisitionURL
+    }?deviceId=${deviceId}`;
+    verimatrixDRMConfiguration.playready.licenseAcquisitionURL = `${
+      verimatrixDRMConf.playready.licenseAcquisitionURL
+    }?deviceId=${deviceId}`;
+    verimatrixDRMConfiguration.widevine.licenseAcquisitionURL = `${
+      verimatrixDRMConf.widevine.licenseAcquisitionURL
+    }?deviceId=${deviceId}`;
 
     // console.log("verimatrixDRMConfiguration", verimatrixDRMConfiguration)
 
-    const responseInterceptor = (response) => {
+    const responseInterceptor = response => {
       // console.log("response.url", response.url)
       // console.log("verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL", verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
       // console.log("TEST", response.url == verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
       // if (response.url.indexOf('') !== -1) {
       // var laurl = "http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw";
-      if (response.url == verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL) {
+      if (
+        response.url ==
+        verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL
+      ) {
         // console.log("body", body)
         var body = response.body;
         var key = JSON.parse(body).ckc;
