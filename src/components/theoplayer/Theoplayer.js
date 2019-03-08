@@ -215,15 +215,30 @@ class Theoplayer extends Component {
     if (!poster && autoPlay) {
       //if poster is set
       //video must not be autoplay
-      const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!(isSafari && isMobile)) {
-        //bisa autoplay kecuali di safari mobile (ios)
-        if (allowMutedAutoplay) {
-          this.player.muted = true;
-          this.player.loop = false;
-        }
-        this.player.play();
+      if (allowMutedAutoplay) {
+        this.player.muted = true;
+        this.player.loop = false;
       }
+      // this.player.play();
+
+      this.player.autoplay = true;
+      // const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+      // if (!(isSafari && isMobile)) {
+      //   //bisa autoplay kecuali di safari mobile (ios)
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   // this.player.play();
+
+      //   this.player.autoplay = true;
+      // } else {
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   this.player.autoplay = true;
+      // }
     }
 
     this.player.addEventListener('pause', this.handleVideoPause);
