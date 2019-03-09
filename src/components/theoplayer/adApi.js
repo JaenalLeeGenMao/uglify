@@ -302,7 +302,7 @@ class AdBanner {
 
         let dimensionChangeListener;
         if (this.resizeBannerAndCBarEnabled) {
-            this.resizeBannerAndControlBar.bind(this, playerContainer, wrapper, bannerContainer, controlBar);
+            dimensionChangeListener = this.resizeBannerAndControlBar.bind(this, playerContainer, wrapper, bannerContainer, controlBar);
         }
         let presentationModeChangeListener = this.updateWrapperHeight.bind(this, wrapper);
 
