@@ -3,6 +3,11 @@ import { css } from 'react-emotion';
 export const wrapper = css`{
   display: block;
   clear: both;
+
+  &:hover .playIcon {
+    opacity: 1;
+    transition: .2s;
+  }
 }`;
 
 export const wrapperThumbnail = css`{
@@ -44,11 +49,6 @@ export const imgThumbnailWrapper = css`{
   //   opacity: 0;
   //   transition: .2s;
   // }
-
-  &:hover .playIcon {
-    opacity: 1;
-    transition: .2s;
-  }
 }`;
 
 export const overlayDetail = css`{
