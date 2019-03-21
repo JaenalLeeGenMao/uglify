@@ -5,7 +5,6 @@ import {
   theoScripts,
   theoStyle,
   theoLibraryLocation,
-  verimatrixDRMConf
 } from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
 import AdBanner from './adApi';
@@ -35,7 +34,7 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: PropTypes.bool,
     skipVideoAdsOffset: PropTypes.number,
     deviceId: PropTypes.string,
-    isDRM: PropTypes.bool
+    drm: PropTypes.object
   };
 
   static defaultProps = {
@@ -52,7 +51,7 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: true,
     skipVideoAdsOffset: null,
     deviceId: '',
-    isDRM: false
+    drm: {}
   };
 
   handleGoBack = () => {
@@ -115,48 +114,29 @@ class Theoplayer extends Component {
       adsSource,
       skipVideoAdsOffset,
       deviceId,
-      isDRM
+      drm
     } = this.props;
 
-    // const verimatrixDRMConfiguration = {
-    //   fairplay: {
-    //     certificateURL: 'http://119.73.158.229/fps-s/fairplay_sony195.cer',
-    //     licenseAcquisitionURL:
-    //       'http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
-    //     // headers: {
-    //     //   ETag: 'f71-57faefd0c21d3',
-    //     //   'Accept-Ranges': 'bytes',
-    //     //   'Content-Length': '3953',
-    //     //   'Access-Control-Allow-Origin': '*',
-    //     //   'Content-Type': 'application/vnd.apple.mpegurl'
-    //     // },
-    //     // useCredentials: true
-    //   },
-    //   playready: {
-    //     licenseAcquisitionURL:
-    //       'https://pr.vmxapac.net:8065/PlayReady/rightsmanager.asmx?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
-    //   },
-    //   widevine: {
-    //     licenseAcquisitionURL:
-    //       'https://vmxapac.net:8063?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
-    //   }
-    // };
+    const verimatrixDRMConfiguration = {
+      fairplay: {
+        licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
+        certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
+      },
+      playready: {
+        licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
+      },
+      widevine: {
+        licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+      }
+    }
 
-    const verimatrixDRMConfiguration = JSON.parse(
-      JSON.stringify(verimatrixDRMConf)
-    );
-
-    verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL = `${
-      verimatrixDRMConf.fairplay.licenseAcquisitionURL
-    }?deviceId=${deviceId}`;
-    verimatrixDRMConfiguration.playready.licenseAcquisitionURL = `${
-      verimatrixDRMConf.playready.licenseAcquisitionURL
-    }?deviceId=${deviceId}`;
-    verimatrixDRMConfiguration.widevine.licenseAcquisitionURL = `${
-      verimatrixDRMConf.widevine.licenseAcquisitionURL
-    }?deviceId=${deviceId}`;
-
-    // console.log("verimatrixDRMConfiguration", verimatrixDRMConfiguration)
+    const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+    let drmStreamUrl = '';
+    if (drm && drm.widevine && drm.fairplay) {
+      drmStreamUrl = isSafari
+        ? drm.fairplay.streamUrl
+        : drm.widevine.streamUrl;
+    }
 
     const responseInterceptor = response => {
       // console.log("response.url", response.url)
@@ -180,15 +160,8 @@ class Theoplayer extends Component {
 
     this.player.source = {
       sources: {
-        src: movieUrl,
-        // src: isSafari
-        //   ? 'http://119.73.158.229/redbull-fps/stream.m3u8'
-        //   : 'https://cdn-supersoccer-k-01.akamaized.net/Content/DASH/Live/channel(74fa5c1e-bde9-6718-e3ab-11227d90da31)/manifest.mpd?hdnts=st=1550200457~exp=1552792457~acl=/*~hmac=56352d8b8b847dca3f221808343bc03b5bce35733bdb9aa81e135caca496e138',
-        // type: isSafari
-        //   ? 'application/x-mpegurl' /* sets type to HLS */
-        //   : 'application/dash+xml' /* sets type to Verimetrix */,
-        // contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
-        contentProtection: isDRM ? verimatrixDRMConfiguration : null
+        src: drmStreamUrl ? drmStreamUrl : movieUrl,
+        contentProtection: drmStreamUrl ? verimatrixDRMConfiguration : null
       },
       ads: [
         {
@@ -215,15 +188,30 @@ class Theoplayer extends Component {
     if (!poster && autoPlay) {
       //if poster is set
       //video must not be autoplay
-      const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!(isSafari && isMobile)) {
-        //bisa autoplay kecuali di safari mobile (ios)
-        if (allowMutedAutoplay) {
-          this.player.muted = true;
-          this.player.loop = false;
-        }
-        this.player.play();
+      if (allowMutedAutoplay) {
+        this.player.muted = true;
+        this.player.loop = false;
       }
+      // this.player.play();
+
+      this.player.autoplay = true;
+      // const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+      // if (!(isSafari && isMobile)) {
+      //   //bisa autoplay kecuali di safari mobile (ios)
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   // this.player.play();
+
+      //   this.player.autoplay = true;
+      // } else {
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   this.player.autoplay = true;
+      // }
     }
 
     this.player.addEventListener('pause', this.handleVideoPause);
