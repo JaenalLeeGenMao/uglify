@@ -1,4 +1,5 @@
 import { get, post, delete as axiosDelete } from 'axios';
+import qs from 'query-string';
 import {
   VIDEOS_ENDPOINT,
   HOME_PLAYLIST_ENDPOINT,
@@ -7,14 +8,13 @@ import {
   SEARCH_GENRE_ENDPOINT,
   RECENT_SEARCH_ENDPOINT,
   MOVIE_DETAIL_ENDPOINT,
-  MOVIE_STREAMING
+  SUBSCRIPTION_ENDPOINT,
+  ORDER_ENDPOINT,
+  PAYMENT_ENDPOINT
 } from './endpoints';
 import utils from './util';
 
-import baseConfig from '../../config.base';
-const config = baseConfig.default[process.env.REACT_APP_ENV || 'production'];
-
-const endpoints = config.endpoints;
+import { endpoints } from '@source/config';
 
 const getHomePlaylist = () => {
   return get(`${HOME_PLAYLIST_ENDPOINT}/mola-home`, {
@@ -31,11 +31,11 @@ const getHomePlaylist = () => {
       };
     })
     .catch(error => {
+      const errorMessage = error.toString().replace('Error:', 'Mola Home');
       return {
         meta: {
           status: 'error',
-          error:
-            'Mola loves watchin playlist from home, but Mola is no where to be found'
+          error: errorMessage
         },
         data: []
       };
@@ -57,10 +57,11 @@ const getHomeVideo = ({ id }) => {
       };
     })
     .catch(error => {
+      const errorMessage = error.toString().replace('Error:', 'Mola Video');
       return {
         meta: {
           status,
-          error: "Mola loves video but sadly it's not available, cheer up!"
+          error: errorMessage
         },
         data: []
       };
@@ -81,11 +82,11 @@ const getAllHistory = ({ userId }) => {
       };
     })
     .catch(error => {
+      const errorMessage = error.toString().replace('Error:', 'Mola History');
       return {
         meta: {
           status: 'error',
-          text:
-            'Mola could not reach through the history, because Mola is positive and stays in the present'
+          text: errorMessage
         },
         data: []
       };
@@ -108,11 +109,13 @@ const getSearchResult = ({ q }) => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Search Result');
       return {
         meta: {
           status: 'error',
-          error:
-            "We've searched every corner of our empire, looks like the your search is history"
+          error: errorMessage
         },
         data: []
       };
@@ -134,10 +137,13 @@ const getSearchGenre = () => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Search Genre');
       return {
         meta: {
           status: 'error',
-          error: 'Searching genre is probably missing, off we go to hunt'
+          error: errorMessage
         },
         data: []
       };
@@ -161,11 +167,13 @@ const getRecentSearch = (sessionId, sid) => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Recent Search');
       return {
         meta: {
           status: 'error',
-          error:
-            "Looks like you have not searched recently, what've you been up to?"
+          error: errorMessage
         },
         data: []
       };
@@ -189,12 +197,14 @@ const postRecentSearch = (sessionId, sid, keyword) => {
         }
       };
     })
-    .catch(err => {
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Update Recent Search');
       return {
         meta: {
           status: 'error',
-          error:
-            "Aha! Couldn't add recent search, seems like we detected some spooky search result "
+          error: errorMessage
         }
       };
     });
@@ -213,11 +223,14 @@ const deleteRecentSearchAll = (sessionId, sid) => {
         }
       };
     })
-    .catch(err => {
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Removing All Recent Search');
       return {
         meta: {
           status: 'error',
-          error: 'Sure deleting all your recent search, we will miss you'
+          error: errorMessage
         }
       };
     });
@@ -239,11 +252,14 @@ const deleteRecentSearch = (sessionId, sid, keyword) => {
         }
       };
     })
-    .catch(err => {
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Removing Recent Search');
       return {
         meta: {
           status: 'error',
-          error: 'Recent search is refusing to be removed, since it loves you'
+          error: errorMessage
         }
       };
     });
@@ -264,10 +280,13 @@ const getMovieDetail = ({ id }) => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Movie Detail');
       return {
         meta: {
           status: 'error',
-          error: 'Movie details are missing, contact officer Mola immediately'
+          error: errorMessage
         },
         data: []
       };
@@ -290,11 +309,13 @@ const getMovieLibraryList = () => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola List of Movie Library');
       return {
         meta: {
           status: 'error',
-          error:
-            'Apparently Mola is having difficulty to list down movie library'
+          error: errorMessage
         },
         data: []
       };
@@ -316,35 +337,13 @@ const getMovieLibrary = id => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Movie Library');
       return {
         meta: {
           status: 'error',
-          error:
-            "We've searched thoroughly in our Movie Library, your sure you're not entering your password?"
-        },
-        data: []
-      };
-    });
-};
-
-const getMovieStream = ({ id }) => {
-  return get(`${MOVIE_STREAMING}/${id}`)
-    .then(response => {
-      const result = utils.normalizeVideoStream(response);
-      return {
-        meta: {
-          status: result.length > 0 ? 'success' : 'no_result',
-          error: ''
-        },
-        data: [...result] || []
-      };
-    })
-    .catch(error => {
-      return {
-        meta: {
-          status: 'error',
-          error:
-            'Something amazing is happening behind the scene, to kickstart your stream make sure to browse other movies'
+          error: errorMessage
         },
         data: []
       };
@@ -366,11 +365,179 @@ const getHotPlaylist = () => {
       };
     })
     .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Hot Playlists');
       return {
         meta: {
           status: 'error',
-          error:
-            'Mola is feeling so hot right now,\n Someone bring some hot movies!'
+          error: errorMessage
+        },
+        data: []
+      };
+    });
+};
+
+const getAllSubscriptions = token => {
+  return get(`${SUBSCRIPTION_ENDPOINT}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      app_id: 2
+    },
+    ...endpoints.setting
+  })
+    .then(response => {
+      return {
+        meta: {
+          status: 'success',
+          error: ''
+        },
+        data: response.data.data
+      };
+    })
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola All Subscriptions');
+      return {
+        meta: {
+          status: 'error',
+          error: errorMessage
+        },
+        data: []
+      };
+    });
+};
+
+const createOrder = ({ token, uid, subscriptionId = 26, price = 10000 }) => {
+  const data = JSON.stringify({
+    order_type_id: 1,
+    subscription_id: subscriptionId /* hanya hardcode midtrans 26 */,
+    quantity: 1 /* subscription per tahun */,
+    uom: 'm' /* sementara monthly */,
+    package_expiry: '',
+    status: 0,
+    user_id: uid,
+    order_amount: 1 * price,
+    total_price: 1 * price,
+    source:
+      'GSyOzu2WPaAijqbX3Tv6HCQr' /* hardcode dulu nanti baru di pikirin lagi */,
+    payment_method_id: 270 /* payment_method_id midtrans di hardcode 270 dari DataBase */
+  });
+
+  return post(`${ORDER_ENDPOINT}`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    withCredentials: true,
+    ...endpoints.setting
+  })
+    .then(response => {
+      const { data } = response.data;
+      return {
+        meta: {
+          status: 'success',
+          error: ''
+        },
+        data: {
+          id: data[0].id,
+          ...data[0].attributes
+        }
+      };
+    })
+    .catch(error => {
+      const errorMessage = error.toString().replace('Error:', 'Mola Order');
+      return {
+        meta: {
+          status: 'error',
+          error: errorMessage
+        },
+        data: []
+      };
+    });
+};
+
+const createMidtransPayment = ({
+  uid,
+  firstName,
+  lastName,
+  phoneNumber,
+  email,
+  token,
+  orderId
+}) => {
+  const data = JSON.stringify({
+    paymentMethodId: 270, // payment_method_id midtrans di hardcode 17 dari DataBase
+    Id: `${orderId}`,
+    title: 'Mola - Paket No Ads',
+    phone: phoneNumber,
+    email: email,
+    name: `${firstName} ${lastName}`,
+    userId: uid,
+    productSku: '1',
+    productName: 'Mola - Paket No Ads'
+  });
+
+  return post(`${PAYMENT_ENDPOINT}`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    withCredentials: true,
+    ...endpoints.setting
+  })
+    .then(response => {
+      const { paymentData } = response.data;
+      const redirectUrl = `${endpoints.domain}/accounts/profile`;
+      return {
+        meta: {
+          status: 'success',
+          error: ''
+        },
+        data: { ...paymentData, redirectUrl }
+      };
+    })
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola Midtrans Payment');
+      return {
+        meta: {
+          status: 'error',
+          error: errorMessage
+        },
+        data: ''
+      };
+    });
+};
+const getOrderHistoryTransactions = ({ uid, token }) => {
+  console.log('token', token);
+  return get(`${ORDER_ENDPOINT}_/users/${uid}`, {
+    headers: token && { Authorization: `Bearer ${token}` },
+    withCredentials: true,
+    ...endpoints.setting
+  })
+    .then(response => {
+      const { data } = response.data;
+      return {
+        meta: {
+          status: 'success',
+          error: ''
+        },
+        data
+      };
+    })
+    .catch(error => {
+      const errorMessage = error
+        .toString()
+        .replace('Error:', 'Mola History Transactions');
+      return {
+        meta: {
+          status: 'error',
+          error: errorMessage
         },
         data: []
       };
@@ -390,6 +557,9 @@ export default {
   getMovieDetail,
   getMovieLibrary,
   getMovieLibraryList,
-  getMovieStream,
-  getHotPlaylist
+  getHotPlaylist,
+  getAllSubscriptions,
+  createOrder,
+  createMidtransPayment,
+  getOrderHistoryTransactions
 };

@@ -319,24 +319,6 @@ const normalizeMovieLibraryList = response => {
   };
 };
 
-const normalizeVideoStream = response => {
-  const { data } = response.data;
-  if (data && data.length > 0) {
-    return data.map(result => {
-      const {
-        id,
-        attributes: { streamSourceUrl, subtitles }
-      } = result;
-      return {
-        id,
-        streamSourceUrl,
-        subtitles
-      };
-    });
-  }
-  return [];
-};
-
 export default {
   normalizeHomePlaylist,
   normalizeHomeVideo,
@@ -346,6 +328,5 @@ export default {
   normalizeRecentSearch,
   normalizeVideoDetail,
   normalizeMovieLibrary,
-  normalizeMovieLibraryList,
-  normalizeVideoStream
+  normalizeMovieLibraryList
 };
