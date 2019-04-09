@@ -333,8 +333,8 @@ class Theoplayer extends Component {
     this.trident = userAgent.indexOf('Trident/') >= 0;
     this.edge = userAgent.indexOf('Edge/') >= 0;
 
-    console.log("navuser", userAgent)
-    console.log("ageen", this.isSafari, this.msie, this.trident, this.edge)
+    // console.log("navuser", userAgent)
+    // console.log("ageen", this.isSafari, this.msie, this.trident, this.edge)
   }
 
   loadDynamicScript = () => {
