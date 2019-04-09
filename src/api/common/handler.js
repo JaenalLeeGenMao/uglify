@@ -10,7 +10,8 @@ import {
   MOVIE_DETAIL_ENDPOINT,
   SUBSCRIPTION_ENDPOINT,
   ORDER_ENDPOINT,
-  PAYMENT_ENDPOINT
+  PAYMENT_ENDPOINT,
+  CSRF_ENDPOINT
 } from './endpoints';
 import utils from './util';
 
@@ -544,6 +545,33 @@ const getOrderHistoryTransactions = ({ uid, token }) => {
     });
 };
 
+const getCSRF = () => {
+  return get(CSRF_ENDPOINT, {
+    ...endpoints.setting
+  })
+    .then(response => {
+      console.log("response", response)
+      const result = response.data ? response.data : null
+      return {
+        meta: {
+          status: 'success',
+          error: ''
+        },
+        data: result
+      };
+    })
+    .catch(error => {
+      console.log("ERRROR", error)
+      return {
+        meta: {
+          status: 'error',
+          error: error
+        },
+        data: []
+      };
+    });
+};
+
 export default {
   getHomePlaylist,
   getHomeVideo,
@@ -561,5 +589,6 @@ export default {
   getAllSubscriptions,
   createOrder,
   createMidtransPayment,
-  getOrderHistoryTransactions
+  getOrderHistoryTransactions,
+  getCSRF
 };

@@ -130,12 +130,15 @@ class Theoplayer extends Component {
       }
     }
 
-    const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
     let drmStreamUrl = '';
-    if (drm && drm.widevine && drm.fairplay) {
-      drmStreamUrl = isSafari
-        ? drm.fairplay.streamUrl
-        : drm.widevine.streamUrl;
+    if (drm) {
+      if (this.isSafari) {
+        drmStreamUrl = drm.fairplay.streamUrl ? drm.fairplay.streamUrl : '';
+      } else if (this.trident || this.edge) {
+        drmStreamUrl = drm.playready.streamUrl ? drm.playready.streamUrl : '';
+      } else {
+        drmStreamUrl = drm.widevine.streamUrl ? drm.widevine.streamUrl : '';
+      }
     }
 
     const responseInterceptor = response => {
@@ -309,7 +312,7 @@ class Theoplayer extends Component {
 
   handleFullscreen = () => {
     const { isFullscreen } = this.state;
-    if (!this.isSafari) {
+    if (!this.isSafari && !this.msie && !this.trident) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
         if (!isFullscreen) {
           window.screen.orientation.lock('landscape');
@@ -324,7 +327,14 @@ class Theoplayer extends Component {
     this.loadDynamicStyle();
     this.loadDynamicScript();
     this.loadFullscreenEvent();
-    this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+    const userAgent = navigator.userAgent;
+    this.isSafari = /.*Version.*Safari.*/.test(userAgent);
+    this.msie = userAgent.indexOf('MSIE ') >= 0;
+    this.trident = userAgent.indexOf('Trident/') >= 0;
+    this.edge = userAgent.indexOf('Edge/') >= 0;
+
+    console.log("navuser", userAgent)
+    console.log("ageen", this.isSafari, this.msie, this.trident, this.edge)
   }
 
   loadDynamicScript = () => {
@@ -363,7 +373,7 @@ class Theoplayer extends Component {
     if (this.player) {
       this.player.destroy();
       this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!this.isSafari) {
+      if (!this.isSafari && !this.msie && !this.trident) {
         window.screen.orientation.unlock();
       }
 
