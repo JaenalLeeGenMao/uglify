@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import LazyLoad from '../lazyload';
+import history from '../../history';
 import { func, node } from 'prop-types';
 import {
   wrapper,
@@ -16,7 +17,6 @@ import {
   overlayDetail,
   playButton
 } from './style'
-
 /* PROPS:
  * children, className, thumbnailUrl
  * thumbnailPosition (image position) = top, bottom, left, right (by default left), wrap
@@ -33,11 +33,6 @@ class VideoThumbnail extends Component {
     onClick: () => { },
     children: null,
   };
-
-  handleOnClick = () => {
-    const { onClick } = this.props;
-    onClick();
-  }
 
   getDurationFormatted = () => {
     const { duration } = this.props;
@@ -79,7 +74,7 @@ class VideoThumbnail extends Component {
       thumbnailPos = wrapThumbnail;
     }
     return (
-      <a onClick={this.handleOnClick} className={`${wrapper} ${className || ''}`}>
+      <div className={`${wrapper} ${className || ''}`}>
         {thumbnailPosition === 'bottom' &&
           <LazyLoad
             className={`${detailWrapper}  ${bottomDetail}`}
@@ -98,7 +93,7 @@ class VideoThumbnail extends Component {
             errorImgClassName={errorImgClassName}
             containerClassName={`${imgThumbnailWrapper} ${imgWrapperClassName}`}
           >
-            {thumbnailPosition === 'wrap' && <div className={overlayDetail} > {children} </div>}
+            {thumbnailPosition === 'wrap' && <div className={overlayDetail}> {children} </div>}
             {duration && <div className={`${durationClass} durationStat`}>{this.getDurationFormatted()}</div>}
             {thumbnailPosition !== 'wrap' &&
               <div className={`${playButton} playIcon`} />
@@ -114,7 +109,7 @@ class VideoThumbnail extends Component {
             </LazyLoad>
           }
         </div>
-      </a>
+      </div>
     );
   }
 }

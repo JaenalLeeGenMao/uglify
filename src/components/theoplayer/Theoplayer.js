@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import { theoScripts, theoStyle, theoLibraryLocation } from './config';
+import {
+  theoScripts,
+  theoStyle,
+  theoLibraryLocation,
+} from './config';
 import { Arrow, videoPlayer, arrowIcon } from './style';
 import AdBanner from './adApi';
 class Theoplayer extends Component {
@@ -10,19 +14,12 @@ class Theoplayer extends Component {
   };
 
   static propTypes = {
-    licenseKey: PropTypes.string.isRequired,
     movieUrl: PropTypes.string.isRequired,
-    isTrailer: PropTypes.bool,
     subtitles: PropTypes.array,
     autoPlay: PropTypes.bool,
     allowMutedAutoplay: PropTypes.bool,
     showBackBtn: PropTypes.bool,
-    fullscreen: PropTypes.bool,
-    playerBtnImg: PropTypes.string,
     className: PropTypes.string,
-    noPause: PropTypes.bool,
-    showAudioButton: PropTypes.bool,
-    showReplayButton: PropTypes.bool,
     handleOnVideoLoad: PropTypes.func,
     handleOnVideoPlaying: PropTypes.func,
     handleOnVideoEnded: PropTypes.func,
@@ -30,36 +27,31 @@ class Theoplayer extends Component {
     handleOnVideoPlay: PropTypes.func,
     handleVideoTimeUpdate: PropTypes.func,
     isMobile: PropTypes.bool,
-    videoType: PropTypes.string,
     poster: PropTypes.string,
     adsSource: PropTypes.string,
     adsBannerUrl: PropTypes.string,
     adsBannerOptions: PropTypes.object,
     resizeBannerAndCBarEnabled: PropTypes.bool,
-    skipVideoAdsOffset: PropTypes.number
+    skipVideoAdsOffset: PropTypes.number,
+    deviceId: PropTypes.string,
+    drm: PropTypes.object
   };
 
   static defaultProps = {
-    licenseKey: '', //theoplayer
     autoPlay: true,
     isMobile: false,
     allowMutedAutoplay: true,
     className: '',
-    fullscreen: true,
-    isTrailer: false,
     showBackBtn: true,
     subtitles: [], // [{ kind: 'subtitles', src: url, label: 'id', type: 'srt' }]
-    playerBtnImg: 'https://image.flaticon.com/icons/svg/60/60682.svg', //playerArrow
-    noPause: false,
-    showAudioButton: false,
-    showReplayButton: false,
-    videoType: 'application/x-mpegurl',
     poster: '',
     adsSource: null,
     adsBannerUrl: null,
     adsBannerOptions: null,
     resizeBannerAndCBarEnabled: true,
-    skipVideoAdsOffset: null
+    skipVideoAdsOffset: null,
+    deviceId: '',
+    drm: {}
   };
 
   handleGoBack = () => {
@@ -121,48 +113,69 @@ class Theoplayer extends Component {
       subtitles,
       adsSource,
       skipVideoAdsOffset,
-      certificateUrl /* yourTitaniumFairplayCertificateURL */
+      deviceId,
+      drm
     } = this.props;
 
     const verimatrixDRMConfiguration = {
-      widevine: {
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
+      fairplay: {
+        licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
+        certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
       },
       playready: {
-        /* required for PlayReady playback */
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw'
+        licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
       },
-      fairplay: {
-        /* required for Fairplay playback */
-        licenseAcquisitionURL:
-          'https://vmxapac.net:8063/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw',
-        certificateURL: certificateUrl
+      widevine: {
+        licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
       }
-    };
+    }
 
-    const adsConfiguration = {
-      sources: adsSource,
-      skipOffset: skipVideoAdsOffset
+    let drmStreamUrl = '';
+    if (drm) {
+      if (this.isSafari) {
+        drmStreamUrl = drm.fairplay.streamUrl ? drm.fairplay.streamUrl : '';
+      } else if (this.trident || this.edge) {
+        drmStreamUrl = drm.playready.streamUrl ? drm.playready.streamUrl : '';
+      } else {
+        drmStreamUrl = drm.widevine.streamUrl ? drm.widevine.streamUrl : '';
+      }
+    }
+
+    const responseInterceptor = response => {
+      // console.log("response.url", response.url)
+      // console.log("verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL", verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
+      // console.log("TEST", response.url == verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL)
+      // if (response.url.indexOf('') !== -1) {
+      // var laurl = "http://ec2-54-169-140-196.ap-southeast-1.compute.amazonaws.com:8064/fpsa/v1.0/?deviceId=Y2U1NmM3NzAtNmI4NS0zYjZjLTk4ZDMtOTFiN2FjMTZhYWUw";
+      if (
+        response.url ==
+        verimatrixDRMConfiguration.fairplay.licenseAcquisitionURL
+      ) {
+        // console.log("body", body)
+        var body = response.body;
+        var key = JSON.parse(body).ckc;
+        // console.log("key", key)
+        response.respondWith({
+          body: key
+        });
+      }
     };
 
     this.player.source = {
       sources: {
-        src: movieUrl,
-        type: certificateUrl
-          ? 'application/dash+xml' /* sets type to Verimetrix */
-          : 'application/x-mpegurl' /* sets type to HLS */,
-        contentProtection: certificateUrl ? verimatrixDRMConfiguration : null
+        src: drmStreamUrl ? drmStreamUrl : movieUrl,
+        contentProtection: drmStreamUrl ? verimatrixDRMConfiguration : null
       },
-      ads: [{
-        sources: adsSource ? adsSource : null,
-        skipOffset: skipVideoAdsOffset
-      }],
+      ads: [
+        {
+          sources: adsSource ? adsSource : null,
+          skipOffset: skipVideoAdsOffset
+        }
+      ],
       textTracks: subtitles,
       preload: 'auto'
     };
-    // this.player.source.ads = adsSource ? adsConfiguration : null;
+    this.player.network.addResponseInterceptor(responseInterceptor);
   };
 
   loadTheoPlayer() {
@@ -178,15 +191,30 @@ class Theoplayer extends Component {
     if (!poster && autoPlay) {
       //if poster is set
       //video must not be autoplay
-      const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!(isSafari && isMobile)) {
-        //bisa autoplay kecuali di safari mobile (ios)
-        if (allowMutedAutoplay) {
-          this.player.muted = true;
-          this.player.loop = false;
-        }
-        this.player.play();
+      if (allowMutedAutoplay) {
+        this.player.muted = true;
+        this.player.loop = false;
       }
+      // this.player.play();
+
+      this.player.autoplay = true;
+      // const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+      // if (!(isSafari && isMobile)) {
+      //   //bisa autoplay kecuali di safari mobile (ios)
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   // this.player.play();
+
+      //   this.player.autoplay = true;
+      // } else {
+      //   if (allowMutedAutoplay) {
+      //     this.player.muted = true;
+      //     this.player.loop = false;
+      //   }
+      //   this.player.autoplay = true;
+      // }
     }
 
     this.player.addEventListener('pause', this.handleVideoPause);
@@ -284,7 +312,7 @@ class Theoplayer extends Component {
 
   handleFullscreen = () => {
     const { isFullscreen } = this.state;
-    if (!this.isSafari) {
+    if (!this.isSafari && !this.msie && !this.trident) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
         if (!isFullscreen) {
           window.screen.orientation.lock('landscape');
@@ -299,7 +327,14 @@ class Theoplayer extends Component {
     this.loadDynamicStyle();
     this.loadDynamicScript();
     this.loadFullscreenEvent();
-    this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+    const userAgent = navigator.userAgent;
+    this.isSafari = /.*Version.*Safari.*/.test(userAgent);
+    this.msie = userAgent.indexOf('MSIE ') >= 0;
+    this.trident = userAgent.indexOf('Trident/') >= 0;
+    this.edge = userAgent.indexOf('Edge/') >= 0;
+
+    // console.log("navuser", userAgent)
+    // console.log("ageen", this.isSafari, this.msie, this.trident, this.edge)
   }
 
   loadDynamicScript = () => {
@@ -338,7 +373,7 @@ class Theoplayer extends Component {
     if (this.player) {
       this.player.destroy();
       this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!this.isSafari) {
+      if (!this.isSafari && !this.msie && !this.trident) {
         window.screen.orientation.unlock();
       }
 
