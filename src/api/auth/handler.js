@@ -307,5 +307,6 @@ export {
   verifyPasswordToken,
   updateNewPassword,
   verifyPassword,
-  fetchProfile
+  fetchProfile,
+  updateProfile
 };
