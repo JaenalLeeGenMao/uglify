@@ -1,5 +1,4 @@
 import { get, post, delete as axiosDelete } from 'axios';
-import qs from 'query-string';
 import {
   VIDEOS_ENDPOINT,
   HOME_PLAYLIST_ENDPOINT,

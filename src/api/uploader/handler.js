@@ -1,5 +1,4 @@
 import { get, post, delete as axiosDelete } from 'axios'
-import qs from 'query-string'
 import { UPLOADER_ENDPOINT } from './endpoints'
 
 import { uploader } from '@source/config'
