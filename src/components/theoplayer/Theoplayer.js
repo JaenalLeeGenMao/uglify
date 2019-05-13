@@ -51,7 +51,7 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: true,
     skipVideoAdsOffset: null,
     deviceId: '',
-    drm: {}
+    drm: null
   };
 
   handleGoBack = () => {
