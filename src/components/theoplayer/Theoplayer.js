@@ -117,16 +117,19 @@ class Theoplayer extends Component {
       drm
     } = this.props;
 
-    const verimatrixDRMConfiguration = {
-      fairplay: {
-        licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
-        certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
-      },
-      playready: {
-        licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
-      },
-      widevine: {
-        licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+    let verimatrixDRMConfiguration;
+    if (drm) {
+      verimatrixDRMConfiguration = {
+        fairplay: {
+          licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
+          certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
+        },
+        playready: {
+          licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
+        },
+        widevine: {
+          licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+        }
       }
     }
 
