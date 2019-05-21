@@ -76,6 +76,7 @@ export const arrowIcon = css`
     width: 22px;
     height: 22px;
     background-size: contain;
+    padding: 12px;
   }
 `;
 
@@ -84,10 +85,11 @@ export const closeIcon = css`
   background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMy40MTQgMTMuNDE0Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS13aWR0aDoycHg7fTwvc3R5bGU+PC9kZWZzPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMjcuMjkzIC0yNy4yOTMpIj48bGluZSBjbGFzcz0iYSIgeDI9IjEyIiB5Mj0iMTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMyOCAyOCkiLz48bGluZSBjbGFzcz0iYSIgeDE9IjEyIiB5Mj0iMTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMyOCAyOCkiLz48L2c+PC9zdmc+');
   background-repeat: no-repeat;
   display: block;
-  label: arrowicon;
+  label: closeicon;
   width: 22px;
   height: 22px;
   background-size: contain;
+  padding: 12px;
 }
 `
 
