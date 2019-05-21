@@ -1,6 +1,6 @@
 import styled, { css } from 'react-emotion';
 
-export const Arrow = styled('div')`
+export const arrowContainer = css`
    {
     width: 50px;
     height: 50px;
@@ -8,7 +8,7 @@ export const Arrow = styled('div')`
     position: absolute;
     top: 2%;
     left: 2%;
-    opacity: ${props => (props.isShow ? '0.5' : '0')};
+    opacity: 0;
     border: 3px solid white;
     padding: 10px;
     cursor: pointer;
@@ -60,6 +60,10 @@ export const videoPlayer = css`
         width: 13% !important;
       }
     }
+
+    &:hover .${arrowContainer} {
+      opacity: 0.5;
+    }
   }
 `;
 
@@ -74,6 +78,18 @@ export const arrowIcon = css`
     background-size: contain;
   }
 `;
+
+export const closeIcon = css`
+{
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMy40MTQgMTMuNDE0Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS13aWR0aDoycHg7fTwvc3R5bGU+PC9kZWZzPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMjcuMjkzIC0yNy4yOTMpIj48bGluZSBjbGFzcz0iYSIgeDI9IjEyIiB5Mj0iMTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMyOCAyOCkiLz48bGluZSBjbGFzcz0iYSIgeDE9IjEyIiB5Mj0iMTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMyOCAyOCkiLz48L2c+PC9zdmc+');
+  background-repeat: no-repeat;
+  display: block;
+  label: arrowicon;
+  width: 22px;
+  height: 22px;
+  background-size: contain;
+}
+`
 
 export const AudioButton = styled('div')`
    {
