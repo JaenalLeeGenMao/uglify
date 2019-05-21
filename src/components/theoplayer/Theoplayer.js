@@ -6,11 +6,11 @@ import {
   theoStyle,
   theoLibraryLocation,
 } from './config';
-import { Arrow, videoPlayer, arrowIcon } from './style';
+import { arrowContainer, videoPlayer, arrowIcon, closeIcon } from './style';
 import AdBanner from './adApi';
 class Theoplayer extends Component {
   state = {
-    toggleArrow: false
+    isFullscreen: false
   };
 
   static propTypes = {
@@ -55,19 +55,13 @@ class Theoplayer extends Component {
   };
 
   handleGoBack = () => {
-    const { goBack } = history;
-    if (goBack) {
-      goBack();
-    }
-  };
-
-  getToggleArrow = () => {
-    const { toggleArrow } = this.state;
-    const { showBackBtn } = this.props;
-    if (showBackBtn) {
-      this.setState({
-        toggleArrow: !toggleArrow
-      });
+    if (this.state.isFullscreen) {
+      document.exitFullscreen();
+    } else {
+      const { goBack } = history;
+      if (goBack) {
+        goBack();
+      }
     }
   };
 
@@ -117,16 +111,19 @@ class Theoplayer extends Component {
       drm
     } = this.props;
 
-    const verimatrixDRMConfiguration = {
-      fairplay: {
-        licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
-        certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
-      },
-      playready: {
-        licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
-      },
-      widevine: {
-        licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+    let verimatrixDRMConfiguration;
+    if (drm) {
+      verimatrixDRMConfiguration = {
+        fairplay: {
+          licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
+          certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
+        },
+        playready: {
+          licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
+        },
+        widevine: {
+          licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+        }
       }
     }
 
@@ -315,7 +312,7 @@ class Theoplayer extends Component {
     if (!this.isSafari && !this.msie && !this.trident) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
         if (!isFullscreen) {
-          window.screen.orientation.lock('landscape');
+          window.screen.orientation.lock('landscape').catch(function (error) { });
         } else {
           window.screen.orientation.unlock();
         }
@@ -390,21 +387,20 @@ class Theoplayer extends Component {
   }
 
   render() {
-    const { toggleArrow } = this.state;
+    const { isFullscreen } = this.state;
     const { className, showBackBtn, children } = this.props;
     return (
       <div
         className={`${videoPlayer} ${className} video-container video-js theoplayer-skin`}
-        onMouseEnter={this.getToggleArrow}
-        onMouseLeave={this.getToggleArrow}
         ref={el => {
           this.containerPlayer = el;
         }}
       >
         {showBackBtn && (
-          <Arrow isShow={toggleArrow} onClick={this.handleGoBack}>
-            <span className={arrowIcon} />
-          </Arrow>
+          <div className={arrowContainer} onClick={this.handleGoBack}>
+            {!isFullscreen && <span className={arrowIcon} />}
+            {isFullscreen && <span className={closeIcon} />}
+          </div>
         )}
         {children}
       </div>
