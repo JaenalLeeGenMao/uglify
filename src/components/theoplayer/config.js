@@ -1,5 +1,6 @@
 const licenseURL =
-  'https://cdn.theoplayer.com/dash/eaa9cf5e-0523-4d6c-b24a-0f8c7260f79c';
+  'https://cdn.myth.theoplayer.com/enterprise/2bd51809-5e87-41f2-95f2-bb964e8e1606';
+// 'https://cdn.theoplayer.com/dash/eaa9cf5e-0523-4d6c-b24a-0f8c7260f79c';
 // const licenseURL = 'https://cdn.theoplayer.com/dash/theoplayer';
 
 let script = [
