@@ -61,7 +61,8 @@ export const overlayDetail = css`{
   left: 10px;
   right: auto;
   border-radius: 3px;
-  padding: 0 5px;
+  padding: 0;
+  box-sizing: border-box;
 }`;
 
 export const durationClass = css`{
@@ -171,10 +172,6 @@ export const wrapThumbnail = css`{
     float: none;
     clear: both;
     padding: 0;
-  }
-
-  .${overlayDetail} {
-    opacity: 0;
   }
 
   .${detailWrapper} {
