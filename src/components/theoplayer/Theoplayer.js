@@ -34,7 +34,8 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: PropTypes.bool,
     skipVideoAdsOffset: PropTypes.number,
     deviceId: PropTypes.string,
-    drm: PropTypes.object
+    drm: PropTypes.object,
+    handleOnReadyStateChange: PropTypes.func
   };
 
   static defaultProps = {
@@ -224,6 +225,7 @@ class Theoplayer extends Component {
 
     // the first banner ad is scheduled upon the first playing event
     this.player.addEventListener('sourcechange', this.handleVideoSrcChange);
+    this.player.addEventListener('readystatechange', this.handleReadyStateChange)
   }
 
   handleVideoPause = () => {
@@ -266,6 +268,12 @@ class Theoplayer extends Component {
     this.player.removeEventListener('playing', this.firstplay);
     this.player.addEventListener('playing', this.firstplay);
   };
+
+  handleReadyStateChange = () => {
+    if (this.props.handleOnReadyStateChange) {
+      this.props.handleOnReadyStateChange(this.player)
+    }
+  }
 
   firstplay = () => {
     const {
