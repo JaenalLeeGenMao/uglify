@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import history from '../../history';
-import {
-  theoScripts,
-  theoStyle,
-  theoLibraryLocation,
-} from './config';
+import { theoScripts, theoStyle, theoLibraryLocation } from './config';
 import { arrowContainer, videoPlayer, arrowIcon, closeIcon } from './style';
 import AdBanner from './adApi';
 class Theoplayer extends Component {
@@ -112,27 +108,40 @@ class Theoplayer extends Component {
       drm
     } = this.props;
 
+    const userAgent = navigator.userAgent;
+    const isSafari = /.*Version.*Safari.*/.test(userAgent);
+    const trident = userAgent.indexOf('Trident/') >= 0;
+    const edge = userAgent.indexOf('Edge/') >= 0;
+
     let verimatrixDRMConfiguration;
     if (drm) {
       verimatrixDRMConfiguration = {
         fairplay: {
-          licenseAcquisitionURL: drm.fairplay ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}` : '',
-          certificateURL: drm.fairplay ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}` : ''
+          licenseAcquisitionURL: drm.fairplay
+            ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}`
+            : '',
+          certificateURL: drm.fairplay
+            ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}`
+            : ''
         },
         playready: {
-          licenseAcquisitionURL: drm.playready ? `${drm.playready.licenseUrl}?deviceId=${deviceId}` : '',
+          licenseAcquisitionURL: drm.playready
+            ? `${drm.playready.licenseUrl}?deviceId=${deviceId}`
+            : ''
         },
         widevine: {
-          licenseAcquisitionURL: drm.widevine ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}` : '',
+          licenseAcquisitionURL: drm.widevine
+            ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}`
+            : ''
         }
-      }
+      };
     }
 
     let drmStreamUrl = '';
     if (drm) {
-      if (this.isSafari) {
+      if (isSafari) {
         drmStreamUrl = drm.fairplay.streamUrl ? drm.fairplay.streamUrl : '';
-      } else if (this.trident || this.edge) {
+      } else if (trident || edge) {
         drmStreamUrl = drm.playready.streamUrl ? drm.playready.streamUrl : '';
       } else {
         drmStreamUrl = drm.widevine.streamUrl ? drm.widevine.streamUrl : '';
@@ -225,7 +234,10 @@ class Theoplayer extends Component {
 
     // the first banner ad is scheduled upon the first playing event
     this.player.addEventListener('sourcechange', this.handleVideoSrcChange);
-    this.player.addEventListener('readystatechange', this.handleReadyStateChange)
+    this.player.addEventListener(
+      'readystatechange',
+      this.handleReadyStateChange
+    );
   }
 
   handleVideoPause = () => {
@@ -271,9 +283,9 @@ class Theoplayer extends Component {
 
   handleReadyStateChange = () => {
     if (this.props.handleOnReadyStateChange) {
-      this.props.handleOnReadyStateChange(this.player)
+      this.props.handleOnReadyStateChange(this.player);
     }
-  }
+  };
 
   firstplay = () => {
     const {
@@ -317,10 +329,16 @@ class Theoplayer extends Component {
 
   handleFullscreen = () => {
     const { isFullscreen } = this.state;
-    if (!this.isSafari && !this.msie && !this.trident) {
+
+    const userAgent = navigator.userAgent;
+    const isSafari = /.*Version.*Safari.*/.test(userAgent);
+    const msie = userAgent.indexOf('MSIE ') >= 0;
+    const trident = userAgent.indexOf('Trident/') >= 0;
+
+    if (!isSafari && !msie && !trident) {
       this.setState({ isFullscreen: !isFullscreen }, () => {
         if (!isFullscreen) {
-          window.screen.orientation.lock('landscape').catch(function (error) { });
+          window.screen.orientation.lock('landscape').catch(function(error) {});
         } else {
           window.screen.orientation.unlock();
         }
@@ -332,14 +350,6 @@ class Theoplayer extends Component {
     this.loadDynamicStyle();
     this.loadDynamicScript();
     this.loadFullscreenEvent();
-    const userAgent = navigator.userAgent;
-    this.isSafari = /.*Version.*Safari.*/.test(userAgent);
-    this.msie = userAgent.indexOf('MSIE ') >= 0;
-    this.trident = userAgent.indexOf('Trident/') >= 0;
-    this.edge = userAgent.indexOf('Edge/') >= 0;
-
-    // console.log("navuser", userAgent)
-    // console.log("ageen", this.isSafari, this.msie, this.trident, this.edge)
   }
 
   loadDynamicScript = () => {
@@ -377,8 +387,12 @@ class Theoplayer extends Component {
   componentWillUnmount() {
     if (this.player) {
       this.player.destroy();
-      this.isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-      if (!this.isSafari && !this.msie && !this.trident) {
+      const userAgent = navigator.userAgent;
+      const isSafari = /.*Version.*Safari.*/.test(userAgent);
+      const msie = userAgent.indexOf('MSIE ') >= 0;
+      const trident = userAgent.indexOf('Trident/') >= 0;
+
+      if (!isSafari && !msie && !trident) {
         window.screen.orientation.unlock();
       }
 
