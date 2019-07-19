@@ -118,20 +118,20 @@ class Theoplayer extends Component {
       verimatrixDRMConfiguration = {
         fairplay: {
           licenseAcquisitionURL: drm.fairplay
-            ? `${drm.fairplay.licenseUrl}?deviceId=${deviceId}`
+            ? `${drm.fairplay.licenseUrl}&deviceId=${deviceId}`
             : '',
           certificateURL: drm.fairplay
-            ? `${drm.fairplay.certificateUrl}?deviceId=${deviceId}`
+            ? `${drm.fairplay.certificateUrl}&deviceId=${deviceId}`
             : ''
         },
         playready: {
           licenseAcquisitionURL: drm.playready
-            ? `${drm.playready.licenseUrl}?deviceId=${deviceId}`
+            ? `${drm.playready.licenseUrl}&deviceId=${deviceId}`
             : ''
         },
         widevine: {
           licenseAcquisitionURL: drm.widevine
-            ? `${drm.widevine.licenseUrl}?deviceId=${deviceId}`
+            ? `${drm.widevine.licenseUrl}&deviceId=${deviceId}`
             : ''
         }
       };
