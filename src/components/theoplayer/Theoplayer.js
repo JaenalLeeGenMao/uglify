@@ -21,6 +21,7 @@ class Theoplayer extends Component {
     handleOnVideoEnded: PropTypes.func,
     handleOnVideoPause: PropTypes.func,
     handleOnVideoPlay: PropTypes.func,
+    handleOnVideoVolumeChange: PropTypes.func,
     handleVideoTimeUpdate: PropTypes.func,
     isMobile: PropTypes.bool,
     poster: PropTypes.string,
@@ -48,6 +49,8 @@ class Theoplayer extends Component {
     resizeBannerAndCBarEnabled: true,
     skipVideoAdsOffset: null,
     deviceId: '',
+    volume: 1,
+    muted: false,
     drm: null
   };
 
@@ -179,9 +182,12 @@ class Theoplayer extends Component {
           skipOffset: skipVideoAdsOffset
         }
       ],
+      persistVolume: true,
       textTracks: subtitles,
       preload: 'auto'
     };
+    this.player.volume = this.props.volume;
+    this.player.muted = this.props.muted;
     this.player.network.addResponseInterceptor(responseInterceptor);
   };
 
@@ -238,6 +244,8 @@ class Theoplayer extends Component {
       'readystatechange',
       this.handleReadyStateChange
     );
+
+    this.player.addEventListener('volumechange', this.handleVideoVolumeChange);
   }
 
   handleVideoPause = () => {
@@ -284,6 +292,12 @@ class Theoplayer extends Component {
   handleReadyStateChange = () => {
     if (this.props.handleOnReadyStateChange) {
       this.props.handleOnReadyStateChange(this.player);
+    }
+  };
+
+  handleVideoVolumeChange = () => {
+    if (this.props.handleOnVideoVolumeChange) {
+      this.props.handleOnVideoVolumeChange(this.player);
     }
   };
 
@@ -404,6 +418,10 @@ class Theoplayer extends Component {
       this.player.removeEventListener(
         'sourcechange',
         this.handleVideoSrcChange
+      );
+      this.player.removeEventListener(
+        'volumechange',
+        this.handleVideoVolumeChange
       );
     }
   }
