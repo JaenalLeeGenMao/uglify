@@ -116,25 +116,29 @@ class Theoplayer extends Component {
     const trident = userAgent.indexOf('Trident/') >= 0;
     const edge = userAgent.indexOf('Edge/') >= 0;
 
+    const qs = drm.widevine.licenseUrl.includes('?videoId')
+      ? '&deviceId=' + deviceId
+      : '?deviceId=' + deviceId;
+
     let verimatrixDRMConfiguration;
     if (drm) {
       verimatrixDRMConfiguration = {
         fairplay: {
           licenseAcquisitionURL: drm.fairplay
-            ? `${drm.fairplay.licenseUrl}&deviceId=${deviceId}`
+            ? `${drm.fairplay.licenseUrl}${qs}`
             : '',
           certificateURL: drm.fairplay
-            ? `${drm.fairplay.certificateUrl}&deviceId=${deviceId}`
+            ? `${drm.fairplay.certificateUrl}${qs}`
             : ''
         },
         playready: {
           licenseAcquisitionURL: drm.playready
-            ? `${drm.playready.licenseUrl}&deviceId=${deviceId}`
+            ? `${drm.playready.licenseUrl}${qs}`
             : ''
         },
         widevine: {
           licenseAcquisitionURL: drm.widevine
-            ? `${drm.widevine.licenseUrl}&deviceId=${deviceId}`
+            ? `${drm.widevine.licenseUrl}${qs}`
             : ''
         }
       };
