@@ -1,5 +1,6 @@
 const licenseURL =
-  'https://cdn.theoplayer.com/dash/c35696ca-473e-407e-abbf-1aef95c847f8';
+  'https://cdn.theoplayer.com/dash/47922f99-cd0d-4443-94d1-e790b3ce97e6'; /* license yg update comofootball.com */
+// 'https://cdn.theoplayer.com/dash/c35696ca-473e-407e-abbf-1aef95c847f8';
 // 'https://cdn.theoplayer.com/dash/eaa9cf5e-0523-4d6c-b24a-0f8c7260f79c';
 // const licenseURL = 'https://cdn.theoplayer.com/dash/theoplayer';
 
