@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import history from '../../history';
 import { theoScripts, theoStyle, theoLibraryLocation } from './config';
 import { arrowContainer, videoPlayer, arrowIcon, closeIcon } from './style';
 import AdBanner from './adApi';
@@ -58,10 +57,7 @@ class Theoplayer extends Component {
     if (this.state.isFullscreen) {
       document.exitFullscreen();
     } else {
-      const { goBack } = history;
-      if (goBack) {
-        goBack();
-      }
+      document.location.href = document.referrer || '/'
     }
   };
 

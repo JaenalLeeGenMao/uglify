@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import LazyLoad from '../lazyload';
-import history from '../../history';
 import { func, node } from 'prop-types';
 import {
   wrapper,
