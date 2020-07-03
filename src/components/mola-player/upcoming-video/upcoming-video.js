@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _get from 'lodash/get'
 import Link from '../../link';
-import Lazyload from '../../lazy-load';
+import Lazyload from '../../lazyload';
 import history from '../../../history';
 import CountDown from './count-down';
 import { setMultilineEllipsis } from '../../../utils/ellipsis';

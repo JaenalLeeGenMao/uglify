@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { container, fallbackImgContainer, lazyFade } from './lazy-load.style'
+import { container, fallbackImgContainer, lazyFade } from './lazyload.style'
 
 /**
  *
