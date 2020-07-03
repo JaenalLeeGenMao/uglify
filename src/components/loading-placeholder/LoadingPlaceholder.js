@@ -1,4 +1,3 @@
-// import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import React from 'react';
 import { Placeholder } from './style';
 
