@@ -242,6 +242,7 @@ class CustomController extends Component {
     const lngMap = {
       id: 'Indonesian',
       en: 'English',
+      uk: 'English',
       zh: 'Chinese',
       nl: 'Dutch',
       de: 'German',

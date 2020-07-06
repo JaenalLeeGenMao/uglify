@@ -274,7 +274,7 @@ class Player extends Component {
       videoStartTime = config.startTime,
       retryParameters = {
         timeout: 10000, // timeout in ms, after which we abort; 0 means never
-        maxAttempts: 10, // the maximum number of requests before we fail
+        maxAttempts: 2, // the maximum number of requests before we fail
         baseDelay: 1000, // the base delay in ms between retries
         backoffFactor: 1, // the multiplicative backoff factor between retries
         fuzzFactor: 0.5, // the fuzz factor to apply to each retry delay
@@ -477,6 +477,7 @@ class Player extends Component {
         const lngMap = {
           id: 'Indonesian',
           en: 'English',
+          uk: 'English',
           zh: 'Chinese',
           nl: 'Dutch',
           de: 'German',

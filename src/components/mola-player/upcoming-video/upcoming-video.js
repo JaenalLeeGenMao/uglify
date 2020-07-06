@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import _get from 'lodash/get'
-import Link from '../../link';
 import Lazyload from '../../lazyload';
-import history from '../../../history';
 import CountDown from './count-down';
 import { setMultilineEllipsis } from '../../../utils/ellipsis';
 import {
@@ -29,7 +27,7 @@ class UpcomingVideo extends Component {
   }
 
   redirectToNextVideo = videoId => {
-    history.push(`/watch?v=${videoId}&autoplay=1`)
+    window.location.href = `/watch?v=${videoId}&autoplay=1`
   }
 
   render() {
@@ -54,27 +52,27 @@ class UpcomingVideo extends Component {
             </div>
             {!isMobile && (
               <div className={'link'}>
-                <Link className={'play'} to={`/watch?v=${data.id}&autoplay=1`}>
+                <a className={'play'} href={`/watch?v=${data.id}&autoplay=1`}>
                   <CountDown startSecond={startInterval} onTimeFinish={() => this.redirectToNextVideo(data.id)} />
-                </Link>
-                <Link className={'close'} onClick={this.cancelUpcVideo}>
+                </a>
+                <a className={'close'} onClick={this.cancelUpcVideo}>
                   Close
-                </Link>
+                </a>
               </div>
             )}
           </div>
           {isMobile && (
             <div className={'link'}>
-              <Link className={'play'} to={`/watch?v=${data.id}&autoplay=1`}>
+              <a className={'play'} href={`/watch?v=${data.id}&autoplay=1`}>
                 <CountDown
                   isMobile={isMobile}
                   startSecond={startInterval}
                   onTimeFinish={() => this.redirectToNextVideo(data.id)}
                 />
-              </Link>
-              <Link className={'close'} onClick={this.cancelUpcVideo}>
+              </a>
+              <a className={'close'} onClick={this.cancelUpcVideo}>
                 Close
-              </Link>
+              </a>
             </div>
           )}
         </div>
