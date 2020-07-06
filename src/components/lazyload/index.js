@@ -1,3 +1,3 @@
-import LazyLoad from './lazyload'
+import LazyLoad from './lazyload';
 
-export default LazyLoad
+export default LazyLoad;

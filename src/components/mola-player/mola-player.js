@@ -5,6 +5,8 @@ import { parse, stringify, stringifyVtt, resync, toMS, toSrtTime, toVttTime } fr
 import loadjs from 'loadjs'
 import { parseXml2Obj } from './preroll/adsUtil'
 
+import { getPlayerErrorCategory, getPlayerErrorCode } from '@source/lib/errorUtil'
+
 import UpcomingVideo from './upcoming-video'
 import CustomController from './custom-controller'
 
@@ -54,7 +56,7 @@ class Player extends Component {
       window.playerProps = this.props
       if (!loadjs.isDefined('shakaplayerjs')) {
         loadjs(scriptArray, 'shakaplayerjs', {
-          success: function () {
+          success: function() {
             /* files loaded successfully */
             // console.log("script loaded successfully")
             that.loadPlayer()
@@ -271,8 +273,8 @@ class Player extends Component {
       streamSourceUrl = config.manifestUri,
       videoStartTime = config.startTime,
       retryParameters = {
-        timeout: 5000, // timeout in ms, after which we abort; 0 means never
-        maxAttempts: 1, // the maximum number of requests before we fail
+        timeout: 10000, // timeout in ms, after which we abort; 0 means never
+        maxAttempts: 10, // the maximum number of requests before we fail
         baseDelay: 1000, // the base delay in ms between retries
         backoffFactor: 1, // the multiplicative backoff factor between retries
         fuzzFactor: 0.5, // the fuzz factor to apply to each retry delay
@@ -295,9 +297,9 @@ class Player extends Component {
       abr: { enabled: false },
       manifest: {
         retryParameters,
-        hls: {
-          useFullSegmentsForStartTime: true
-        },
+        // hls: {
+        //   useFullSegmentsForStartTime: true,
+        // },
       },
       streaming: {
         retryParameters,
@@ -319,7 +321,7 @@ class Player extends Component {
 
             /** Shaka auto disabled texttracks when changing source, set mode back to hidden */
             for (let i = 0; i < video.textTracks.length; i++) {
-              video.textTracks[i].mode = 'hidden';
+              video.textTracks[i].mode = 'hidden'
             }
             console.log('player loaded')
 
@@ -374,7 +376,7 @@ class Player extends Component {
             if (response.status == 200 && response.data) return response.data
             else return null
           })
-          .then(function (data) {
+          .then(function(data) {
             // console.log(data)
             if (data) {
               /* data = dummyAdsPrerollXml */
@@ -512,7 +514,7 @@ class Player extends Component {
       let visitedTimeInSeconds = [],
         firstTimeFlag = 0,
         currentTime = 0
-      video.addEventListener('play', function (e) {
+      video.addEventListener('play', function(e) {
         if (that.props.handleOnPlayCallback) that.props.handleOnPlayCallback(that.player)
         // console.log('play', that.state)
         if (!firstTimeFlag) {
@@ -524,7 +526,7 @@ class Player extends Component {
           firstTimeFlag = 1
         }
         // that.handleResumeVideoTime(that.player, that.props.watchTimePosition)
-        that.durationInterval = setInterval(function () {
+        that.durationInterval = setInterval(function() {
           const player = that.player,
             video = player && player.getMediaElement()
 
@@ -551,14 +553,14 @@ class Player extends Component {
           }
         }, 1000)
       })
-      video.addEventListener('pause', function () {
+      video.addEventListener('pause', function() {
         // console.log('paused')
         clearInterval(that.durationInterval)
         if (that.props.handleVideoPause) {
           that.props.handleVideoPause(player)
         }
       })
-      video.addEventListener('ended', function () {
+      video.addEventListener('ended', function() {
         // console.log('Playback ended')
         clearInterval(that.durationInterval)
         if (that.props.handleVideoEnded) {
@@ -572,13 +574,13 @@ class Player extends Component {
           })
         }
       })
-      video.addEventListener('durationchange', function (e) {
+      video.addEventListener('durationchange', function(e) {
         clearInterval(that.durationInterval)
         if (that.props.handleDurationChange) {
           that.props.handleDurationChange(player)
         }
       })
-      video.addEventListener('volumechange', function (e) {
+      video.addEventListener('volumechange', function(e) {
         /** function set localStorage moved to custom controller `_updateVolume` method */
         if (that.props.handleOnVideoVolumeChange) {
           that.props.handleOnVideoVolumeChange(player)
@@ -609,8 +611,9 @@ class Player extends Component {
             if (hasPreroll && !hasPreroll.isPlayed) {
               this.player.totalWatchTime = 0
               this.initPreroll()
+            } else {
+              video.play()
             }
-            else { video.play() }
           },
         )
       }
@@ -722,7 +725,11 @@ class Player extends Component {
     const player = this.player,
       video = player && player.getMediaElement()
     const canStartNextVideo =
-      this.player && !this.player.isPreroll && !this.player.isLive() && video && video.duration - video.currentTime <= 10
+      this.player &&
+      !this.player.isPreroll &&
+      !this.player.isLive() &&
+      video &&
+      video.duration - video.currentTime <= 10
     const isBuffering = this.player && !this.player.isPreroll && this.player.isBuffering()
     // console.log('canStartNextVideo', canStartNextVideo)
     const controllerConfig = {
@@ -773,7 +780,7 @@ class Player extends Component {
             id="video-banner"
             alt={`banner-${banner.id}`}
             src={banner.mediaURL}
-            width={(videoOnlyHeight * 16) / 9}
+            // width={(videoOnlyHeight * 16) / 9}
             onClick={() => window.open(banner.link)}
             onError={() => this.setState({ banner: null })}
           />

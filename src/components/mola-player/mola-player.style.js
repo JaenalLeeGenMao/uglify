@@ -50,12 +50,11 @@ export const BannerImg = styled('img')`
    {
     position: relative;
     z-index: 2;
-    max-height: 8.9rem;
+    height: 12.3935%;
     cursor: pointer;
     display: block;
     margin: auto;
-    width: ${props => props.width || '100%'};
-    max-width: 100%;
+    width: auto;
   }
 `
 

@@ -1,150 +1,200 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { useInView } from 'react-intersection-observer'
+import React, { PureComponent } from 'react';
+import { bool, func, object, string, node } from 'prop-types';
 
-import { container, fallbackImgContainer, lazyFade } from './lazyload.style'
+import { fade, success, defaults, fadeInCss, errorBg } from './style';
 
-/**
- *
- * @references https://codesandbox.io/s/react-intersection-observer-ud2vo?fontsize=14&hidenavigation=1&theme=dark&file=/src/elements/ScrollWrapper.tsx
- * @param {string} alt Image title for improving SEO
- * @param {string} containerClassName Image wrapper external class attributes
- * @param {object} containerStyle Image wrapper external styles CSS properties
- * @param {string} className Img tag class attributes
- * @param {string} style Img tag styles CSS properties
- * @param {function} onClick typical javascript onClick function
- * @param {React.Node} children react component
- * @param {string} src image url e.g. https://mola.tv/mola.png
- * @param {string} errorImgClassName custom error for fallback image, incase of failed to load (e.g. class that has own custom background / custom background-image url)
- * @param {string} fallbackImageUri Default image to be displayed before real image is being loaded (recommended size < 50kb)
- *
- */
-const LazyLoad = ({
-  alt,
-  containerClassName,
-  containerStyle,
-  className,
-  style,
-  onClick,
-  children,
-  src,
-  onHoverBorder,
-  errorImgClassName,
-  fallbackImageUri,
-  handleCallback
-}) => {
-  const [isError, setIsError] = useState(false)
-  const [sources, setSources] = useState('')
-  const [isLoaded, setIsLoaded] = useState(false)
+class LazyLoad extends PureComponent {
+  static propTypes = {
+    alt: string,
+    className: string,
+    containerClassName: string,
+    containerStyle: object,
+    fadeIn: bool,
+    width: string,
+    height: string,
+    initial: string,
+    lazy: bool,
+    src: string,
+    style: object,
+    webp: bool,
+    onClick: func,
+    children: node,
+    onErrorShowDefault: bool,
+    errorImgClassName: string,
+  };
 
-  const ref = useRef();
-  const [inViewRef, inView] = useInView({
-    threshold: [0, 0.5, 0.75, 1.0],
-  })
-  const setRefs = useCallback(
-    (node) => {
-      // Ref's from useRef needs to have the node assigned to `current`
-      ref.current = node
-      // Callback refs, like the one from `useInView`, is a function that takes the node as an argument
-      inViewRef(node)
-    },
-    [inViewRef],
-  )
+  static defaultProps = {
+    alt: '',
+    className: '',
+    containerClassName: '',
+    containerStyle: {},
+    fadeIn: true,
+    width: '100%',
+    height: 'auto',
+    initial: '',
+    lazy: true,
+    onClick: () => { },
+    style: {},
+    webp: true,
+    children: null,
+    src: null,
+    onErrorShowDefault: false,
+    errorImgClassName: ''
+  };
 
-  // useEffect(() => {
-  //   // Update the document title using the browser API
-  //   if (handleCallback) {
-  //     handleCallback(false)
-  //   }
-  // }, []);
+  constructor(props) {
+    super(props);
 
-  // const callback = (status) => {
-  //   if (handleCallback) {
-  //     handleCallback(status)
-  //   }
-  // }
-
-  useEffect(() => {
-    if (inView && !sources) {
-      loadImage(global.webpSupport && webp)
-    }
-  }, [inView]);
-
-  const loadImage = (isWebP = false) => {
-    const imageUrl = src
-    const image = new window.Image()
-    let error = false
-    image.onload = () => {
-      if (ref.current && !sources) {
-        setSources(imageUrl)
-        setIsError(false)
-        setIsLoaded(true)
-      }
-    }
-
-    image.onerror = () => {
-      setIsError(true)
-      setIsLoaded(false)
-    }
-    image.src = imageUrl
+    this.image = React.createRef();
+    this.state = {
+      load: props.lazy ? '' : 'success',
+      showBackground: props.lazy,
+      sources: props.lazy ? props.initial : props.image,
+      widthSet: false
+    };
   }
 
-
-  // get imageWebPUrl() {
-  //   return `${this.props.src}.webp`
-  // }
-
-
-  return (
-    <>
-      {children &&
-        <div
-          className={`${containerClassName || ''} ${container} ${lazyFade}`}
-          style={{
-            ...containerStyle
-          }}
-          onClick={onClick}
-        >
-          {children}
-        </div>
+  componentDidMount() {
+    const { src } = this.props;
+    if (src) {
+      if (this.props.lazy) {
+        if (this.loadPolyfills()) {
+          this.initObserver();
+        } else {
+          this.loadImage(global.webpSupport && this.props.webp);
+        }
+      } else {
+        this.loadImage(global.webpSupport && this.props.webp);
       }
-      {fallbackImageUri && <img src={fallbackImageUri} className={`${fallbackImgContainer} fallbackImg fadeIn`} style={{ opacity: isLoaded ? 0 : 1 }} />}
-      {!children &&
-        <div
-          className={`${containerClassName || ''} ${container} imageWrapper ${isLoaded ? 'loaded' : ''}`}
-          style={{
-            ...containerStyle,
-            position: fallbackImageUri ? 'absolute' : 'relative',
-            top: 0,
-            left: 0
-          }}
-          onClick={onClick}
-        >
-          {onHoverBorder && <div className={'imageBorder'}></div>}
-          <img
-            ref={setRefs}
-            className={`${className || ''} fadeIn`}
-            style={{
-              ...style,
-              opacity: inView && isLoaded ? 1 : 0,
-            }}
-            src={sources}
-            alt={alt}
-          // onError={() => {
-          //   setIsError(true)
-          //   setIsLoaded(false)
-          //   // callback(false)
-          // }}
-          // onLoad={() => {
-          //   setIsError(false)
-          //   setIsLoaded(true)
-          //   // callback(true)
-          // }}
-          />
-          {isError && <div className={`errorBackground ${errorImgClassName || ''}`} />}
-        </div>
+    }
+  }
+
+  get className() {
+    const { load } = this.state;
+    const { fadeIn, src } = this.props;
+    let loadCss;
+    if (load) {
+      loadCss = load === "success" ? success : defaults;
+    } else {
+      loadCss = "";
+    }
+
+    if (src) {
+      return `${loadCss} ${fadeInCss && fade}`;
+    } else {
+      return fadeIn;
+    }
+  }
+
+  get dataProps() {
+    const dataProps = {};
+
+    Object.entries(this.props).forEach(([key, value]) => {
+      if (key.startsWith('data-')) {
+        dataProps[key] = value;
       }
-    </>
-  )
+    });
+    return dataProps;
+  }
+
+  get imageWebPUrl() {
+    return `${this.props.src}.webp`;
+  }
+
+  initObserver = () => {
+    const options = {
+      threshold: [0.1, 0.5, 0.75, 1.0]
+    };
+
+    let io = new IntersectionObserver(entries => {
+      const { isIntersecting, intersectionRatio } = entries[0];
+
+      if (isIntersecting && intersectionRatio > 0) {
+        this.createImage();
+        io.disconnect();
+        io = null;
+      }
+    }, options);
+
+    io.observe(this.image.current);
+  };
+
+  createImage = () => {
+    this.loadImage(global.webpSupport && this.props.webp);
+  };
+
+  loadImage = (isWebP = false) => {
+    const { src, onErrorShowDefault } = this.props;
+    const imageUrl = isWebP ? this.imageWebPUrl : src;
+    const image = new window.Image();
+    let error = false;
+
+    image.onload = () => {
+      if (this.image.current) {
+        this.setState({ sources: imageUrl });
+        this.handleImageChange('success');
+      }
+    };
+    image.onerror = () => {
+      if (isWebP) {
+        this.loadImage();
+      } else {
+        this.handleImageChange('default');
+        error = true;
+        if (error && onErrorShowDefault) {
+          this.setState({ isError: true });
+        }
+      }
+    };
+    image.src = imageUrl;
+  };
+
+  handleImageChange = status => {
+    this.setState({ load: status });
+  };
+
+  loadPolyfills = () => {
+    if (!this.supportsIntersectionObserver()) {
+      return false;
+    }
+    return true;
+  };
+
+  supportsIntersectionObserver = () => {
+    return (
+      'IntersectionObserver' in global &&
+      'IntersectionObserverEntry' in global &&
+      'intersectionRatio' in IntersectionObserverEntry.prototype
+    );
+  };
+
+  render() {
+    const { sources, isError } = this.state;
+    const {
+      alt,
+      containerClassName,
+      containerStyle,
+      style,
+      onClick,
+      children,
+      className,
+      src,
+      errorImgClassName,
+      onErrorShowDefault
+    } = this.props;
+    return (
+      <div
+        className={`${containerClassName || ''} ${this.className}`}
+        style={containerStyle}
+        onClick={onClick}
+      >
+        {src && (
+          <img ref={this.image} className={className} style={isError && onErrorShowDefault ? { display: 'none' } : style} src={sources} alt={alt} />
+        )}
+        {isError && <div className={`${errorBg} ${errorImgClassName}`} />}
+        {children}
+      </div>
+    );
+  }
 }
-
-export default LazyLoad
+export default LazyLoad;
