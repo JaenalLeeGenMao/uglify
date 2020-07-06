@@ -27,7 +27,14 @@ class UpcomingVideo extends Component {
   }
 
   redirectToNextVideo = videoId => {
-    window.location.href = `/watch?v=${videoId}&autoplay=1`
+    if (window) {
+      /** globalHistory is your custom history object, not default window.history from browser */
+      if (window.globalHistory) {
+        window.globalHistory.push(`/watch?v=${videoId}&autoplay=1`)
+      } else {
+        window.location.href = `/watch?v=${videoId}&autoplay=1`
+      }
+    }
   }
 
   render() {

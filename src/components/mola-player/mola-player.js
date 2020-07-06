@@ -665,6 +665,18 @@ class Player extends Component {
     })
   }
 
+  getRecommendationData = () => {
+    const recomData = _get(this.props, 'recommendation.data', [])
+
+    if (recomData && recomData.length > 0) {
+      if (recomData[0].id !== this.props.videoId) {
+        return recomData[0]
+      } else if (recomData.length > 1) return recomData[1]
+    }
+
+    return null
+  }
+
   renderNextVideo = hasNextVideo => {
     if (this.player) {
       const recomData = _get(this.props, 'recommendation.data', [])
@@ -747,6 +759,9 @@ class Player extends Component {
     const videoOnlyHeight =
       _get(document.getElementById('video-context'), 'offsetHeight', 0) -
       _get(document.getElementById('video-banner'), 'height', 0)
+
+    const recomData = this.getRecommendationData()
+
     return (
       <div ref={node => (this.childRefs = node)} id="video-context" className={container}>
         {!isPlaying && poster && (
@@ -796,7 +811,7 @@ class Player extends Component {
                 <code>Buffering . . .</code>
               </UserFeedback>
             )}
-            <CustomController player={this.player} isPreroll={isPreroll} isHover={isHover} config={controllerConfig} />
+            <CustomController player={this.player} isPreroll={isPreroll} isHover={isHover} config={controllerConfig} recommendation={recomData} />
             {canStartNextVideo && this.renderNextVideo(hasNextVideo)}
           </div>
         )}

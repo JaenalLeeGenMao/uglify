@@ -598,8 +598,9 @@ class CustomController extends Component {
   }
 
   _seekTo = n => {
-    const player = this.props.player
-    if (player) {
+    const player = this.props.player,
+      isLive = player && player.isLive()
+    if (player && !isLive) {
       const video = player && player.getMediaElement()
       if (video) {
         video.pause() /* start seeking */
@@ -629,6 +630,19 @@ class CustomController extends Component {
     if (fn) {
       tappingCount += 1
       tappingTimer = setTimeout(fn, 500)
+    }
+  }
+
+  _skipVideo = r => {
+    if (r && r.id) {
+      if (window) {
+        /** globalHistory is your custom history object, not default window.history from browser */
+        if (window.globalHistory) {
+          window.globalHistory.push(`/watch?v=${r.id}&autoplay=1`)
+        } else {
+          window.location.href = `/watch?v=${r.id}&autoplay=1`
+        }
+      }
     }
   }
 
@@ -696,6 +710,8 @@ class CustomController extends Component {
     const canShowDuration = (isLive && isPreroll) || !isLive
     // console.log('cue', cue)
     // console.log(currentTime, duration)
+
+    const recommendation = this.props.recommendation
 
     return (
       <>
@@ -772,6 +788,11 @@ class CustomController extends Component {
                   <div className={'tooltip withTooltip'}>Backward (⭠)</div>
                 </Icons>
               </>
+            )}
+            {recommendation && !isPreroll && (
+              <Icons className={'upcommingIcon'} onClick={() => this._skipVideo(recommendation)}>
+                <div className={'tooltip withTooltip'}>Skip To Next Video</div>
+              </Icons>
             )}
             <div className={'volume'}>
               <Icons
