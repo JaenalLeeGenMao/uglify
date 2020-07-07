@@ -1,5 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.2 (2020-07-07)
+BugFix:
+  - remove unused global lib errorUtil
+
 ## 2.0.1 (2020-07-06)
 New Features:
   - Add upcoming video button on mola-player controller

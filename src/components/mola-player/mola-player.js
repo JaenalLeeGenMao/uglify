@@ -5,8 +5,6 @@ import { parse, stringify, stringifyVtt, resync, toMS, toSrtTime, toVttTime } fr
 import loadjs from 'loadjs'
 import { parseXml2Obj } from './preroll/adsUtil'
 
-import { getPlayerErrorCategory, getPlayerErrorCode } from '@source/lib/errorUtil'
-
 import UpcomingVideo from './upcoming-video'
 import CustomController from './custom-controller'
 
