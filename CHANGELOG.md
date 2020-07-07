@@ -1,8 +1,12 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.3 (2020-07-07)
+Improvement:
+  - Add origin cors on molaplayer preroll ads impression
+
 ## 2.0.2 (2020-07-07)
 BugFix:
-  - remove unused global lib errorUtil
+  - Remove unused global lib errorUtil
 
 ## 2.0.1 (2020-07-06)
 New Features:

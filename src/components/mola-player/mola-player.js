@@ -111,7 +111,14 @@ class Player extends Component {
 
   handleOnAdsImpression = activeAds => {
     if (activeAds) {
-      fetch(activeAds.impression)
+      fetch(activeAds.impression, {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'no-cors', // no-cors, *cors, same-origin
+        credentials: 'include', // include, *same-origin, omit
+        headers: {
+          'Origin': 'https://mst.cx'
+        }
+      })
         .then(res => console.log(res.status))
         .catch(e => console.log('Error: ads impressions failed ', e))
     }
