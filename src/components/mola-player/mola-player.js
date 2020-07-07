@@ -1,14 +1,22 @@
-import React, { Component } from 'react'
-import _get from 'lodash/get'
-import axios from 'axios'
-import { parse, stringify, stringifyVtt, resync, toMS, toSrtTime, toVttTime } from 'subtitle'
-import loadjs from 'loadjs'
-import { parseXml2Obj } from './preroll/adsUtil'
+import React, { Component } from 'react';
+import _get from 'lodash/get';
+import axios from 'axios';
+import {
+  parse,
+  stringify,
+  stringifyVtt,
+  resync,
+  toMS,
+  toSrtTime,
+  toVttTime
+} from 'subtitle';
+import loadjs from 'loadjs';
+import { parseXml2Obj } from './preroll/adsUtil';
 
-import UpcomingVideo from './upcoming-video'
-import CustomController from './custom-controller'
+import UpcomingVideo from './upcoming-video';
+import CustomController from './custom-controller';
 
-import { ShakaScript } from './config'
+import { ShakaScript } from './config';
 
 import {
   container,
@@ -18,10 +26,10 @@ import {
   UserFeedback,
   ErrorFeedback,
   Icons,
-  BugLogoWrapper,
-} from './mola-player.style'
+  BugLogoWrapper
+} from './mola-player.style';
 
-let idleInterval
+let idleInterval;
 class Player extends Component {
   state = {
     isHover: false,
@@ -34,37 +42,37 @@ class Player extends Component {
     banner: {
       id: '',
       link: '',
-      mediaURL: '',
+      mediaURL: ''
     },
     isPreroll: false,
     ads: [],
-    autoplayEnabled: false,
-  }
+    autoplayEnabled: false
+  };
 
   componentDidMount() {
     // console.log('componentDidMount', this.props)
     if (process.env.BROWSER && window) {
-      const that = this
-      let scriptArray = []
+      const that = this;
+      let scriptArray = [];
       ShakaScript.map(script => {
-        scriptArray.push(script.src)
-      })
+        scriptArray.push(script.src);
+      });
 
-      that.handleInitPreroll()
-      window.playerProps = this.props
+      that.handleInitPreroll();
+      window.playerProps = this.props;
       if (!loadjs.isDefined('shakaplayerjs')) {
         loadjs(scriptArray, 'shakaplayerjs', {
           success: function() {
             /* files loaded successfully */
             // console.log("script loaded successfully")
-            that.loadPlayer()
+            that.loadPlayer();
           },
-          async: false,
-        })
+          async: false
+        });
       } else {
         /* files ALREADY loaded successfully */
         // console.log("script ALREADY loaded successfully")
-        that.loadPlayer()
+        that.loadPlayer();
       }
 
       // console.log('componentDidMount', this.props)
@@ -74,32 +82,32 @@ class Player extends Component {
   loadPlayer = () => {
     // console.log(window.shaka)
     // Install built-in polyfills to patch browser incompatibilities.
-    shaka.polyfill.installAll()
+    shaka.polyfill.installAll();
 
     // Check to see if the browser supports the basic APIs Shaka needs.
     if (shaka.Player.isBrowserSupported()) {
       // Everything looks good!
-      this.initPlayer()
+      this.initPlayer();
 
-      this.handleUserIdle()
+      this.handleUserIdle();
     } else {
       // This browser does not have the minimum set of APIs we need.
-      console.error('Browser not supported!')
-      that.onError({ customMsg: 'DISMISSED: Browser not supported!' })
+      console.error('Browser not supported!');
+      that.onError({ customMsg: 'DISMISSED: Browser not supported!' });
     }
-  }
+  };
 
   handleUserIdle = () => {
-    const that = this
-    clearInterval(idleInterval)
+    const that = this;
+    clearInterval(idleInterval);
     idleInterval = setInterval(() => {
       if (!document.cookie.includes('__idleSessionId')) {
-        that.setState({ isHover: false })
+        that.setState({ isHover: false });
       }
       // console.log('that.state.isPreroll', that.state.isPreroll)
       // console.log(that.state.isPreroll, that.state.ads)
-    }, 1000)
-  }
+    }, 1000);
+  };
 
   // handleResumeVideoTime = (player, time = 0) => { // gakepake
   //   const player = this.player,
@@ -116,82 +124,84 @@ class Player extends Component {
         mode: 'no-cors', // no-cors, *cors, same-origin
         credentials: 'include', // include, *same-origin, omit
         headers: {
-          'Origin': 'https://mst.cx'
+          Origin: 'https://mst.cx'
         }
       })
         .then(res => console.log(res.status))
-        .catch(e => console.log('Error: ads impressions failed ', e))
+        .catch(e => console.log('Error: ads impressions failed ', e));
     }
-  }
+  };
 
   /**
    *
    * @param {*} time e.g. 10:15:30
    */
   getTimeFormatToSecond = time => {
-    const hhmmss = time.split(':')
+    const hhmmss = time.split(':');
     let multiplier = {
       4: 86400,
       3: 3600,
       2: 60,
-      1: 1,
-    }
-    multiplier = multiplier[hhmmss.length]
+      1: 1
+    };
+    multiplier = multiplier[hhmmss.length];
     return hhmmss.reduce((p, c) => {
-      const result = p + parseInt(c, 10) * multiplier
-      multiplier = multiplier / 60
-      return result
-    }, 0)
-  }
+      const result = p + parseInt(c, 10) * multiplier;
+      multiplier = multiplier / 60;
+      return result;
+    }, 0);
+  };
 
   initPreroll = async () => {
-    let activeAds
-    const { ads } = this.state
+    let activeAds;
+    const { ads } = this.state;
 
     if (ads.length > 0) {
       const filteredAds = ads.map(eachAds => {
         if (eachAds.isPlayed === false && this.player) {
           if (eachAds.timeOffset === 'start') {
             if (this.player.totalWatchTime == 0) {
-              activeAds = eachAds
-              return { ...eachAds, isPlayed: true }
+              activeAds = eachAds;
+              return { ...eachAds, isPlayed: true };
             }
           } else {
-            const timeInSeconds = this.getTimeFormatToSecond(eachAds.timeOffset)
+            const timeInSeconds = this.getTimeFormatToSecond(
+              eachAds.timeOffset
+            );
             if (timeInSeconds == this.player.totalWatchTime) {
-              activeAds = eachAds
-              return { ...eachAds, isPlayed: true }
+              activeAds = eachAds;
+              return { ...eachAds, isPlayed: true };
             }
           }
         }
-        return eachAds
-      })
+        return eachAds;
+      });
 
       if (activeAds) {
         // console.log('masuk gak active ads preroll', activeAds, this.player.totalWatchTime)
         const config = {
           manifestUri: activeAds.mediafile,
-          startTime: 0 /** preroll selalu start dari 0 */,
-        }
+          startTime: 0 /** preroll selalu start dari 0 */
+        };
 
         if (this.player) {
           // console.log('masuk gak if preroll')
-          this.handleInitPlayer(this.player, config)
-          this.player.isPreroll = true
+          this.handleInitPlayer(this.player, config);
+          this.player.isPreroll = true;
         } else {
-          let video = document.getElementById('video-main')
+          let video = document.getElementById('video-main');
 
-          const player = new shaka.Player(video)
-          player.isPreroll = true
+          const player = new shaka.Player(video);
+          player.isPreroll = true;
           // console.log('masuk gak else preroll')
-          this.handleInitPlayer(player, config)
+          this.handleInitPlayer(player, config);
         }
 
-        this.handleOnAdsImpression(activeAds)
-        this.setState({ ads: filteredAds, isPreroll: true })
+        this.handleOnAdsImpression(activeAds);
+        this.setState({ ads: filteredAds, isPreroll: true });
       }
     }
-  }
+  };
 
   initPlayer = async () => {
     let drm = _get(this.props, 'drm', ''),
@@ -199,78 +209,92 @@ class Player extends Component {
       watchTime = _get(
         this.player,
         'totalWatchTime',
-        Number(_get(this.props, 'watchTimePosition', 0)),
-      ) /** setelah preroll selesai kembali ke totalWatchTime */
+        Number(_get(this.props, 'watchTimePosition', 0))
+      ); /** setelah preroll selesai kembali ke totalWatchTime */
     // console.log(watchTime, this.player)
-    let video = document.getElementById('video-main')
+    let video = document.getElementById('video-main');
 
-    const player = this.player || new shaka.Player(video)
+    const player = this.player || new shaka.Player(video);
 
     // window.player = player
     // console.log(streamSourceUrl, this.props)
 
-    const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent)
-    const startTime = watchTime > 0 && !isNaN(watchTime) ? watchTime : 0
-    let drmStreamUrl = isSafari ? drm.fairplay.streamUrl : drm.widevine.streamUrl
-    let manifestUri = drmStreamUrl ? drmStreamUrl : this.props.streamSourceUrl
+    const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
+    const startTime = watchTime > 0 && !isNaN(watchTime) ? watchTime : 0;
+    let drmStreamUrl = isSafari
+      ? drm.fairplay.streamUrl
+      : drm.widevine.streamUrl;
+    let manifestUri = drmStreamUrl ? drmStreamUrl : this.props.streamSourceUrl;
     if (drm && drm.drmEnabled) {
-      const deviceId = this.props.deviceId
+      const deviceId = this.props.deviceId;
 
       if (!isSafari) {
         const config = {
           manifestUri,
           drm: {
             servers: {
-              'com.widevine.alpha': `${drm.widevine.licenseUrl}?deviceId=${deviceId}`,
-              'com.microsoft.playready': `${drm.playready.licenseUrl}?deviceId=${deviceId}`,
-              'com.apple.fps.1_0': `${drm.fairplay.licenseUrl}?deviceId=${deviceId}`,
-            },
+              'com.widevine.alpha': `${
+                drm.widevine.licenseUrl
+              }?deviceId=${deviceId}`,
+              'com.microsoft.playready': `${
+                drm.playready.licenseUrl
+              }?deviceId=${deviceId}`,
+              'com.apple.fps.1_0': `${
+                drm.fairplay.licenseUrl
+              }?deviceId=${deviceId}`
+            }
           },
-          startTime,
-        }
-        this.handleInitPlayer(player, config)
+          startTime
+        };
+        this.handleInitPlayer(player, config);
       } else {
-        const req = await fetch(drm.fairplay.certificateUrl)
+        const req = await fetch(drm.fairplay.certificateUrl);
         if (!req.ok) {
           // handle error
-          console.log('Failed to retrieve fairplay certificate')
-          return
+          console.log('Failed to retrieve fairplay certificate');
+          return;
         }
 
-        const cert = await req.arrayBuffer()
+        const cert = await req.arrayBuffer();
 
         const config = {
           // vmapUrl, //: 'http://51.38.231.56:8000/vmap?tc=autorefresh_pre_roll',
           manifestUri,
           drm: {
             servers: {
-              'com.widevine.alpha': `${drm.widevine.licenseUrl}?deviceId=${deviceId}`,
-              'com.microsoft.playready': `${drm.playready.licenseUrl}?deviceId=${deviceId}`,
-              'com.apple.fps.1_0': `${drm.fairplay.licenseUrl}?deviceId=${deviceId}`,
+              'com.widevine.alpha': `${
+                drm.widevine.licenseUrl
+              }?deviceId=${deviceId}`,
+              'com.microsoft.playready': `${
+                drm.playready.licenseUrl
+              }?deviceId=${deviceId}`,
+              'com.apple.fps.1_0': `${
+                drm.fairplay.licenseUrl
+              }?deviceId=${deviceId}`
             },
             advanced: {
               'com.apple.fps.1_0': {
-                serverCertificate: new Uint8Array(cert),
-              },
-            },
+                serverCertificate: new Uint8Array(cert)
+              }
+            }
             // fairPlayTransform: false,
           },
-          startTime,
-        }
-        this.handleInitPlayer(player, config)
+          startTime
+        };
+        this.handleInitPlayer(player, config);
       }
     } else if (streamSourceUrl !== '') {
       const config = {
         manifestUri: streamSourceUrl,
-        startTime,
-      }
-      this.handleInitPlayer(player, config)
+        startTime
+      };
+      this.handleInitPlayer(player, config);
     } else {
-      console.log('Stream source not found')
+      console.log('Stream source not found');
     }
 
-    return true
-  }
+    return true;
+  };
 
   handleInitPlayer = (player, config) => {
     // console.log('config', config)
@@ -282,17 +306,17 @@ class Player extends Component {
         maxAttempts: 2, // the maximum number of requests before we fail
         baseDelay: 1000, // the base delay in ms between retries
         backoffFactor: 1, // the multiplicative backoff factor between retries
-        fuzzFactor: 0.5, // the fuzz factor to apply to each retry delay
-      }
+        fuzzFactor: 0.5 // the fuzz factor to apply to each retry delay
+      };
 
-    delete config.manifestUri
-    delete config.startTime
+    delete config.manifestUri;
+    delete config.startTime;
 
     player.getNetworkingEngine().registerResponseFilter((type, response) => {
-      response.headers['Access-Control-Allow-Origin'] = '*'
+      response.headers['Access-Control-Allow-Origin'] = '*';
       // console.log('registerResponseFilter', response)
-      return response
-    })
+      return response;
+    });
 
     player.configure({
       ...config,
@@ -301,16 +325,16 @@ class Player extends Component {
       // },
       abr: { enabled: false },
       manifest: {
-        retryParameters,
+        retryParameters
         // hls: {
         //   useFullSegmentsForStartTime: true,
         // },
       },
       streaming: {
-        retryParameters,
+        retryParameters
       },
-      availabilityWindowOverride: 300 /** IMPORTANT: this enables seekRange on default Safari player */,
-    })
+      availabilityWindowOverride: 300 /** IMPORTANT: this enables seekRange on default Safari player */
+    });
     try {
       // https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/master.m3u8
       // https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8
@@ -320,405 +344,455 @@ class Player extends Component {
         player
           .load(streamSourceUrl, videoStartTime)
           .then(() => {
-            const video = player.getMediaElement()
-            video.volume = that.props.volume
-            video.muted = that.props.muted
+            const video = player.getMediaElement();
+            video.volume = that.props.volume;
+            video.muted = that.props.muted;
 
             /** Shaka auto disabled texttracks when changing source, set mode back to hidden */
             for (let i = 0; i < video.textTracks.length; i++) {
-              video.textTracks[i].mode = 'hidden'
+              video.textTracks[i].mode = 'hidden';
             }
-            console.log('player loaded')
+            console.log('player loaded');
 
             that.setState({
               isLoading: false,
-              hasPlayButton: true,
-            })
+              hasPlayButton: true
+            });
 
             /** prevent legacy code Error terminate */
             player.reset = errorMsg => {
               if (errorMsg) {
-                that.setState({ isError: true, errorMsg })
+                that.setState({ isError: true, errorMsg });
               }
-              player.unload() /** unload, detach, destroy */
-              that.player = null
-              window.player = null
-            }
+              player.unload(); /** unload, detach, destroy */
+              that.player = null;
+              window.player = null;
+            };
 
             /** if that.player already exist, then skip adding new event listener */
             if (!that.player) {
-              that.player = player
-              window.player = player
+              that.player = player;
+              window.player = player;
 
-              that.handlePlayerEventListener(player)
-              console.log('Player Controls loaded and ready')
+              that.handlePlayerEventListener(player);
+              console.log('Player Controls loaded and ready');
 
               if (that.childRefs) {
-                that.childRefs.addEventListener('mouseenter', that.handleOnMouseMove)
-                that.childRefs.addEventListener('mousemove', that.handleOnMouseMove)
-                that.childRefs.addEventListener('mouseout', that.handleOnMouseExit)
+                that.childRefs.addEventListener(
+                  'mouseenter',
+                  that.handleOnMouseMove
+                );
+                that.childRefs.addEventListener(
+                  'mousemove',
+                  that.handleOnMouseMove
+                );
+                that.childRefs.addEventListener(
+                  'mouseout',
+                  that.handleOnMouseExit
+                );
               }
             }
           })
-          .catch(that.onError) // onError is executed if the asynchronous load fails
-      })
+          .catch(that.onError); // onError is executed if the asynchronous load fails
+      });
     } catch (e) {
-      console.warn('Error: player load failed ', e)
+      console.warn('Error: player load failed ', e);
     }
-  }
+  };
 
   handleInitPreroll = () => {
-    const that = this
+    const that = this;
     try {
       // update banner
-      const url = this.props.adsSource || ''
+      const url = this.props.adsSource || '';
       // const url =
       //   'https://api.stag.supersoccer.tv/v1/ads/ads-rubik/api/v1/get-inplayer-banner?params=eyJwcm9qZWN0X2lkIjoiMiIsInZpZGVvX2lkIjoid2VicGxheTAwMSIsImFwcF9pZCI6Im1vbGFfYWRzIiwic2Vzc2lvbl9pZCI6Imo4OWk4NTVkenJmeWg0aDF0NHY1OG9tc2poemV0OWlxbSIsImNsaWVudF9pcCI6IjM1LjE4Ni4xNTMuMTc1IiwidXVpZCI6IjU5MTA5MjBlLTMwYjMtNDExZS04ZmFkLTE2MTJhNDljMjQyOCIsInRpbWVfb2Zmc2V0IjoiNyIsInVzZXJfaWQiOiJlN3BGb3VmYUdlMjBUR1BKR1ZqeDRvRGpCWXIyMFoifQ=='
       if (url) {
         axios
           .get(url)
           .then(response => {
-            if (response.status == 200 && response.data) return response.data
-            else return null
+            if (response.status == 200 && response.data) return response.data;
+            else return null;
           })
           .then(function(data) {
             // console.log(data)
             if (data) {
               /* data = dummyAdsPrerollXml */
-              let adsResponse = parseXml2Obj(data)
+              let adsResponse = parseXml2Obj(data);
               adsResponse.then(ads => {
-                const filteredAds = ads.map(eachAds => ({ ...eachAds, isPlayed: false }))
+                const filteredAds = ads.map(eachAds => ({
+                  ...eachAds,
+                  isPlayed: false
+                }));
 
                 if (filteredAds.length > 0) {
                   // filteredAds.push({ ...filteredAds[0], timeOffset: '00:00:30' }) // uji coba midroll
                   // console.log(filteredAds)
-                  that.setState({ ads: filteredAds })
+                  that.setState({ ads: filteredAds });
                 }
-              })
+              });
             }
-          })
+          });
       }
     } catch (e) {
-      console.log('Error: fetch preroll API failed ', e)
+      console.log('Error: fetch preroll API failed ', e);
     }
-  }
+  };
 
   handleInitBanner = () => {
     try {
       // update banner
-      const url = this.props.adsBannerUrl || ''
+      const url = this.props.adsBannerUrl || '';
       // const url =
       //   'https://api.stag.supersoccer.tv/v1/ads/ads-rubik/api/v1/get-inplayer-banner?params=eyJwcm9qZWN0X2lkIjoiMiIsInZpZGVvX2lkIjoid2VicGxheTAwMSIsImFwcF9pZCI6Im1vbGFfYWRzIiwic2Vzc2lvbl9pZCI6Imo4OWk4NTVkenJmeWg0aDF0NHY1OG9tc2poemV0OWlxbSIsImNsaWVudF9pcCI6IjM1LjE4Ni4xNTMuMTc1IiwidXVpZCI6IjU5MTA5MjBlLTMwYjMtNDExZS04ZmFkLTE2MTJhNDljMjQyOCIsInRpbWVfb2Zmc2V0IjoiNyIsInVzZXJfaWQiOiJlN3BGb3VmYUdlMjBUR1BKR1ZqeDRvRGpCWXIyMFoifQ=='
       if (url) {
         axios.get(url).then(res => {
           // console.log(res)
           if (res.status === 200) {
-            const data = _get(res, 'data.data.data[0]', {})
+            const data = _get(res, 'data.data.data[0]', {});
 
             /** Skip banner BLANK: bannerIds '89' movies, '93' vod, '97' linear, live '101', replay '105', trailers '109' */
-            const blankBannerIds = ['89', '93', '97', '101', '105', '109']
+            const blankBannerIds = ['89', '93', '97', '101', '105', '109'];
             if (blankBannerIds.includes(data.id)) {
-              this.handleInitBanner()
+              this.handleInitBanner();
             } else {
               this.setState({
                 banner: {
                   id: data.id,
                   link: data.link,
-                  mediaURL: data.mediaURL,
-                },
-              })
+                  mediaURL: data.mediaURL
+                }
+              });
             }
           }
-        })
+        });
       }
     } catch (e) {
-      console.warn('Error: fetch banner API failed ', e)
+      console.warn('Error: fetch banner API failed ', e);
     }
-  }
+  };
 
   onErrorEvent = event => {
-    this.onError(event.detail)
-  }
+    this.onError(event.detail);
+  };
 
   onError = error => {
     // Log the error
-    const { category, code, data, severity, message } = error
-    const { errorCodes } = this.props
-    console.error('Player error: ', error)
-    if (this.player) this.player.reset()
+    const { category, code, data, severity, message } = error;
+    const { errorCodes } = this.props;
+    console.error('Player error: ', error);
+    if (this.player) this.player.reset();
 
     this.setState({
       isError: true,
       errorMsg:
         error.customMsg ||
-        `${_get(errorCodes, `${code}`, 'Silahkan refresh browser anda dalam beberapa saat lagi')} ‒ ${code} `,
-    })
-  }
+        `${_get(
+          errorCodes,
+          `${code}`,
+          'Silahkan refresh browser anda dalam beberapa saat lagi'
+        )} ‒ ${code} `
+    });
+  };
 
   handlePlayerEventListener = player => {
-    const that = this
+    const that = this;
 
     let loadedInterval,
-      loadedCount = 0
+      loadedCount = 0;
     loadedInterval = setInterval(() => {
-      if (player && player.getLoadMode && player.getLoadMode() > 1) clearInterval(loadedInterval)
+      if (player && player.getLoadMode && player.getLoadMode() > 1)
+        clearInterval(loadedInterval);
       if (loadedCount > 40) {
-        clearInterval(loadedInterval)
+        clearInterval(loadedInterval);
         that.onError({
-          customMsg: 'TIMEOUT: Failed to Load media, Silahkan refresh browser anda.',
-        })
+          customMsg:
+            'TIMEOUT: Failed to Load media, Silahkan refresh browser anda.'
+        });
       }
-    }, 500)
+    }, 500);
 
     // console.log(player, getLocalPlayer)
-    player.addEventListener('error', that.onErrorEvent)
+    player.addEventListener('error', that.onErrorEvent);
 
-    const video = player && player.getMediaElement()
+    const video = player && player.getMediaElement();
     // console.log('WACHAO', video, player)
     if (video) {
       // console.log('that.props.subtitles', that.props.subtitles)
-      for (const s of that.props.subtitles) {
-        // console.log(s)
-        const lngMap = {
-          id: 'Indonesian',
-          en: 'English',
-          uk: 'English',
-          zh: 'Chinese',
-          nl: 'Dutch',
-          de: 'German',
-          fr: 'French',
-          it: 'Italian',
-          pl: 'Polish',
-          pt: 'Portuguese',
-          ru: 'Russian',
-          es: 'Spanish',
-          vi: 'Viêt Namese',
-          el: 'Greek',
-          'pt-br': 'Portuguese',
+      if (that.props.subtitles && that.props.subtitles.length > 0) {
+        for (const s of that.props.subtitles) {
+          // console.log(s)
+          const lngMap = {
+            id: 'Indonesian',
+            en: 'English',
+            uk: 'English',
+            zh: 'Chinese',
+            nl: 'Dutch',
+            de: 'German',
+            fr: 'French',
+            it: 'Italian',
+            pl: 'Polish',
+            pt: 'Portuguese',
+            ru: 'Russian',
+            es: 'Spanish',
+            vi: 'Viêt Namese',
+            el: 'Greek',
+            'pt-br': 'Portuguese'
+          };
+          if (s.label && s.label.trim() == '') return;
+          const track = video.addTextTrack(
+            'metadata',
+            lngMap[s.label.toLowerCase()],
+            s.label
+          );
+          // track.mode = 'showing'
+          axios
+            .get(s.src)
+            .then(response => {
+              if (response.status == 200 && response.data) {
+                const srt = parse(response.data);
+                // console.log(srt)
+                srt.map(cue => {
+                  // console.log(cue)
+                  const newCue = new VTTCue(
+                    cue.start / 1000,
+                    cue.end / 1000,
+                    cue.text
+                  );
+                  window.cue = newCue;
+                  // newCue.size = 60
+                  // newCue.line = -12
+                  track.addCue(newCue);
+                });
+              }
+            })
+            .catch(e => console.log('Error: fetch subtitle failed ', e));
         }
-        if (s.label && s.label.trim() == '') return
-        const track = video.addTextTrack('metadata', lngMap[s.label.toLowerCase()], s.label)
-        // track.mode = 'showing'
-        axios
-          .get(s.src)
-          .then(response => {
-            if (response.status == 200 && response.data) {
-              const srt = parse(response.data)
-              // console.log(srt)
-              srt.map(cue => {
-                // console.log(cue)
-                const newCue = new VTTCue(cue.start / 1000, cue.end / 1000, cue.text)
-                window.cue = newCue
-                // newCue.size = 60
-                // newCue.line = -12
-                track.addCue(newCue)
-              })
-            }
-          })
-          .catch(e => console.log('Error: fetch subtitle failed ', e))
       }
       let visitedTimeInSeconds = [],
         firstTimeFlag = 0,
-        currentTime = 0
+        currentTime = 0;
       video.addEventListener('play', function(e) {
-        if (that.props.handleOnPlayCallback) that.props.handleOnPlayCallback(that.player)
+        if (that.props.handleOnPlayCallback)
+          that.props.handleOnPlayCallback(that.player);
         // console.log('play', that.state)
         if (!firstTimeFlag) {
           // console.log('!firstTimeFlag')
-          that.player.totalWatchTime = visitedTimeInSeconds.length
+          that.player.totalWatchTime = visitedTimeInSeconds.length;
           if (that.props.handleVideoWatchTime) {
-            that.props.handleVideoWatchTime(that.player)
+            that.props.handleVideoWatchTime(that.player);
           }
-          firstTimeFlag = 1
+          firstTimeFlag = 1;
         }
         // that.handleResumeVideoTime(that.player, that.props.watchTimePosition)
         that.durationInterval = setInterval(function() {
           const player = that.player,
-            video = player && player.getMediaElement()
+            video = player && player.getMediaElement();
 
           if (video && !that.state.isPreroll) {
-            currentTime = Math.floor(video.currentTime)
+            currentTime = Math.floor(video.currentTime);
             // console.log('visitedTimeInSeconds.indexOf(totalWatchTime) ', visitedTimeInSeconds.indexOf(totalWatchTime))
             if (visitedTimeInSeconds.indexOf(currentTime) === -1) {
               if (visitedTimeInSeconds.length % 30 === 0) {
-                that.handleInitBanner()
+                that.handleInitBanner();
               }
 
-              that.initPreroll()
-              visitedTimeInSeconds.push(currentTime)
+              that.initPreroll();
+              visitedTimeInSeconds.push(currentTime);
             }
             // console.log("currentTime", currentTime)
             // console.log('visitedTimeInSeconds', visitedTimeInSeconds)
-            that.player.levels_ = player && player.getVariantTracks() /** cocokin dengan legacy voplayer */
-            that.player.totalWatchTime = visitedTimeInSeconds.length
+            that.player.levels_ =
+              player &&
+              player.getVariantTracks(); /** cocokin dengan legacy voplayer */
+            that.player.totalWatchTime = visitedTimeInSeconds.length;
             // console.log("visitedTimeInSeconds.length", visitedTimeInSeconds.length)
           }
 
           if (that.props.handleVideoWatchTime) {
-            that.props.handleVideoWatchTime(player)
+            that.props.handleVideoWatchTime(player);
           }
-        }, 1000)
-      })
+        }, 1000);
+      });
       video.addEventListener('pause', function() {
         // console.log('paused')
-        clearInterval(that.durationInterval)
+        clearInterval(that.durationInterval);
         if (that.props.handleVideoPause) {
-          that.props.handleVideoPause(player)
+          that.props.handleVideoPause(player);
         }
-      })
+      });
       video.addEventListener('ended', function() {
         // console.log('Playback ended')
-        clearInterval(that.durationInterval)
+        clearInterval(that.durationInterval);
         if (that.props.handleVideoEnded) {
-          that.props.handleVideoEnded(player)
+          that.props.handleVideoEnded(player);
         }
 
         if (that.player.isPreroll) {
           that.setState({ isPreroll: false }, () => {
-            that.initPlayer()
-            that.player.isPreroll = false
-          })
+            that.initPlayer();
+            that.player.isPreroll = false;
+          });
         }
-      })
+      });
       video.addEventListener('durationchange', function(e) {
-        clearInterval(that.durationInterval)
+        clearInterval(that.durationInterval);
         if (that.props.handleDurationChange) {
-          that.props.handleDurationChange(player)
+          that.props.handleDurationChange(player);
         }
-      })
+      });
       video.addEventListener('volumechange', function(e) {
         /** function set localStorage moved to custom controller `_updateVolume` method */
         if (that.props.handleOnVideoVolumeChange) {
-          that.props.handleOnVideoVolumeChange(player)
+          that.props.handleOnVideoVolumeChange(player);
         }
-      })
+      });
     }
-  }
+  };
 
   handlePlayButton = () => {
-    if (this.props.handleOnPlayCallback) this.props.handleOnPlayCallback(this.player)
+    if (this.props.handleOnPlayCallback)
+      this.props.handleOnPlayCallback(this.player);
 
-    if (this.props.isPlayerBlocked) return
+    if (this.props.isPlayerBlocked) return;
 
     if (this.player) {
       const player = this.player,
-        video = player && player.getMediaElement()
+        video = player && player.getMediaElement();
 
-      const { ads } = this.state
+      const { ads } = this.state;
 
       if (video) {
         this.setState(
           {
             isPlaying: true,
-            autoplayEnabled: true,
+            autoplayEnabled: true
           },
           () => {
-            const hasPreroll = ads.filter(a => a.timeOffset === 'start')[0]
+            const hasPreroll = ads.filter(a => a.timeOffset === 'start')[0];
             if (hasPreroll && !hasPreroll.isPlayed) {
-              this.player.totalWatchTime = 0
-              this.initPreroll()
+              this.player.totalWatchTime = 0;
+              this.initPreroll();
             } else {
-              video.play()
+              video.play();
             }
-          },
-        )
+          }
+        );
       }
     }
-  }
+  };
 
   handleSubtreeOnChange = () => {
-    const videoHeight = _get(document.getElementById('video-main'), 'offsetHeight', '')
-    const videoChildEl = _get(document.getElementsByClassName(childContainer), '[0]', '')
+    const videoHeight = _get(
+      document.getElementById('video-main'),
+      'offsetHeight',
+      ''
+    );
+    const videoChildEl = _get(
+      document.getElementsByClassName(childContainer),
+      '[0]',
+      ''
+    );
 
     /** update child container */
     if (videoHeight && videoChildEl) {
-      videoChildEl.style.height = `${videoHeight}px`
-      videoChildEl.style.width = `${(videoHeight * 16) / 9}px`
+      videoChildEl.style.height = `${videoHeight}px`;
+      videoChildEl.style.width = `${(videoHeight * 16) / 9}px`;
     }
-  }
+  };
 
   componentWillUnmount() {
     if (this.durationInterval) {
-      clearInterval(this.durationInterval)
+      clearInterval(this.durationInterval);
     }
     if (this.childRefs) {
-      this.childRefs.removeEventListener('mouseenter', this.handleOnMouseMove)
-      this.childRefs.removeEventListener('mousemove', this.handleOnMouseMove)
-      this.childRefs.removeEventListener('mouseout', this.handleOnMouseExit)
+      this.childRefs.removeEventListener('mouseenter', this.handleOnMouseMove);
+      this.childRefs.removeEventListener('mousemove', this.handleOnMouseMove);
+      this.childRefs.removeEventListener('mouseout', this.handleOnMouseExit);
     }
     if (this.player) {
-      this.player.getNetworkingEngine().clearAllResponseFilters()
-      this.player = undefined
-      window.player = undefined
+      this.player.getNetworkingEngine().clearAllResponseFilters();
+      this.player = undefined;
+      window.player = undefined;
     }
 
-    clearInterval(idleInterval)
+    clearInterval(idleInterval);
   }
 
   handleOnMouseExit = e => {
-    this.setState({ isHover: false })
-  }
+    this.setState({ isHover: false });
+  };
 
   handleOnMouseMove = e => {
-    document.cookie = `__idleSessionId=mola; max-age=${5}; path=/;`
-    if (!this.state.isHover) this.setState({ isHover: true })
-  }
+    document.cookie = `__idleSessionId=mola; max-age=${5}; path=/;`;
+    if (!this.state.isHover) this.setState({ isHover: true });
+  };
 
   handleCancelUpcVideo = e => {
     this.setState({
-      hasNextVideo: false,
-    })
-  }
+      hasNextVideo: false
+    });
+  };
 
   getRecommendationData = () => {
-    const recomData = _get(this.props, 'recommendation.data', [])
+    const recomData = _get(this.props, 'recommendation.data', []);
 
     if (recomData && recomData.length > 0) {
       if (recomData[0].id !== this.props.videoId) {
-        return recomData[0]
-      } else if (recomData.length > 1) return recomData[1]
+        return recomData[0];
+      } else if (recomData.length > 1) return recomData[1];
     }
 
-    return null
-  }
+    return null;
+  };
 
   renderNextVideo = hasNextVideo => {
     if (this.player) {
-      const recomData = _get(this.props, 'recommendation.data', [])
-      let data = null
+      const recomData = _get(this.props, 'recommendation.data', []);
+      let data = null;
       if (recomData && recomData.length > 0) {
         if (recomData[0].id !== this.props.videoId) {
-          data = recomData[0]
-        } else if (recomData.length > 1) data = recomData[1]
+          data = recomData[0];
+        } else if (recomData.length > 1) data = recomData[1];
       }
 
       if (data && hasNextVideo && !this.player.isLive()) {
-        return <UpcomingVideo data={data} handleCancelVideo={this.handleCancelUpcVideo} startInterval={10} />
+        return (
+          <UpcomingVideo
+            data={data}
+            handleCancelVideo={this.handleCancelUpcVideo}
+            startInterval={10}
+          />
+        );
       } else {
-        return <div />
+        return <div />;
       }
     }
-  }
+  };
 
   renderBugLogo = bugLogoVideo => {
-    let BLClassName = ''
+    let BLClassName = '';
     if (bugLogoVideo.type === 3) {
       /** fullscreen */
-      BLClassName = 'fullscreen'
+      BLClassName = 'fullscreen';
     } else if (bugLogoVideo.type === 2) {
       /** wide */
-      BLClassName = 'wide'
+      BLClassName = 'wide';
     } else if (bugLogoVideo.type === 1) {
       /** square */
-      BLClassName = 'square'
+      BLClassName = 'square';
     }
 
     return (
       <BugLogoWrapper className={BLClassName}>
-        <img id="video-bug-logo" src={bugLogoVideo.image} alt="Bug-logo Player" />
+        <img
+          id="video-bug-logo"
+          src={bugLogoVideo.image}
+          alt="Bug-logo Player"
+        />
       </BugLogoWrapper>
-    )
-  }
+    );
+  };
 
   render() {
     const {
@@ -731,24 +805,31 @@ class Player extends Component {
       hasNextVideo,
       hasPlayButton,
       banner,
-      autoplayEnabled,
-    } = this.state
-    const { title, poster, children, isPlayButtonDisabled, playerConfig } = this.props
+      autoplayEnabled
+    } = this.state;
+    const {
+      title,
+      poster,
+      children,
+      isPlayButtonDisabled,
+      playerConfig
+    } = this.props;
     // console.log('banner', banner)
     const bugLogoVideo = {
       type: _get(this.props, 'bugLogo.attributes.logoType', null),
-      image: _get(this.props, 'bugLogo.attributes.imageURL', null),
-    }
+      image: _get(this.props, 'bugLogo.attributes.imageURL', null)
+    };
 
     const player = this.player,
-      video = player && player.getMediaElement()
+      video = player && player.getMediaElement();
     const canStartNextVideo =
       this.player &&
       !this.player.isPreroll &&
       !this.player.isLive() &&
       video &&
-      video.duration - video.currentTime <= 10
-    const isBuffering = this.player && !this.player.isPreroll && this.player.isBuffering()
+      video.duration - video.currentTime <= 10;
+    const isBuffering =
+      this.player && !this.player.isPreroll && this.player.isBuffering();
     // console.log('canStartNextVideo', canStartNextVideo)
     const controllerConfig = {
       togglePlayPauseEnabled: true,
@@ -756,30 +837,42 @@ class Player extends Component {
       toggleMuteEnabled: true,
       volumeBarEnabled: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
-      ...playerConfig,
-    }
+      ...playerConfig
+    };
     // console.log(this.state)
-    this.handleSubtreeOnChange()
+    this.handleSubtreeOnChange();
 
     const videoOnlyHeight =
       _get(document.getElementById('video-context'), 'offsetHeight', 0) -
-      _get(document.getElementById('video-banner'), 'height', 0)
+      _get(document.getElementById('video-banner'), 'height', 0);
 
-    const recomData = this.getRecommendationData()
+    const recomData = this.getRecommendationData();
 
     return (
-      <div ref={node => (this.childRefs = node)} id="video-context" className={container}>
-        {!isPlaying && poster && (
-          <Poster>
-            <img id="video-poster" src={poster} />
-          </Poster>
-        )}
+      <div
+        ref={node => (this.childRefs = node)}
+        id="video-context"
+        className={container}
+      >
+        {!isPlaying &&
+          poster && (
+            <Poster>
+              <img id="video-poster" src={poster} />
+            </Poster>
+          )}
         {!isPlaying && (
           <UserFeedback>
-            {isLoading && !isError && !isPlayButtonDisabled && <code>Loading . . .</code>}
-            {!isError && hasPlayButton && !isPlayButtonDisabled && (
-              <Icons className={'playIcon'} onClick={() => this.handlePlayButton()} />
-            )}
+            {isLoading &&
+              !isError &&
+              !isPlayButtonDisabled && <code>Loading . . .</code>}
+            {!isError &&
+              hasPlayButton &&
+              !isPlayButtonDisabled && (
+                <Icons
+                  className={'playIcon'}
+                  onClick={() => this.handlePlayButton()}
+                />
+              )}
           </UserFeedback>
         )}
         {isError && (
@@ -793,36 +886,47 @@ class Player extends Component {
           autoPlay={autoplayEnabled}
           style={{
             width: (videoOnlyHeight * 16) / 9,
-            height: videoOnlyHeight,
+            height: videoOnlyHeight
           }}
-        ></video>
-        {banner && banner.mediaURL && this.player && !isPreroll && (
-          <BannerImg
-            id="video-banner"
-            alt={`banner-${banner.id}`}
-            src={banner.mediaURL}
-            // width={(videoOnlyHeight * 16) / 9}
-            onClick={() => window.open(banner.link)}
-            onError={() => this.setState({ banner: null })}
-          />
-        )}
+        />
+        {banner &&
+          banner.mediaURL &&
+          this.player &&
+          !isPreroll && (
+            <BannerImg
+              id="video-banner"
+              alt={`banner-${banner.id}`}
+              src={banner.mediaURL}
+              // width={(videoOnlyHeight * 16) / 9}
+              onClick={() => window.open(banner.link)}
+              onError={() => this.setState({ banner: null })}
+            />
+          )}
         {/* {this.player && <Preroll player={this.player} adsSource={this.props.adsSource} />} */}
-        {this.player && isPlaying && (
-          <div className={childContainer} id="video-child">
-            {this.renderBugLogo(bugLogoVideo)}
-            {children}
-            {isBuffering && isHover && (
-              <UserFeedback>
-                <code>Buffering . . .</code>
-              </UserFeedback>
-            )}
-            <CustomController player={this.player} isPreroll={isPreroll} isHover={isHover} config={controllerConfig} recommendation={recomData} />
-            {canStartNextVideo && this.renderNextVideo(hasNextVideo)}
-          </div>
-        )}
+        {this.player &&
+          isPlaying && (
+            <div className={childContainer} id="video-child">
+              {this.renderBugLogo(bugLogoVideo)}
+              {children}
+              {isBuffering &&
+                isHover && (
+                  <UserFeedback>
+                    <code>Buffering . . .</code>
+                  </UserFeedback>
+                )}
+              <CustomController
+                player={this.player}
+                isPreroll={isPreroll}
+                isHover={isHover}
+                config={controllerConfig}
+                recommendation={recomData}
+              />
+              {canStartNextVideo && this.renderNextVideo(hasNextVideo)}
+            </div>
+          )}
       </div>
-    )
+    );
   }
 }
 
-export default Player
+export default Player;

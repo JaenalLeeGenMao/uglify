@@ -1,5 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.4 (2020-07-07)
+Bugfix:
+  - Only loops subtitles when it is passed, stop player from executing
+
 ## 2.0.3 (2020-07-07)
 Improvement:
   - Add origin cors on molaplayer preroll ads impression
