@@ -221,11 +221,11 @@ class Player extends Component {
 
     const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
     const startTime = watchTime > 0 && !isNaN(watchTime) ? watchTime : 0;
+    if (drm && drm.drmEnabled) {
     let drmStreamUrl = isSafari
       ? drm.fairplay.streamUrl
       : drm.widevine.streamUrl;
     let manifestUri = drmStreamUrl ? drmStreamUrl : this.props.streamSourceUrl;
-    if (drm && drm.drmEnabled) {
       const deviceId = this.props.deviceId;
 
       if (!isSafari) {
@@ -848,11 +848,13 @@ class Player extends Component {
 
     const recomData = this.getRecommendationData();
 
+    const isFullscreen = document && document.fullscreenElement
+
     return (
       <div
         ref={node => (this.childRefs = node)}
         id="video-context"
-        className={container}
+        className={`${container} ${isFullscreen ? 'fullscreen' : ''}`}
       >
         {!isPlaying &&
           poster && (

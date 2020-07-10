@@ -349,7 +349,7 @@ class CustomController extends Component {
       const rect = video.getBoundingClientRect()
 
       if (this.isFullscreen()) {
-        seekTooltip.style.left = `${event.pageX - rect.left - rect.height * 0.05}px`
+        seekTooltip.style.left = `${event.pageX - rect.left - rect.height * 0.0875}px`
       } else {
         seekTooltip.style.left = `${event.pageX - rect.left - rect.height * 0.0875}px`
       }

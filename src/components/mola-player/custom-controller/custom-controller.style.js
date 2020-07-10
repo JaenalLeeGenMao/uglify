@@ -9,11 +9,6 @@ export const Icons = styled('div')`
   transition: all 0.2s ease-in-out;
   overflow: hidden;
 
-  @media screen and (max-width: 640px) {
-    width: 24px;
-    height: 24px;
-  }
-
   > div.withTooltip {
     transition: all 0.3s ease-in-out;
     transform: translate(calc(-30%), calc(-100% - 1em));
@@ -115,11 +110,6 @@ export const Icons = styled('div')`
     > div.withTooltip {
       width: 10em;
       transform: translate(calc(-40% - 0.2em), calc(-100% - 1.25em));
-    }
-
-    @media screen and (max-width: 640px) {
-      width: 18px;
-      height: 16px;
     }
   }
 

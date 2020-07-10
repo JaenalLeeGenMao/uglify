@@ -1,5 +1,15 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.5 (2020-07-10)
+Improvement:
+  - Controller button size adjust on fullscreen
+  - Set default video-context font-size to 1rem and fullscreen font-size to 1.8rem
+  - Mobile default font-size on fullscreen to 12px
+  - All icons on mola-player controller set to read px to em
+
+Bugfix:
+  - Custom controller font color set to default #fff (mola-player)
+
 ## 2.0.4 (2020-07-07)
 Bugfix:
   - Only loops subtitles when it is passed, stop player from executing

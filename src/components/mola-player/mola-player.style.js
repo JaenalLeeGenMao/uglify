@@ -6,7 +6,17 @@ export const container = css`
     height: 100%;
     width: 100%;
     user-select: none;
+    color: #FFFFFF;
     background: #000000;
+    font-size: 1rem;
+
+    &.fullscreen {
+      font-size: 1.8rem;
+
+      @media only screen and (max-width: 840px){
+        font-size: 12px;
+      }
+    }
 
     code {
       font-size: 1.4rem;
