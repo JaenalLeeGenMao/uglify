@@ -222,10 +222,12 @@ class Player extends Component {
     const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
     const startTime = watchTime > 0 && !isNaN(watchTime) ? watchTime : 0;
     if (drm && drm.drmEnabled) {
-    let drmStreamUrl = isSafari
-      ? drm.fairplay.streamUrl
-      : drm.widevine.streamUrl;
-    let manifestUri = drmStreamUrl ? drmStreamUrl : this.props.streamSourceUrl;
+      let drmStreamUrl = isSafari
+        ? drm.fairplay.streamUrl
+        : drm.widevine.streamUrl;
+      let manifestUri = drmStreamUrl
+        ? drmStreamUrl
+        : this.props.streamSourceUrl;
       const deviceId = this.props.deviceId;
 
       if (!isSafari) {
@@ -734,27 +736,21 @@ class Player extends Component {
     });
   };
 
-  getRecommendationData = () => {
-    const recomData = _get(this.props, 'recommendation.data', []);
-
-    if (recomData && recomData.length > 0) {
-      if (recomData[0].id !== this.props.videoId) {
-        return recomData[0];
-      } else if (recomData.length > 1) return recomData[1];
-    }
-
-    return null;
-  };
-
+  /**
+   * @param {props.recommendation} recommendation
+   * data: {
+   *   id,
+   *   title,
+   *   shortDescription,
+   *   images.cover: {
+   *     portrait,
+   *     landscape
+   *   }
+   * }
+   */
   renderNextVideo = hasNextVideo => {
     if (this.player) {
-      const recomData = _get(this.props, 'recommendation.data', []);
-      let data = null;
-      if (recomData && recomData.length > 0) {
-        if (recomData[0].id !== this.props.videoId) {
-          data = recomData[0];
-        } else if (recomData.length > 1) data = recomData[1];
-      }
+      const data = _get(this.props, 'recommendation', null);
 
       if (data && hasNextVideo && !this.player.isLive()) {
         return (
@@ -812,7 +808,8 @@ class Player extends Component {
       poster,
       children,
       isPlayButtonDisabled,
-      playerConfig
+      recommendation,
+      playerConfig = {}
     } = this.props;
     // console.log('banner', banner)
     const bugLogoVideo = {
@@ -822,12 +819,6 @@ class Player extends Component {
 
     const player = this.player,
       video = player && player.getMediaElement();
-    const canStartNextVideo =
-      this.player &&
-      !this.player.isPreroll &&
-      !this.player.isLive() &&
-      video &&
-      video.duration - video.currentTime <= 10;
     const isBuffering =
       this.player && !this.player.isPreroll && this.player.isBuffering();
     // console.log('canStartNextVideo', canStartNextVideo)
@@ -836,9 +827,19 @@ class Player extends Component {
       toggleFullscreenEnabled: true,
       toggleMuteEnabled: true,
       volumeBarEnabled: true,
+      nextVideoEnabled: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
       ...playerConfig
     };
+
+    const canStartNextVideo =
+      this.player &&
+      !this.player.isPreroll &&
+      !this.player.isLive() &&
+      video &&
+      video.duration - video.currentTime <= 10 &&
+      controllerConfig.nextVideoEnabled;
+
     // console.log(this.state)
     this.handleSubtreeOnChange();
 
@@ -846,9 +847,7 @@ class Player extends Component {
       _get(document.getElementById('video-context'), 'offsetHeight', 0) -
       _get(document.getElementById('video-banner'), 'height', 0);
 
-    const recomData = this.getRecommendationData();
-
-    const isFullscreen = document && document.fullscreenElement
+    const isFullscreen = document && document.fullscreenElement;
 
     return (
       <div
@@ -921,7 +920,7 @@ class Player extends Component {
                 isPreroll={isPreroll}
                 isHover={isHover}
                 config={controllerConfig}
-                recommendation={recomData}
+                recommendation={recommendation}
               />
               {canStartNextVideo && this.renderNextVideo(hasNextVideo)}
             </div>

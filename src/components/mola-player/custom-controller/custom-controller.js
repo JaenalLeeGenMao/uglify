@@ -675,10 +675,12 @@ class CustomController extends Component {
   renderCue = () => {
     const { cue } = this.state
     const isPreroll = _get(this.props, 'isPreroll', false)
+    const isHover = _get(this.props, 'isHover', false)
+
     return (
       <>
         {!cue.hidden && cue.text && !isPreroll && (
-          <CueWrapper>
+          <CueWrapper className={`${isHover ? '' : 'hide'}`}>
             <ReactMarkdown source={cue.text.replace(/-/g, '—')} escapeHtml={false} />
           </CueWrapper>
         )}

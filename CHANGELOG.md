@@ -1,5 +1,11 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.6 (2020-07-13)
+Improvement:
+  - Subtitle position moves up and down depending on hover state
+  - Add nextVideoEnabled to toggle next video on player
+  - Change recommendation into accepting object instead of recommendation.data
+
 ## 2.0.5 (2020-07-10)
 Improvement:
   - Controller button size adjust on fullscreen

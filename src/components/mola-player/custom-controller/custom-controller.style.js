@@ -314,6 +314,12 @@ export const CueWrapper = styled('div')`{
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease-in;
+  transform: translateY(25%);
+
+  &.hide {
+    transform: translateY(100%);
+  }
 
   p {
     font-size: 1.8em;
@@ -522,7 +528,7 @@ export const container = css`{
     font-size: 1.2em;
     opacity: 0;
     text-align: center;
-    z-index: 2;
+    z-index: 5;
   }
   
   /* .tooltip::after {
