@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _get from 'lodash/get';
 import axios from 'axios';
 import {
@@ -47,6 +48,21 @@ class Player extends Component {
     isPreroll: false,
     ads: [],
     autoplayEnabled: false
+  };
+
+  /**
+   * @param {props.recommendation} recommendation -> { id, title, shortDescription, images.cover: { portrait, landscape } }
+   * @param {props.bugLogo} bugLogo -> { attributes: { logoType, imageURL } }
+   * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, preferredTextLanguage }
+   */
+  static propTypes = {
+    title: PropTypes.string,
+    poster: PropTypes.string,
+    children: PropTypes.node,
+    bugLogo: PropTypes.object,
+    isPlayButtonDisabled: PropTypes.bool,
+    recommendation: PropTypes.object,
+    playerConfig: PropTypes.object /** list to override controllerConfig */
   };
 
   componentDidMount() {
@@ -655,6 +671,8 @@ class Player extends Component {
           that.props.handleOnVideoVolumeChange(player);
         }
       });
+
+      if (that.props.autoPlay) that.handlePlayButton();
     }
   };
 
@@ -742,18 +760,6 @@ class Player extends Component {
     });
   };
 
-  /**
-   * @param {props.recommendation} recommendation
-   * data: {
-   *   id,
-   *   title,
-   *   shortDescription,
-   *   images.cover: {
-   *     portrait,
-   *     landscape
-   *   }
-   * }
-   */
   renderNextVideo = hasNextVideo => {
     if (this.player) {
       const data = _get(this.props, 'recommendation', null);

@@ -59,7 +59,7 @@ class UpcomingVideo extends Component {
             </div>
             {!isMobile && (
               <div className={'link'}>
-                <a className={'play'} href={`/watch?v=${data.id}&autoplay=1`}>
+                <a className={'play'} onClick={() => this.redirectToNextVideo(data.id)}>
                   <CountDown startSecond={startInterval} onTimeFinish={() => this.redirectToNextVideo(data.id)} />
                 </a>
                 <a className={'close'} onClick={this.cancelUpcVideo}>
@@ -70,7 +70,7 @@ class UpcomingVideo extends Component {
           </div>
           {isMobile && (
             <div className={'link'}>
-              <a className={'play'} href={`/watch?v=${data.id}&autoplay=1`}>
+              <a className={'play'} onClick={() => this.redirectToNextVideo(data.id)}>
                 <CountDown
                   isMobile={isMobile}
                   startSecond={startInterval}

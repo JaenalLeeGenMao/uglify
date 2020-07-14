@@ -1,5 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.8 (2020-07-14)
+Improvement:
+  - Consume autoPlay props on mola-player
+
 ## 2.0.7 (2020-07-14)
 Improvement:
   - Subtitle read label and language returns via api, using country to crosscheck subtitle active state and preferredTextLanguage
