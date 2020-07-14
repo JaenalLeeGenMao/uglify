@@ -239,23 +239,23 @@ class CustomController extends Component {
   }
 
   handleSubtitleFilter = () => {
-    const lngMap = {
-      id: 'Indonesian',
-      en: 'English',
-      uk: 'English',
-      zh: 'Chinese',
-      nl: 'Dutch',
-      de: 'German',
-      fr: 'French',
-      it: 'Italian',
-      pl: 'Polish',
-      pt: 'Portuguese',
-      ru: 'Russian',
-      es: 'Spanish',
-      vi: 'Viêt Namese',
-      el: 'Greek',
-      'pt-br': 'Portuguese',
-    }
+    // const lngMap = {
+    //   id: 'Indonesian',
+    //   en: 'English',
+    //   uk: 'English',
+    //   zh: 'Chinese',
+    //   nl: 'Dutch',
+    //   de: 'German',
+    //   fr: 'French',
+    //   it: 'Italian',
+    //   pl: 'Polish',
+    //   pt: 'Portuguese',
+    //   ru: 'Russian',
+    //   es: 'Spanish',
+    //   vi: 'Viêt Namese',
+    //   el: 'Greek',
+    //   'pt-br': 'Portuguese',
+    // }
 
     let tts = this._getSubtitle()
     tts = tts
@@ -263,7 +263,7 @@ class CustomController extends Component {
         ...t,
         id: index,
         active: t.language.toLowerCase() == this.props.config.preferredTextLanguage.toLowerCase(), /** set preffered controller subtitle */
-        name: t.language ? lngMap[t.language.toLowerCase()] : null,
+        name: t.language ? t.label : null,
       }))
       .filter(tn => tn.name)
 
@@ -561,7 +561,7 @@ class CustomController extends Component {
 
     if (player) {
       // player.audioTracks = id
-      player.textTrack = id
+      // player.textTrack = id
       // player.internalSetTextTrack(id) //legacy on 2.0.7
       this._toggleSubtitlePopup()
       this.setState({ subtitles: filteredSubs })

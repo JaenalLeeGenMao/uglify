@@ -524,29 +524,35 @@ class Player extends Component {
       if (that.props.subtitles && that.props.subtitles.length > 0) {
         for (const s of that.props.subtitles) {
           // console.log(s)
-          const lngMap = {
-            id: 'Indonesian',
-            en: 'English',
-            uk: 'English',
-            zh: 'Chinese',
-            nl: 'Dutch',
-            de: 'German',
-            fr: 'French',
-            it: 'Italian',
-            pl: 'Polish',
-            pt: 'Portuguese',
-            ru: 'Russian',
-            es: 'Spanish',
-            vi: 'Viêt Namese',
-            el: 'Greek',
-            'pt-br': 'Portuguese'
-          };
+          // const lngMap = {
+          //   id: 'Indonesian',
+          //   en: 'English',
+          //   uk: 'English',
+          //   zh: 'Chinese',
+          //   nl: 'Dutch',
+          //   de: 'German',
+          //   fr: 'French',
+          //   it: 'Italian',
+          //   pl: 'Polish',
+          //   pt: 'Portuguese',
+          //   ru: 'Russian',
+          //   es: 'Spanish',
+          //   vi: 'Viêt Namese',
+          //   el: 'Greek',
+          //   'pt-br': 'Portuguese'
+          // };
+
+          /**
+           * @param s = {
+           *   kind: type,         // subtitles or metadata
+           *   src: subtitleUrl,   // typical url source
+           *   country,            // id, eng (always in lowercase follow lngMap samples)
+           *   label: language,    // Bahasa Inconesia, English, 官话, etc
+           *   type: subtitleType  // srt or vtt
+           * }
+           */
           if (s.label && s.label.trim() == '') return;
-          const track = video.addTextTrack(
-            'metadata',
-            lngMap[s.label.toLowerCase()],
-            s.label
-          );
+          const track = video.addTextTrack('metadata', s.label, s.country);
           // track.mode = 'showing'
           axios
             .get(s.src)

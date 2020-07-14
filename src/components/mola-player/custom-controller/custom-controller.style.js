@@ -546,8 +546,25 @@ export const container = css`{
     opacity: 0.95;
     cursor: pointer;
   }
-  
-  .subtitle_popup,
+
+  .subtitle_popup {
+    /* display: grid; */
+    display: none;
+    grid-template-rows: repeat(1, 1fr);
+    grid-gap: 0em;
+    position: relative;
+    transform: translate(calc(-65% - .85em), calc(-100% - 1rem));
+    padding: 1.5em 0;
+    opacity: 0.95;
+    border-radius: 0.3em;
+    background: #262626;
+    transition: all 0.1s ease-in;
+    min-width: 18em;
+    min-height: 6em;
+    text-align: left;
+    z-index: 5;
+  }
+
   .quality_popup {
     /* display: grid; */
     display: none;
@@ -565,7 +582,7 @@ export const container = css`{
     text-align: left;
     z-index: 5;
   }
-  
+
   /* .subtitle_popup::after,
   .quality_popup::after {
     content: '';
@@ -577,7 +594,7 @@ export const container = css`{
     border-style: solid;
     border-color: #333333 transparent transparent transparent;
   } */
-  
+
   .subtitle_list,
   .quality_list {
     color: #838586;
@@ -586,7 +603,7 @@ export const container = css`{
     font-size: 1.2em;
     height: 1em;
   }
-  
+
   .subtitle_list:hover,
   .quality_list:hover {
     cursor: pointer;

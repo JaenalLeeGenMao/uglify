@@ -1,5 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.7 (2020-07-14)
+Improvement:
+  - Subtitle read label and language returns via api, using country to crosscheck subtitle active state and preferredTextLanguage
+
 ## 2.0.6 (2020-07-13)
 Improvement:
   - Subtitle position moves up and down depending on hover state
