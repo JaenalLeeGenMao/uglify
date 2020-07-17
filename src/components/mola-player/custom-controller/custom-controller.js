@@ -40,17 +40,22 @@ class CustomController extends Component {
   }
 
   componentWillUnmount() {
-    if (!this.props.config.primary) return true; /** prevent keyboard shortcuts removal if NOT primary player */
-    document.onkeyup = null
+    if (this.props.config.keyboardShortcutsEnabled) document.onkeyup = null
+  }
+
+  _getElementById = (id) => {
+    const customControllerId = `vpcc-custom-controller-${this.props.id}`
+
+    return document.querySelector(`#${customControllerId} #${id}`)
   }
 
   handleFeedbackOnClick = () => {
     // console.log('feedback clicked...')
-    const quality = document.getElementById('vpcc-quality'),
-        qualityPopupEl = _get(quality, 'children[0]', '')
+    const quality = this._getElementById('vpcc-quality'),
+      qualityPopupEl = _get(quality, 'children[0]', '')
 
-    const subtitle = document.getElementById('vpcc-subtitle'),
-        subtitlePopupEl = _get(subtitle, 'children[0]', '')
+    const subtitle = this._getElementById('vpcc-subtitle'),
+      subtitlePopupEl = _get(subtitle, 'children[0]', '')
 
     if (subtitlePopupEl) {
       subtitlePopupEl.style.display = 'none'
@@ -63,49 +68,50 @@ class CustomController extends Component {
 
   handleKeyboardEvent = () => {
 
-    if (!this.props.config.primary) return true; /** prevent keyboard shortcuts if NOT primary player */
+    if (this.props.config.keyboardShortcutsEnabled) {
+      /** handle keyboard pressed */
+      document.onkeyup = event => {
+        const that = this
 
-    /** handle keyboard pressed */
-    document.onkeyup = event => {
-      const that = this
+        const player = that.props.player,
+          video = player && player.getMediaElement()
 
-      const player = that.props.player,
-        video = player && player.getMediaElement()
+        const isPreroll = _get(this.props, 'isPreroll', false)
 
-      const isPreroll = _get(this.props, 'isPreroll', false)
-
-      switch (event.which || event.keyCode) {
-        case 37 /* left */:
-          if (!isPreroll) that._seekTo(-10)
-          break
-        case 38 /* up */:
-          event.preventDefault()
-          video.volume = Math.min(1, video.volume + 0.1)
-          break
-        case 39 /* right */:
-          if (!isPreroll) that._seekTo(10)
-          break
-        case 40 /* down */:
-          event.preventDefault()
-          video.volume = Math.max(0, video.volume - 0.1)
-          break
-        case 70 /* f for toggle enter fullscreen or exit fullscreen */:
-          event.preventDefault()
-          that._toggleFullscreen()
-          break
-        case 77 /* m for toggle mute button */:
-          event.preventDefault()
-          that._toggleMute()
-          break
-        case 80 /* p for toggle playpause */:
-          event.preventDefault()
-          that._togglePlayPause()
-          break
-        default:
-          event.preventDefault()
-          break
+        switch (event.which || event.keyCode) {
+          case 37 /* left */:
+            if (!isPreroll) that._seekTo(-10)
+            break
+          case 38 /* up */:
+            event.preventDefault()
+            video.volume = Math.min(1, video.volume + 0.1)
+            break
+          case 39 /* right */:
+            if (!isPreroll) that._seekTo(10)
+            break
+          case 40 /* down */:
+            event.preventDefault()
+            video.volume = Math.max(0, video.volume - 0.1)
+            break
+          case 70 /* f for toggle enter fullscreen or exit fullscreen */:
+            event.preventDefault()
+            that._toggleFullscreen()
+            break
+          case 77 /* m for toggle mute button */:
+            event.preventDefault()
+            that._toggleMute()
+            break
+          case 80 /* p for toggle playpause */:
+            event.preventDefault()
+            that._togglePlayPause()
+            break
+          default:
+            event.preventDefault()
+            break
+        }
       }
     }
+
   }
 
   _getQuality = () => {
@@ -292,7 +298,7 @@ class CustomController extends Component {
   }
 
   initEventListeners = player => {
-    const seek = document.getElementById('vpcc-seek'),
+    const seek = this._getElementById('vpcc-seek'),
       isLive = player && player.isLive()
 
     /** update seekbar tooltip and seekbar input */
@@ -338,13 +344,13 @@ class CustomController extends Component {
     const player = this.props.player,
       video = player && player.getMediaElement()
 
-    const seek = document.getElementById('vpcc-seek'),
+    const seek = this._getElementById('vpcc-seek'),
       duration = Math.round(_get(video, 'duration', 0)),
       isPreroll = _get(this.props, 'isPreroll', false),
       isLive = player && player.isLive()
 
     if (video && !isPreroll && !isLive) {
-      const seekTooltip = document.getElementById('vpcc-seek-tooltip')
+      const seekTooltip = this._getElementById('vpcc-seek-tooltip')
       const skipTo = Math.round((event.offsetX / event.target.clientWidth) * duration)
 
       seek.setAttribute('data-seek', skipTo)
@@ -394,7 +400,7 @@ class CustomController extends Component {
     const player = this.props.player,
       video = player && player.getMediaElement()
 
-    const volume = document.getElementById('vpcc-volume')
+      const volume = this._getElementById('vpcc-volume')
 
     if (video) {
       if (video.muted) {
@@ -414,7 +420,7 @@ class CustomController extends Component {
     const player = this.props.player,
       video = player && player.getMediaElement()
 
-    const volume = document.getElementById('vpcc-volume')
+    const volume = this._getElementById('vpcc-volume')
 
     if (video && this.props.config.toggleMuteEnabled) {
       this._debounce(() => {
@@ -535,7 +541,7 @@ class CustomController extends Component {
   }
 
   _toggleQualityPopup = () => {
-    const quality = document.getElementById('vpcc-quality'),
+    const quality = this._getElementById('vpcc-quality'),
       qualityPopupEl = _get(quality, 'children[0]', '')
 
     if (qualityPopupEl) {
@@ -543,7 +549,7 @@ class CustomController extends Component {
     }
 
     /** make sure subtitle popup is closed */
-    const subtitle = document.getElementById('vpcc-subtitle'),
+    const subtitle = this._getElementById('vpcc-subtitle'),
       subtitlePopupEl = _get(subtitle, 'children[0]', '')
 
     if (subtitlePopupEl) {
@@ -573,7 +579,7 @@ class CustomController extends Component {
   }
 
   _toggleSubtitlePopup = () => {
-    const subtitle = document.getElementById('vpcc-subtitle'),
+    const subtitle = this._getElementById('vpcc-subtitle'),
       subtitlePopupEl = _get(subtitle, 'children[0]', '')
 
     if (subtitlePopupEl) {
@@ -581,7 +587,7 @@ class CustomController extends Component {
     }
 
     /** make sure quality popup is closed */
-    const quality = document.getElementById('vpcc-quality'),
+    const quality = this._getElementById('vpcc-quality'),
       qualityPopupEl = _get(quality, 'children[0]', '')
 
     if (qualityPopupEl) {
@@ -724,7 +730,7 @@ class CustomController extends Component {
         {this.renderFeedback()}
         {this.renderCue()}
         <div
-          id="vpcc-custom-controller"
+          id={`vpcc-custom-controller-${this.props.id}`}
           refs={node => (this.rootController = node)}
           className={`${container} ${this.props.isHover ? '' : 'hide'}`}
         >

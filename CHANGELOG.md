@@ -1,5 +1,11 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.9 (2020-07-17)
+New Features::
+  - Add keyboardShortcutsEnabled playerConfig props on mola-player to enable/disable keyboard shortcuts
+  - Add videoId **suffix** to all existing mola-player id references *e.g. video-context-{videoId}*
+  - Mola player now supports multi video references player via window.player{videoId}
+
 ## 2.0.8 (2020-07-14)
 Improvement:
   - Consume autoPlay props on mola-player

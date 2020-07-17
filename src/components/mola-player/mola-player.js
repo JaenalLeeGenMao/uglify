@@ -53,11 +53,10 @@ class Player extends Component {
   /**
    * @param {props.recommendation} recommendation -> { id, title, shortDescription, images.cover: { portrait, landscape } }
    * @param {props.bugLogo} bugLogo -> { attributes: { logoType, imageURL } }
-   * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, preferredTextLanguage }
+   * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, keyboardShortcutsEnabled, preferredTextLanguage }
    */
   static propTypes = {
     id: PropTypes.string.isRequired,
-    primary: PropTypes.bool,
     title: PropTypes.string,
     poster: PropTypes.string,
     children: PropTypes.node,
@@ -77,7 +76,7 @@ class Player extends Component {
       });
 
       that.handleInitPreroll();
-      window.playerProps = this.props;
+      window[`playerProps${that.props.id}`] = this.props;
       if (!loadjs.isDefined('shakaplayerjs')) {
         loadjs(scriptArray, 'shakaplayerjs', {
           success: function() {
@@ -207,7 +206,7 @@ class Player extends Component {
           this.handleInitPlayer(this.player, config);
           this.player.isPreroll = true;
         } else {
-          let video = document.getElementById(this.props.id || 'video-main');
+          let video = document.getElementById(`video-main-${this.props.id}`);
 
           const player = new shaka.Player(video);
           player.isPreroll = true;
@@ -230,11 +229,10 @@ class Player extends Component {
         Number(_get(this.props, 'watchTimePosition', 0))
       ); /** setelah preroll selesai kembali ke totalWatchTime */
     // console.log(watchTime, this.player)
-    let video = document.getElementById(this.props.id || 'video-main');
+    let video = document.getElementById(`video-main-${this.props.id}`);
 
     const player = this.player || new shaka.Player(video);
 
-    // window.player = player
     // console.log(streamSourceUrl, this.props)
 
     const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
@@ -386,13 +384,13 @@ class Player extends Component {
               }
               player.unload(); /** unload, detach, destroy */
               that.player = null;
-              window.player = null;
+              window[`player${that.props.id}`] = null;
             };
 
             /** if that.player already exist, then skip adding new event listener */
             if (!that.player) {
               that.player = player;
-              if (that.props.primary) window.player = player;
+              window[`player${that.props.id}`] = player;
 
               that.handlePlayerEventListener(player);
               console.log('Player Controls loaded and ready');
@@ -712,7 +710,7 @@ class Player extends Component {
 
   handleSubtreeOnChange = () => {
     const videoHeight = _get(
-      document.getElementById(this.props.id || 'video-main'),
+      document.getElementById(`video-main-${this.props.id}`),
       'offsetHeight',
       ''
     );
@@ -740,8 +738,8 @@ class Player extends Component {
     }
     if (this.player) {
       this.player.getNetworkingEngine().clearAllResponseFilters();
-      this.player = undefined;
-      window.player = undefined;
+      this.player = null;
+      window[`player${this.props.id}`] = null;
     }
 
     clearInterval(idleInterval);
@@ -796,7 +794,7 @@ class Player extends Component {
     return (
       <BugLogoWrapper className={BLClassName}>
         <img
-          id="video-bug-logo"
+          id={`video-bug-logo-${this.props.id}`}
           src={bugLogoVideo.image}
           alt="Bug-logo Player"
         />
@@ -822,7 +820,6 @@ class Player extends Component {
       title,
       poster,
       children,
-      primary /** used to identify primary player, and disable keyboard shortcuts */,
       isPlayButtonDisabled,
       recommendation,
       playerConfig = {}
@@ -844,8 +841,8 @@ class Player extends Component {
       toggleMuteEnabled: true,
       volumeBarEnabled: true,
       nextVideoEnabled: true,
+      keyboardShortcutsEnabled: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
-      primary /** used to identify primary player, and disable keyboard shortcuts */,
       ...playerConfig
     };
 
@@ -861,21 +858,21 @@ class Player extends Component {
     this.handleSubtreeOnChange();
 
     const videoOnlyHeight =
-      _get(document.getElementById('video-context'), 'offsetHeight', 0) -
-      _get(document.getElementById('video-banner'), 'height', 0);
+      _get(document.getElementById(`video-context-${id}`), 'offsetHeight', 0) -
+      _get(document.getElementById(`video-banner-${id}`), 'height', 0);
 
     const isFullscreen = document && document.fullscreenElement;
 
     return (
       <div
         ref={node => (this.childRefs = node)}
-        id="video-context"
+        id={`video-context-${id}`}
         className={`${container} ${isFullscreen ? 'fullscreen' : ''}`}
       >
         {!isPlaying &&
           poster && (
             <Poster>
-              <img id="video-poster" src={poster} />
+              <img id={`video-poster-${id}`} src={poster} />
             </Poster>
           )}
         {!isPlaying && (
@@ -899,7 +896,7 @@ class Player extends Component {
           </ErrorFeedback>
         )}
         <video
-          id={id || 'video-main'}
+          id={`video-main-${id}`}
           // width="100%"
           autoPlay={autoplayEnabled}
           style={{
@@ -912,7 +909,7 @@ class Player extends Component {
           this.player &&
           !isPreroll && (
             <BannerImg
-              id="video-banner"
+              id={`video-banner-${id}`}
               alt={`banner-${banner.id}`}
               src={banner.mediaURL}
               // width={(videoOnlyHeight * 16) / 9}
@@ -933,6 +930,7 @@ class Player extends Component {
                   </UserFeedback>
                 )}
               <CustomController
+                id={id}
                 player={this.player}
                 isPreroll={isPreroll}
                 isHover={isHover}
