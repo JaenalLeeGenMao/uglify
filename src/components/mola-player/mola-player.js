@@ -56,6 +56,8 @@ class Player extends Component {
    * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, preferredTextLanguage }
    */
   static propTypes = {
+    id: PropTypes.string.isRequired,
+    primary: PropTypes.bool,
     title: PropTypes.string,
     poster: PropTypes.string,
     children: PropTypes.node,
@@ -205,7 +207,7 @@ class Player extends Component {
           this.handleInitPlayer(this.player, config);
           this.player.isPreroll = true;
         } else {
-          let video = document.getElementById('video-main');
+          let video = document.getElementById(this.props.id || 'video-main');
 
           const player = new shaka.Player(video);
           player.isPreroll = true;
@@ -228,7 +230,7 @@ class Player extends Component {
         Number(_get(this.props, 'watchTimePosition', 0))
       ); /** setelah preroll selesai kembali ke totalWatchTime */
     // console.log(watchTime, this.player)
-    let video = document.getElementById('video-main');
+    let video = document.getElementById(this.props.id || 'video-main');
 
     const player = this.player || new shaka.Player(video);
 
@@ -390,7 +392,7 @@ class Player extends Component {
             /** if that.player already exist, then skip adding new event listener */
             if (!that.player) {
               that.player = player;
-              window.player = player;
+              if (that.props.primary) window.player = player;
 
               that.handlePlayerEventListener(player);
               console.log('Player Controls loaded and ready');
@@ -710,7 +712,7 @@ class Player extends Component {
 
   handleSubtreeOnChange = () => {
     const videoHeight = _get(
-      document.getElementById('video-main'),
+      document.getElementById(this.props.id || 'video-main'),
       'offsetHeight',
       ''
     );
@@ -816,9 +818,11 @@ class Player extends Component {
       autoplayEnabled
     } = this.state;
     const {
+      id,
       title,
       poster,
       children,
+      primary /** used to identify primary player, and disable keyboard shortcuts */,
       isPlayButtonDisabled,
       recommendation,
       playerConfig = {}
@@ -841,6 +845,7 @@ class Player extends Component {
       volumeBarEnabled: true,
       nextVideoEnabled: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
+      primary /** used to identify primary player, and disable keyboard shortcuts */,
       ...playerConfig
     };
 
@@ -894,7 +899,7 @@ class Player extends Component {
           </ErrorFeedback>
         )}
         <video
-          id="video-main"
+          id={id || 'video-main'}
           // width="100%"
           autoPlay={autoplayEnabled}
           style={{

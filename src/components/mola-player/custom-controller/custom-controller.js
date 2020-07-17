@@ -40,6 +40,7 @@ class CustomController extends Component {
   }
 
   componentWillUnmount() {
+    if (!this.props.config.primary) return true; /** prevent keyboard shortcuts removal if NOT primary player */
     document.onkeyup = null
   }
 
@@ -61,6 +62,9 @@ class CustomController extends Component {
   }
 
   handleKeyboardEvent = () => {
+
+    if (!this.props.config.primary) return true; /** prevent keyboard shortcuts if NOT primary player */
+
     /** handle keyboard pressed */
     document.onkeyup = event => {
       const that = this
