@@ -1,4 +1,4 @@
-import styled, { css } from 'react-emotion'
+import styled, { css } from 'react-emotion';
 
 export const container = css`
    {
@@ -6,14 +6,14 @@ export const container = css`
     height: 100%;
     width: 100%;
     user-select: none;
-    color: #FFFFFF;
+    color: #ffffff;
     background: #000000;
     font-size: 1rem;
 
     &.fullscreen {
       font-size: 1.8rem;
 
-      @media only screen and (max-width: 840px){
+      @media only screen and (max-width: 840px) {
         font-size: 12px;
       }
     }
@@ -36,7 +36,7 @@ export const container = css`
       margin: auto;
     }
   }
-`
+`;
 
 export const childContainer = css`
    {
@@ -54,7 +54,7 @@ export const childContainer = css`
     margin: auto;
     z-index: 1;
   }
-`
+`;
 
 export const BannerImg = styled('img')`
    {
@@ -66,7 +66,7 @@ export const BannerImg = styled('img')`
     margin: auto;
     width: auto;
   }
-`
+`;
 
 export const Poster = styled('div')`
    {
@@ -87,7 +87,7 @@ export const Poster = styled('div')`
       height: 100%;
     }
   }
-`
+`;
 
 export const UserFeedback = styled('div')`
    {
@@ -103,7 +103,7 @@ export const UserFeedback = styled('div')`
     z-index: 2;
     cursor: pointer;
   }
-`
+`;
 
 export const ErrorFeedback = styled('div')`
    {
@@ -121,7 +121,7 @@ export const ErrorFeedback = styled('div')`
     z-index: 2;
     cursor: pointer;
   }
-`
+`;
 
 export const Icons = styled('div')`
    {
@@ -137,7 +137,8 @@ export const Icons = styled('div')`
       border: none;
       cursor: pointer;
 
-      @media (max-width: 640px), @media only screen and (orientation: landscape) {
+      @media (max-width: 640px),
+        @media only screen and (orientation: landscape) {
         width: 44px;
         height: 44px;
         margin: 0 10px;
@@ -151,7 +152,7 @@ export const Icons = styled('div')`
       }
     }
   }
-`
+`;
 
 export const BugLogoWrapper = styled('div')`
    {
@@ -177,7 +178,7 @@ export const BugLogoWrapper = styled('div')`
 
       img {
         width: auto;
-        height: 15.5em;
+        height: 11.4em;
       }
     }
 
@@ -193,4 +194,4 @@ export const BugLogoWrapper = styled('div')`
       }
     }
   }
-`
+`;
