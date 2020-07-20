@@ -79,7 +79,7 @@ class Player extends Component {
       window[`playerProps${that.props.id}`] = this.props;
       if (!loadjs.isDefined('shakaplayerjs')) {
         loadjs(scriptArray, 'shakaplayerjs', {
-          success: function() {
+          success: function () {
             /* files loaded successfully */
             // console.log("script loaded successfully")
             that.loadPlayer();
@@ -253,13 +253,13 @@ class Player extends Component {
             servers: {
               'com.widevine.alpha': `${
                 drm.widevine.licenseUrl
-              }?deviceId=${deviceId}`,
+                }?deviceId=${deviceId}`,
               'com.microsoft.playready': `${
                 drm.playready.licenseUrl
-              }?deviceId=${deviceId}`,
+                }?deviceId=${deviceId}`,
               'com.apple.fps.1_0': `${
                 drm.fairplay.licenseUrl
-              }?deviceId=${deviceId}`
+                }?deviceId=${deviceId}`
             }
           },
           startTime
@@ -282,13 +282,13 @@ class Player extends Component {
             servers: {
               'com.widevine.alpha': `${
                 drm.widevine.licenseUrl
-              }?deviceId=${deviceId}`,
+                }?deviceId=${deviceId}`,
               'com.microsoft.playready': `${
                 drm.playready.licenseUrl
-              }?deviceId=${deviceId}`,
+                }?deviceId=${deviceId}`,
               'com.apple.fps.1_0': `${
                 drm.fairplay.licenseUrl
-              }?deviceId=${deviceId}`
+                }?deviceId=${deviceId}`
             },
             advanced: {
               'com.apple.fps.1_0': {
@@ -432,7 +432,7 @@ class Player extends Component {
             if (response.status == 200 && response.data) return response.data;
             else return null;
           })
-          .then(function(data) {
+          .then(function (data) {
             // console.log(data)
             if (data) {
               /* data = dummyAdsPrerollXml */
@@ -499,6 +499,10 @@ class Player extends Component {
     const { category, code, data, severity, message } = error;
     const { errorCodes } = this.props;
     console.error('Player error: ', error);
+    if (this.props.handleVideoError) {
+      this.props.handleVideoError(error);
+    }
+
     if (this.player) this.player.reset();
 
     this.setState({
@@ -596,7 +600,7 @@ class Player extends Component {
       let visitedTimeInSeconds = [],
         firstTimeFlag = 0,
         currentTime = 0;
-      video.addEventListener('play', function(e) {
+      video.addEventListener('play', function (e) {
         if (that.props.handleOnPlayCallback)
           that.props.handleOnPlayCallback(that.player);
         // console.log('play', that.state)
@@ -609,7 +613,7 @@ class Player extends Component {
           firstTimeFlag = 1;
         }
         // that.handleResumeVideoTime(that.player, that.props.watchTimePosition)
-        that.durationInterval = setInterval(function() {
+        that.durationInterval = setInterval(function () {
           const player = that.player,
             video = player && player.getMediaElement();
 
@@ -638,14 +642,14 @@ class Player extends Component {
           }
         }, 1000);
       });
-      video.addEventListener('pause', function() {
+      video.addEventListener('pause', function () {
         // console.log('paused')
         clearInterval(that.durationInterval);
         if (that.props.handleVideoPause) {
           that.props.handleVideoPause(player);
         }
       });
-      video.addEventListener('ended', function() {
+      video.addEventListener('ended', function () {
         // console.log('Playback ended')
         clearInterval(that.durationInterval);
         if (that.props.handleVideoEnded) {
@@ -659,13 +663,13 @@ class Player extends Component {
           });
         }
       });
-      video.addEventListener('durationchange', function(e) {
+      video.addEventListener('durationchange', function (e) {
         clearInterval(that.durationInterval);
         if (that.props.handleDurationChange) {
           that.props.handleDurationChange(player);
         }
       });
-      video.addEventListener('volumechange', function(e) {
+      video.addEventListener('volumechange', function (e) {
         /** function set localStorage moved to custom controller `_updateVolume` method */
         if (that.props.handleOnVideoVolumeChange) {
           that.props.handleOnVideoVolumeChange(player);
