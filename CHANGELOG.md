@@ -1,5 +1,10 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.11 (2020-07-20)
+Improvement:
+  - Add handle video error for error callback (mola-player)
+  - Remove theoplayer component
+
 ## 2.0.10 (2020-07-20)
 Bug Fix:
   - Buglogo wide set height equal to square height (mola-player)
