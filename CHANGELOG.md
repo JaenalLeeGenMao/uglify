@@ -1,5 +1,13 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.13 (2020-07-22)
+Improvement:
+  - REVERT *v2.0.12 to v2.0.11*
+
+## 2.0.12 (2020-07-22)
+Improvement:
+  - Improve mola-player initPlayer logic to check browser and bypass drmEnabled (mola-player)
+
 ## 2.0.11 (2020-07-20)
 Improvement:
   - Add handle video error for error callback (mola-player)
