@@ -1,5 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
 
+## 2.0.14 (2020-07-23)
+Bug Fix:
+  - Fix continue watching logic for accepting preroll watchTimePosition and totalTimeWatch
+
 ## 2.0.13 (2020-07-22)
 Improvement:
   - REVERT *v2.0.12 to v2.0.11*

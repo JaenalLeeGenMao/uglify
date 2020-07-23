@@ -79,7 +79,7 @@ class Player extends Component {
       window[`playerProps${that.props.id}`] = this.props;
       if (!loadjs.isDefined('shakaplayerjs')) {
         loadjs(scriptArray, 'shakaplayerjs', {
-          success: function () {
+          success: function() {
             /* files loaded successfully */
             // console.log("script loaded successfully")
             that.loadPlayer();
@@ -223,20 +223,25 @@ class Player extends Component {
   initPlayer = async () => {
     let drm = _get(this.props, 'drm', ''),
       streamSourceUrl = _get(this.props, 'streamSourceUrl', ''),
-      watchTime = _get(
+      currentTime = _get(
         this.player,
         'totalWatchTime',
-        Number(_get(this.props, 'watchTimePosition', 0))
-      ); /** setelah preroll selesai kembali ke totalWatchTime */
+        0
+      ) /** setelah preroll selesai kembali ke totalWatchTime */,
+      watchTimePosition = Number(_get(this.props, 'watchTimePosition', 0));
     // console.log(watchTime, this.player)
     let video = document.getElementById(`video-main-${this.props.id}`);
 
     const player = this.player || new shaka.Player(video);
 
+    if (currentTime === 0 && watchTimePosition > 0) {
+      currentTime = watchTimePosition;
+    }
+
     // console.log(streamSourceUrl, this.props)
 
     const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent);
-    const startTime = watchTime > 0 && !isNaN(watchTime) ? watchTime : 0;
+    const startTime = currentTime > 0 && !isNaN(currentTime) ? currentTime : 0;
     if (drm && drm.drmEnabled) {
       let drmStreamUrl = isSafari
         ? drm.fairplay.streamUrl
@@ -253,13 +258,13 @@ class Player extends Component {
             servers: {
               'com.widevine.alpha': `${
                 drm.widevine.licenseUrl
-                }?deviceId=${deviceId}`,
+              }?deviceId=${deviceId}`,
               'com.microsoft.playready': `${
                 drm.playready.licenseUrl
-                }?deviceId=${deviceId}`,
+              }?deviceId=${deviceId}`,
               'com.apple.fps.1_0': `${
                 drm.fairplay.licenseUrl
-                }?deviceId=${deviceId}`
+              }?deviceId=${deviceId}`
             }
           },
           startTime
@@ -282,13 +287,13 @@ class Player extends Component {
             servers: {
               'com.widevine.alpha': `${
                 drm.widevine.licenseUrl
-                }?deviceId=${deviceId}`,
+              }?deviceId=${deviceId}`,
               'com.microsoft.playready': `${
                 drm.playready.licenseUrl
-                }?deviceId=${deviceId}`,
+              }?deviceId=${deviceId}`,
               'com.apple.fps.1_0': `${
                 drm.fairplay.licenseUrl
-                }?deviceId=${deviceId}`
+              }?deviceId=${deviceId}`
             },
             advanced: {
               'com.apple.fps.1_0': {
@@ -432,7 +437,7 @@ class Player extends Component {
             if (response.status == 200 && response.data) return response.data;
             else return null;
           })
-          .then(function (data) {
+          .then(function(data) {
             // console.log(data)
             if (data) {
               /* data = dummyAdsPrerollXml */
@@ -600,7 +605,7 @@ class Player extends Component {
       let visitedTimeInSeconds = [],
         firstTimeFlag = 0,
         currentTime = 0;
-      video.addEventListener('play', function (e) {
+      video.addEventListener('play', function(e) {
         if (that.props.handleOnPlayCallback)
           that.props.handleOnPlayCallback(that.player);
         // console.log('play', that.state)
@@ -613,7 +618,7 @@ class Player extends Component {
           firstTimeFlag = 1;
         }
         // that.handleResumeVideoTime(that.player, that.props.watchTimePosition)
-        that.durationInterval = setInterval(function () {
+        that.durationInterval = setInterval(function() {
           const player = that.player,
             video = player && player.getMediaElement();
 
@@ -642,14 +647,14 @@ class Player extends Component {
           }
         }, 1000);
       });
-      video.addEventListener('pause', function () {
+      video.addEventListener('pause', function() {
         // console.log('paused')
         clearInterval(that.durationInterval);
         if (that.props.handleVideoPause) {
           that.props.handleVideoPause(player);
         }
       });
-      video.addEventListener('ended', function () {
+      video.addEventListener('ended', function() {
         // console.log('Playback ended')
         clearInterval(that.durationInterval);
         if (that.props.handleVideoEnded) {
@@ -663,13 +668,13 @@ class Player extends Component {
           });
         }
       });
-      video.addEventListener('durationchange', function (e) {
+      video.addEventListener('durationchange', function(e) {
         clearInterval(that.durationInterval);
         if (that.props.handleDurationChange) {
           that.props.handleDurationChange(player);
         }
       });
-      video.addEventListener('volumechange', function (e) {
+      video.addEventListener('volumechange', function(e) {
         /** function set localStorage moved to custom controller `_updateVolume` method */
         if (that.props.handleOnVideoVolumeChange) {
           that.props.handleOnVideoVolumeChange(player);
