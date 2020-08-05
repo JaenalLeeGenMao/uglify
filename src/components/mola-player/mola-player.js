@@ -848,11 +848,10 @@ class Player extends Component {
       togglePlayPauseEnabled: true,
       toggleFullscreenEnabled: true,
       toggleMuteEnabled: true,
+      seekBarEnabled: true,
       volumeBarEnabled: true,
       nextVideoEnabled: true,
       keyboardShortcutsEnabled: true,
-      showForwardButton: true,
-      showBackwardButton: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
       ...playerConfig
     };

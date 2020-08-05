@@ -1,4 +1,11 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+
+## 2.0.16 (2020-08-05)
+Improvement:
+  - REVERT *v2.0.15 to v2.0.14*
+  - Remove `showForwardButton` & `showBackwardButton` to playerConfig to hide seek buttons
+  - Update to `seekBarEnabled` disable button instead of hide button + also disable seekbar update value
+
 ## 2.0.15 (2020-08-05)
 New Features:
   - Add `showForwardButton` & `showBackwardButton` to playerConfig to hide seek buttons

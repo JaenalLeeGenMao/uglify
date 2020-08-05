@@ -375,7 +375,7 @@ class CustomController extends Component {
     const isPreroll = _get(this.props, 'isPreroll', false),
       isLive = player && player.isLive()
 
-    if (video && !isPreroll && !isLive) {
+    if (video && !isPreroll && !isLive && this.props.config.seekBarEnabled) {
       this.setState({ currentTime: skipTo }) /** ignore supaya responsive */
       video.currentTime = skipTo
     }
@@ -611,14 +611,9 @@ class CustomController extends Component {
     const player = this.props.player,
       isLive = player && player.isLive()
 
-    /** prevent seek start */
-    if (n > 0 && !this.props.config.showForwardButton) return false
-    if (n < 0 && !this.props.config.showBackwardButton) return false
-    /** prevent seek end */
-
     if (player && !isLive) {
       const video = player && player.getMediaElement()
-      if (video) {
+      if (video && this.props.config.seekBarEnabled) {
         video.pause() /* start seeking */
         this._debounce(() => {
           // console.log(tappingCount)
@@ -799,12 +794,12 @@ class CustomController extends Component {
             </Icons>
             {!isLive && !isPreroll && (
               <>
-                {this.props.config.showForwardButton && <Icons className={'forwardIcon'} onClick={() => this._seekTo(10)}>
+                <Icons className={`forwardIcon ${this.props.config.seekBarEnabled ? '' : 'disabled'}`} onClick={() => this._seekTo(10)}>
                   <div className={'tooltip withTooltip'}>Forward (⭢)</div>
-                </Icons>}
-                {this.props.config.showBackwardButton && <Icons className={'backwardIcon'} onClick={() => this._seekTo(-10)}>
+                </Icons>
+                <Icons className={`backwardIcon ${this.props.config.seekBarEnabled ? '' : 'disabled'}`} onClick={() => this._seekTo(-10)}>
                   <div className={'tooltip withTooltip'}>Backward (⭠)</div>
-                </Icons>}
+                </Icons>
               </>
             )}
             {recommendation && !isPreroll && (
