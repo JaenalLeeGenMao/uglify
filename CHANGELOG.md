@@ -1,4 +1,7 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.15 (2020-08-05)
+New Features:
+  - Add `showForwardButton` & `showBackwardButton` to playerConfig to hide seek buttons
 
 ## 2.0.14 (2020-07-23)
 Bug Fix:
@@ -22,7 +25,7 @@ Bug Fix:
   - Buglogo wide set height equal to square height (mola-player)
 
 ## 2.0.9 (2020-07-17)
-New Features::
+New Features:
   - Add keyboardShortcutsEnabled playerConfig props on mola-player to enable/disable keyboard shortcuts
   - Add videoId **suffix** to all existing mola-player id references *e.g. video-context-{videoId}*
   - Mola player now supports multi video references player via window.player{videoId}

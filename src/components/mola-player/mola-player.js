@@ -53,7 +53,7 @@ class Player extends Component {
   /**
    * @param {props.recommendation} recommendation -> { id, title, shortDescription, images.cover: { portrait, landscape } }
    * @param {props.bugLogo} bugLogo -> { attributes: { logoType, imageURL } }
-   * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, keyboardShortcutsEnabled, preferredTextLanguage }
+   * @param {props.playerConfig} playerConfig -> { togglePlayPauseEnabled, toggleFullscreenEnabled, toggleMuteEnabled, volumeBarEnabled, nextVideoEnabled, keyboardShortcutsEnabled, showForwardButton, showBackwardButton, preferredTextLanguage }
    */
   static propTypes = {
     id: PropTypes.string.isRequired,
@@ -851,6 +851,8 @@ class Player extends Component {
       volumeBarEnabled: true,
       nextVideoEnabled: true,
       keyboardShortcutsEnabled: true,
+      showForwardButton: true,
+      showBackwardButton: true,
       preferredTextLanguage: 'id' /** make sure to input in lowercase */,
       ...playerConfig
     };

@@ -610,6 +610,12 @@ class CustomController extends Component {
   _seekTo = n => {
     const player = this.props.player,
       isLive = player && player.isLive()
+
+    /** prevent seek start */
+    if (n > 0 && !this.props.config.showForwardButton) return false
+    if (n < 0 && !this.props.config.showBackwardButton) return false
+    /** prevent seek end */
+
     if (player && !isLive) {
       const video = player && player.getMediaElement()
       if (video) {
@@ -793,12 +799,12 @@ class CustomController extends Component {
             </Icons>
             {!isLive && !isPreroll && (
               <>
-                <Icons className={'forwardIcon'} onClick={() => this._seekTo(10)}>
+                {this.props.config.showForwardButton && <Icons className={'forwardIcon'} onClick={() => this._seekTo(10)}>
                   <div className={'tooltip withTooltip'}>Forward (⭢)</div>
-                </Icons>
-                <Icons className={'backwardIcon'} onClick={() => this._seekTo(-10)}>
+                </Icons>}
+                {this.props.config.showBackwardButton && <Icons className={'backwardIcon'} onClick={() => this._seekTo(-10)}>
                   <div className={'tooltip withTooltip'}>Backward (⭠)</div>
-                </Icons>
+                </Icons>}
               </>
             )}
             {recommendation && !isPreroll && (
