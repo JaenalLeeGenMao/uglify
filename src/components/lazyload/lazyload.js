@@ -1,5 +1,5 @@
-import React, { PureComponent } from './node_modules/react'
-import { bool, func, object, string, node } from './node_modules/prop-types'
+import React, { PureComponent } from 'react'
+import { bool, func, object, string, node } from 'prop-types'
 import { container, fallbackImgContainer, lazyFade } from './style'
 class Lazyload extends PureComponent {
   static propTypes = {
