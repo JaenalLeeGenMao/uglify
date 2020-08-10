@@ -1,6 +1,6 @@
 {
   "name": "@supersoccer/gandalf",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "shared-package",
   "main": "lib/index.js",
   "directories": {

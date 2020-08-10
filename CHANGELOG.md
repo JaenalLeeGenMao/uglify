@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.17 & 2.0.18 (2020-08-10)
+Improvement:
+  - Update lazyload from using react-hook and react-intersection-observer to using old lazyload, only change on render html structure
+  - Rename Lazyload component with capital L to lower case lazyload
 
 ## 2.0.16 (2020-08-05)
 Improvement:
