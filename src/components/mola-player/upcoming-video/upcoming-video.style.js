@@ -13,20 +13,23 @@ export const playerContainer = css`
 
     .container {
       position: absolute;
-      display: block;
+      display: flex;
       bottom: 0;
       right: 2rem;
-      width: 35rem;
+      // width: 35rem;
+      width: auto;
       height: 15.3rem;
       max-height: 15.3rem;
-      max-width: 35rem;
+      // max-width: 35rem;
+      max-width: 40rem;
+      padding: .5rem;
       background-color: #1f1f1f;
       pointer-events: auto;
     }
 
     .poster {
       height: 100%;
-      width: 25%;
+      width: auto;
       float: left;
       display: block;
     }
@@ -38,11 +41,11 @@ export const playerContainer = css`
 
     .content {
       position: relative;
-      width: 75%;
+      width: auto;
       height: 100%;
       float: right;
       display: block;
-      padding: 1.4rem 1rem 1rem 1rem;
+      padding: 1.4rem 1rem;
       box-sizing: border-box;
     }
 
@@ -67,11 +70,11 @@ export const playerContainer = css`
       font-size: 1.2rem;
       line-height: 1.3;
       color: #969696;
-      padding-top: 0.5rem;
+      // padding-top: 0.5rem;
     }
 
     .desc p {
-      height: 70%;
+      height: 4.68rem;
       overflow: hidden;
     }
 

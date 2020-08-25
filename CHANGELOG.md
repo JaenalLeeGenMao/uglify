@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.20 (2020-08-25)
+Improvement:
+  - Flexible upcoming video img for 2:3 and 9:16 resolution on mola-player
+
 ## 2.0.17 - 2.0.19 (2020-08-10)
 Improvement:
   - Update lazyload from using react-hook and react-intersection-observer to using old lazyload, only change on render html structure
