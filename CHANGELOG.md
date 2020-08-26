@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.21 (2020-08-26)
+Bug Fix:
+  - Molaplayer next video start interval from 1000s to 10s
+
 ## 2.0.20 (2020-08-25)
 Improvement:
   - Flexible upcoming video img for 2:3 and 9:16 resolution on mola-player

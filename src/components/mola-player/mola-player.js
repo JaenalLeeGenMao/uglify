@@ -778,7 +778,7 @@ class Player extends Component {
           <UpcomingVideo
             data={data}
             handleCancelVideo={this.handleCancelUpcVideo}
-            startInterval={1000}
+            startInterval={10}
           />
         );
       } else {
