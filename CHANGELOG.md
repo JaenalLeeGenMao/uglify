@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.22 (2020-09-02)
+Bug Fix:
+  - Molaplayer bug logo on fullscreen change buglogo size of height from em to rem
+
 ## 2.0.21 (2020-08-26)
 Bug Fix:
   - Molaplayer next video start interval from 1000s to 10s

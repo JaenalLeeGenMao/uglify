@@ -178,7 +178,7 @@ export const BugLogoWrapper = styled('div')`
 
       img {
         width: auto;
-        height: 11.4em;
+        height: 11.4rem;
       }
     }
 
@@ -190,7 +190,7 @@ export const BugLogoWrapper = styled('div')`
 
       img {
         width: auto;
-        height: 11.4em;
+        height: 11.4rem;
       }
     }
   }
