@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.23 (2020-09-09)
+Testing:
+  - Change lazyload loading mechanism via fetch and blob files
+
 ## 2.0.22 (2020-09-02)
 Bug Fix:
   - Molaplayer bug logo on fullscreen change buglogo size of height from em to rem

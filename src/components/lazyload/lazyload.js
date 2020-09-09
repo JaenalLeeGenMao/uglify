@@ -126,29 +126,16 @@ class Lazyload extends PureComponent {
 
   loadImage = (isWebP = false) => {
     const { src, onErrorShowDefault } = this.props
-    const imageUrl = isWebP ? this.imageWebPUrl : src
-    const image = new window.Image()
-    let error = false
 
-    image.onload = () => {
-      if (this.image.current) {
-        this.setState({
-          sources: imageUrl,
-          isLoaded: true
-        })
+    fetch(src).then(async response => {
+      const file = await response.blob()
+      const sources = URL.createObjectURL(file)
+      this.setState({ sources, isLoaded: true })
+    }).catch(() => {
+      if (onErrorShowDefault) {
+        this.setState({ isError: true, isLoaded: false })
       }
-    }
-    image.onerror = () => {
-      if (isWebP) {
-        this.loadImage()
-      } else {
-        error = true
-        if (error && onErrorShowDefault) {
-          this.setState({ isError: true, isLoaded: false })
-        }
-      }
-    }
-    image.src = imageUrl
+    })
   }
 
   loadPolyfills = () => {
@@ -202,20 +189,27 @@ class Lazyload extends PureComponent {
               ...containerStyle,
               position: fallbackImageUri ? 'absolute' : 'relative',
               top: 0,
-              left: 0
+              left: 0,
+              right: 0,
+              bottom: 0
             }}
             onClick={onClick}
           >
             {onHoverBorder && <div className={'imageBorder'}></div>}
 
-            {!isError && <img
+            {!isError && 
+            <div
               ref={this.image}
               className={`${className || ''} fadeIn`}
               style={{
                 ...style,
                 opacity: isLoaded ? 1 : 0,
+                backgroundImage: `url(${sources})`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
               }}
-              src={sources}
+              // src={sources}
               alt={alt}
             />
             }
