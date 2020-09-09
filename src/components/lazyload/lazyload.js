@@ -126,16 +126,7 @@ class Lazyload extends PureComponent {
 
   loadImage = (isWebP = false) => {
     const { src, onErrorShowDefault } = this.props
-
-    fetch(src).then(async response => {
-      const file = await response.blob()
-      const sources = URL.createObjectURL(file)
-      this.setState({ sources, isLoaded: true })
-    }).catch(() => {
-      if (onErrorShowDefault) {
-        this.setState({ isError: true, isLoaded: false })
-      }
-    })
+    this.setState({ sources: src, isLoaded: true })
   }
 
   loadPolyfills = () => {

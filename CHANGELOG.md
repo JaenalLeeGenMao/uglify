@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.24 (2020-09-09)
+Bug Fix:
+  - Remove fetch option to prevent CORS on AJAX images as content (lazyload component)
+
 ## 2.0.23 (2020-09-09)
 Testing:
   - Change lazyload loading mechanism via fetch and blob files
