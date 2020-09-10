@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.26 (2020-09-10)
+Testing:
+  - Set lazyload back to <img /> tag and change props of this.isMounted to this.mounted
+
 ## 2.0.25 (2020-09-10)
 Bug Fix:
   - Remove warning "Can't perform a React state update on an unmounted component." by checking if component is mounted (lazyload component)
