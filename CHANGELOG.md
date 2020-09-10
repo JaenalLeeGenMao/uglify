@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.25 (2020-09-10)
+Bug Fix:
+  - Remove warning "Can't perform a React state update on an unmounted component." by checking if component is mounted (lazyload component)
+
 ## 2.0.24 (2020-09-09)
 Bug Fix:
   - Remove fetch option to prevent CORS on AJAX images as content (lazyload component)
