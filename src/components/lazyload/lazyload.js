@@ -58,6 +58,7 @@ class Lazyload extends PureComponent {
   componentDidMount() {
     const { src } = this.props
     this.props.handleCallback(false)
+    this.isMounted = true
     if (src) {
       if (this.props.lazy) {
         if (this.loadPolyfills()) {
@@ -69,6 +70,10 @@ class Lazyload extends PureComponent {
         this.loadImage(global.webpSupport && this.props.webp)
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.isMounted = false
   }
 
   componentDidUpdate(prevProps) {
@@ -125,8 +130,10 @@ class Lazyload extends PureComponent {
   }
 
   loadImage = (isWebP = false) => {
+    if (this.isMounted) {
     const { src, onErrorShowDefault } = this.props
     this.setState({ sources: src, isLoaded: true })
+    }
   }
 
   loadPolyfills = () => {
@@ -188,7 +195,7 @@ class Lazyload extends PureComponent {
           >
             {onHoverBorder && <div className={'imageBorder'}></div>}
 
-            {!isError && 
+            {!isError &&
             <div
               ref={this.image}
               className={`${className || ''} fadeIn`}
