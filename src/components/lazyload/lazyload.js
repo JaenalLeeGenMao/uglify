@@ -132,7 +132,7 @@ class Lazyload extends PureComponent {
   loadImage = (isWebP = false) => {
     if (this.mounted) {
     const { src, onErrorShowDefault } = this.props
-    this.setState({ sources: src, isLoaded: true })
+    this.setState({ sources: src })
     }
   }
 
@@ -204,6 +204,7 @@ class Lazyload extends PureComponent {
                 opacity: isLoaded ? 1 : 0,
               }}
               src={sources}
+              onLoad={() => this.setState({ isLoaded: true })}
               onError={() => this.setState({ sources: fallbackImageUri })}
               alt={alt}
             />
