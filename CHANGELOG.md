@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.28 (2020-09-14)
+Bug Fix:
+  - Mola player live indicator gepeng
+
 ## 2.0.27 (2020-09-11)
 Bug Fix:
   - Lazyload set to loaded after img tag event onLoad is triggered
