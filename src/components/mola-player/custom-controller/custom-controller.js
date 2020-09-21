@@ -170,6 +170,7 @@ class CustomController extends Component {
         for (const s of subtitles) {
           if (selectedSubtitle.language == s.language) {
             // console.log(s)
+            this._updateLocalStorage('player-locale-info', { language: s.language })
             s.addEventListener('cuechange', this.handleCueOnChange)
             if (s.cues && s.cues.length > 0) {
               for (const cue of s.cues) {

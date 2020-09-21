@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.29 (2020-09-21)
+New Features:
+  - Mola player save player-locale-info to record last subtitle preferences
+
 ## 2.0.28 (2020-09-14)
 Bug Fix:
   - Mola player live indicator gepeng
