@@ -325,9 +325,9 @@ class Player extends Component {
       streamSourceUrl = config.manifestUri,
       videoStartTime = config.startTime,
       retryParameters = {
-        timeout: 10000, // timeout in ms, after which we abort; 0 means never
+        timeout: 20000, // timeout in ms, after which we abort; 0 means never
         maxAttempts: 2, // the maximum number of requests before we fail
-        baseDelay: 1000, // the base delay in ms between retries
+        baseDelay: 250, // the base delay in ms between retries
         backoffFactor: 1, // the multiplicative backoff factor between retries
         fuzzFactor: 0.5 // the fuzz factor to apply to each retry delay
       };
@@ -805,7 +805,7 @@ class Player extends Component {
         <img
           id={`video-bug-logo-${this.props.id}`}
           src={bugLogoVideo.image}
-          alt="Bug-logo Player"
+          alt=""
         />
       </BugLogoWrapper>
     );

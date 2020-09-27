@@ -6,7 +6,6 @@ export const Icons = styled('div')`
   width: 2.4em;
   height: 2.4em;
   margin: 0 0.4em;
-  transition: all 0.2s ease-in-out;
   overflow: hidden;
 
   > div.withTooltip {

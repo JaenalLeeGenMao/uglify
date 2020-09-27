@@ -1,4 +1,9 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.31 (2020-09-27)
+Bug Fix:
+  - remove control button transition, error on safari
+  - set retry parameter timeout from 10s to 20s
+
 ## 2.0.29 (2020-09-21)
 New Features:
   - Mola player save player-locale-info to record last subtitle preferences
