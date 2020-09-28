@@ -330,9 +330,47 @@ class Player extends Component {
     delete config.manifestUri;
     delete config.startTime;
 
-    player.getNetworkingEngine().registerResponseFilter((type, response) => {
-      // console.log('registerResponseFilter', response)
-      return response;
+    /* The UTF-8 characters "h", "t", "t", and "p". */
+    const HTTP_IN_HEX = 0x68747470;
+    const RequestType = shaka.net.NetworkingEngine.RequestType;
+    player.getNetworkingEngine().registerResponseFilter(async (type, response) => {
+      // NOTE: If the system requires an ALR for segments instead of manifests,
+      // change this to RequestType.SEGMENT.
+      if (type != RequestType.MANIFEST) {
+        return;
+      }
+
+      const dataView = new DataView(response.data);
+      if (response.data.byteLength < 4 ||
+          dataView.getUint32(0) != HTTP_IN_HEX) {
+        // Our ALRs are detected by a response body which is a URL.
+        // This doesn't start with "http", so it is not an ALR.
+        return;
+      }
+
+      // It's an Application-Level Redirect (ALR).  That requires us to get the new
+      // URL and follow it.
+
+      // Interpret the response data as a URL string.
+      const responseAsString = shaka.util.StringUtils.fromUTF8(response.data);
+
+      // Make another request for the redirect URL.
+      const uris = [responseAsString];
+      const redirectRequest = shaka.net.NetworkingEngine.makeRequest(uris, retryParameters);
+
+      // NOTE: Only do this if the purpose of the redirect is authentication.  If
+      // the ALR is meant for something like load-balancing, remove the next line.
+      redirectRequest.allowCrossSiteCredentials = true;
+
+      const requestOperation =
+          player.getNetworkingEngine().request(type, redirectRequest);
+      const redirectResponse = await requestOperation.promise;
+
+      // Modify the original response to contain the results of the redirect
+      // response.
+      response.data = redirectResponse.data;
+      response.headers = redirectResponse.headers;
+      response.uri = redirectResponse.uri;
     });
 
     player.configure({

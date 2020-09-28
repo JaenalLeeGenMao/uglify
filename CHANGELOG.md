@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.34 (2020-09-28)
+Improvement:
+  - Enabled ALR (Application-Level Redirect), mola-player now supports both http and https network response
+
 ## 2.0.33 (2020-09-28)
 Testing:
   - Set BufferingGoal to 1s and rebufferingGoal 0.01s (mola-player)
