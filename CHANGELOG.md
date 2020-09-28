@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.32 (2020-09-28)
+Bug Fix:
+  - Add behaviour of when received preroll error skip to main video (mola-player)
+
 ## 2.0.31 (2020-09-27)
 Bug Fix:
   - remove control button transition, error on safari

@@ -251,61 +251,56 @@ class Player extends Component {
         : this.props.streamSourceUrl;
       const deviceId = this.props.deviceId;
 
-      if (!isSafari) {
-        const config = {
-          manifestUri,
-          drm: {
-            servers: {
-              'com.widevine.alpha': `${
-                drm.widevine.licenseUrl
-              }?deviceId=${deviceId}`,
-              'com.microsoft.playready': `${
-                drm.playready.licenseUrl
-              }?deviceId=${deviceId}`,
-              'com.apple.fps.1_0': `${
-                drm.fairplay.licenseUrl
-              }?deviceId=${deviceId}`
-            }
-          },
-          startTime
-        };
-        this.handleInitPlayer(player, config);
-      } else {
-        const req = await fetch(drm.fairplay.certificateUrl);
-        if (!req.ok) {
-          // handle error
-          console.log('Failed to retrieve fairplay certificate');
-          return;
-        }
-
-        const cert = await req.arrayBuffer();
-
-        const config = {
-          // vmapUrl, //: 'http://51.38.231.56:8000/vmap?tc=autorefresh_pre_roll',
-          manifestUri,
-          drm: {
-            servers: {
-              'com.widevine.alpha': `${
-                drm.widevine.licenseUrl
-              }?deviceId=${deviceId}`,
-              'com.microsoft.playready': `${
-                drm.playready.licenseUrl
-              }?deviceId=${deviceId}`,
-              'com.apple.fps.1_0': `${
-                drm.fairplay.licenseUrl
-              }?deviceId=${deviceId}`
-            },
-            advanced: {
-              'com.apple.fps.1_0': {
-                serverCertificate: new Uint8Array(cert)
-              }
-            }
-            // fairPlayTransform: false,
-          },
-          startTime
-        };
-        this.handleInitPlayer(player, config);
+      const req = await fetch(drm.fairplay.certificateUrl);
+      if (!req.ok) {
+        // handle error
+        console.log('Failed to retrieve fairplay certificate');
+        return;
       }
+
+      const cert = await req.arrayBuffer();
+
+      const config = {
+        // vmapUrl, //: 'http://51.38.231.56:8000/vmap?tc=autorefresh_pre_roll',
+        manifestUri,
+        drm: {
+          servers: {
+            'com.widevine.alpha': `${
+              drm.widevine.licenseUrl
+            }?deviceId=${deviceId}`,
+            'com.microsoft.playready': `${
+              drm.playready.licenseUrl
+            }?deviceId=${deviceId}`,
+            'com.apple.fps.1_0': `${
+              drm.fairplay.licenseUrl
+            }?deviceId=${deviceId}`
+          },
+          advanced: {
+            'com.apple.fps.1_0': {
+              serverCertificate: new Uint8Array(cert)
+            },
+            initDataTransform: initData => {
+              const skdUri = shaka.util.StringUtils.fromBytesAutoDetect(
+                initData
+              );
+
+              /* 'initData' is a buffer containing an 'skd://' URL as a UTF-8 string. */
+              if (!skdUri.includes('skd')) return initData;
+
+              const contentId = shaka.util.FairPlayUtils.defaultGetContentId(
+                skdUri
+              );
+              return shaka.util.FairPlayUtils.initDataTransform(
+                initData,
+                contentId,
+                new Uint8Array(cert)
+              );
+            }
+          }
+        },
+        startTime
+      };
+      this.handleInitPlayer(player, config);
     } else if (streamSourceUrl !== '') {
       const config = {
         manifestUri: streamSourceUrl,
@@ -336,7 +331,6 @@ class Player extends Component {
     delete config.startTime;
 
     player.getNetworkingEngine().registerResponseFilter((type, response) => {
-      response.headers['Access-Control-Allow-Origin'] = '*';
       // console.log('registerResponseFilter', response)
       return response;
     });
@@ -379,7 +373,9 @@ class Player extends Component {
 
             that.setState({
               isLoading: false,
-              hasPlayButton: true
+              hasPlayButton: true,
+              isError: false,
+              errorMsg: ''
             });
 
             /** prevent legacy code Error terminate */
@@ -503,23 +499,35 @@ class Player extends Component {
     // Log the error
     const { category, code, data, severity, message } = error;
     const { errorCodes } = this.props;
-    console.error('Player error: ', error);
-    if (this.props.handleVideoError) {
-      this.props.handleVideoError(error);
+
+    if (this.state.isPreroll) {
+      console.error('Preroll error: ', error);
+      this.setState(
+        { isPreroll: false, isError: false, errorMsg: '', ads: [] },
+        () => {
+          this.initPlayer();
+          this.player.isPreroll = false;
+        }
+      );
+    } else {
+      console.error('Player error: ', error);
+      if (this.props.handleVideoError) {
+        this.props.handleVideoError(error);
+      }
+
+      if (this.player) this.player.reset();
+
+      this.setState({
+        isError: true,
+        errorMsg:
+          error.customMsg ||
+          `${_get(
+            errorCodes,
+            `${code}`,
+            'Silahkan refresh browser anda dalam beberapa saat lagi'
+          )} ‒ ${code} `
+      });
     }
-
-    if (this.player) this.player.reset();
-
-    this.setState({
-      isError: true,
-      errorMsg:
-        error.customMsg ||
-        `${_get(
-          errorCodes,
-          `${code}`,
-          'Silahkan refresh browser anda dalam beberapa saat lagi'
-        )} ‒ ${code} `
-    });
   };
 
   handlePlayerEventListener = player => {
@@ -662,10 +670,13 @@ class Player extends Component {
         }
 
         if (that.player.isPreroll) {
-          that.setState({ isPreroll: false }, () => {
-            that.initPlayer();
-            that.player.isPreroll = false;
-          });
+          that.setState(
+            { isPreroll: false, isError: false, errorMsg: '', ads: [] },
+            () => {
+              that.initPlayer();
+              that.player.isPreroll = false;
+            }
+          );
         }
       });
       video.addEventListener('durationchange', function(e) {
