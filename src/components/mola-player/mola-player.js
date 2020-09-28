@@ -348,7 +348,9 @@ class Player extends Component {
         // },
       },
       streaming: {
-        retryParameters
+        retryParameters,
+        bufferingGoal: 1,
+        rebufferingGoal: 0.01
       },
       availabilityWindowOverride: 300 /** IMPORTANT: this enables seekRange on default Safari player */
     });

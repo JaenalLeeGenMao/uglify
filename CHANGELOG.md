@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 2.0.33 (2020-09-28)
+Testing:
+  - Set BufferingGoal to 1s and rebufferingGoal 0.01s (mola-player)
+
 ## 2.0.32 (2020-09-28)
 Bug Fix:
   - Add behaviour of when received preroll error skip to main video (mola-player)
