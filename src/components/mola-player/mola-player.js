@@ -278,23 +278,6 @@ class Player extends Component {
           advanced: {
             'com.apple.fps.1_0': {
               serverCertificate: new Uint8Array(cert)
-            },
-            initDataTransform: initData => {
-              const skdUri = shaka.util.StringUtils.fromBytesAutoDetect(
-                initData
-              );
-
-              /* 'initData' is a buffer containing an 'skd://' URL as a UTF-8 string. */
-              if (!skdUri.includes('skd')) return initData;
-
-              const contentId = shaka.util.FairPlayUtils.defaultGetContentId(
-                skdUri
-              );
-              return shaka.util.FairPlayUtils.initDataTransform(
-                initData,
-                contentId,
-                new Uint8Array(cert)
-              );
             }
           }
         },
