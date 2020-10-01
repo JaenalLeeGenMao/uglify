@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 3.0.0 (2020-10-01)
+New Features:
+  - Add terser to minify js files
+
 ## 2.0.35 (2020-09-29)
 Improvement:
   - Remove initDataTransform to use player default setting

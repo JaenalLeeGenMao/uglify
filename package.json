@@ -1,6 +1,6 @@
 {
   "name": "@supersoccer/gandalf",
-  "version": "2.0.35",
+  "version": "3.0.0",
   "description": "shared-package",
   "main": "lib/index.js",
   "directories": {
@@ -9,10 +9,8 @@
   "scripts": {
     "dev": "watch 'npm run build' src",
     "build": "babel src -d lib --copy-files",
-    "build-dev": "REACT_APP_ENV=development npm run build",
-    "build-stag": "REACT_APP_ENV=staging npm run build",
-    "build-prod": "REACT_APP_ENV=production npm run build",
-    "prepare": "npm run build"
+    "minify": "terser-folder lib -c -e -x .js -o lib",
+    "prepare": "rimraf build lib dist && npm run build && npm run minify"
   },
   "keywords": [
     "gandalf"
@@ -40,7 +38,9 @@
     "react": "16.13.1",
     "react-emotion": "^9.2.12",
     "react-markdown": "4.2.2",
+    "rimraf": "^3.0.2",
     "subtitle": "2.0.3",
+    "terser-folder": "^2.0.0",
     "xml2js": "0.4.23"
   },
   "devDependencies": {
