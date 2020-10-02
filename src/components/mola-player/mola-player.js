@@ -540,6 +540,7 @@ class Player extends Component {
 
       if (this.player) this.player.reset();
 
+      const defaultErrorMsg = _get(errorCodes, 'defaultErrorMsgOverride', 'Silahkan refresh browser anda dalam beberapa saat lagi')
       this.setState({
         isError: true,
         errorMsg:
@@ -547,8 +548,8 @@ class Player extends Component {
           `${_get(
             errorCodes,
             `${code}`,
-            'Silahkan refresh browser anda dalam beberapa saat lagi'
-          )} ‒ ${code} `
+            defaultErrorMsg
+            )} ‒ ${code} `
       });
     }
   };
@@ -565,7 +566,7 @@ class Player extends Component {
         clearInterval(loadedInterval);
         that.onError({
           customMsg:
-            'TIMEOUT: Failed to Load media, Silahkan refresh browser anda.'
+            'TIMEOUT: Failed to Load media'
         });
       }
     }, 500);

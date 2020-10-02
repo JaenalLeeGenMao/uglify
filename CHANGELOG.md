@@ -1,4 +1,8 @@
 **CHANGELOG FORMAT | ## 2.0.1 (YYYY-MM-DD)**
+## 3.0.1 (2020-10-02)
+Improvement:
+  - add `defaultErrorMsgOverride` from props.errorCodes to override default error message
+
 ## 3.0.0 (2020-10-01)
 New Features:
   - Add terser to minify js files

@@ -755,7 +755,7 @@ class CustomController extends Component {
     const durationFormatValue = durationFormat.type === 'desc'
       ? `-${this._formatTime(duration - currentTime)}`
       : `${this._formatTime(currentTime)}`
-    console.log(durationFormatValue, durationFormat.type)
+
     return (
       <>
         {this.renderFeedback()}
