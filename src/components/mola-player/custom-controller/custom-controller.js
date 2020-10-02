@@ -20,6 +20,9 @@ class CustomController extends Component {
       text: '',
       hidden: true,
     },
+    durationFormat: {
+      type: 'desc'
+    }
   }
 
   componentDidMount() {
@@ -31,6 +34,8 @@ class CustomController extends Component {
       this.initEventListeners(player)
 
       this.handleKeyboardEvent()
+
+      this.initDurationFormat()
 
       // window._setSubtitle = this._setSubtitle
       // window._getSubtitle = this._getSubtitle
@@ -112,6 +117,14 @@ class CustomController extends Component {
       }
     }
 
+  }
+
+  initDurationFormat = () => {
+    this.setState({
+      durationFormat: {
+        type: _get(JSON.parse(localStorage.getItem('player-duration-format')), 'type', 'desc')
+      }
+    })
   }
 
   _getQuality = () => {
@@ -330,6 +343,18 @@ class CustomController extends Component {
     }
   }
 
+  _updateDurationFormat = () => {
+    const { type: defaultType } = this.state.durationFormat
+
+    const type = defaultType === 'desc' ? 'asc' : 'desc'
+    this._updateLocalStorage('player-duration-format', { type })
+    this.setState({
+      durationFormat: {
+        type
+      }
+    })
+  }
+
   _formatTime = timeInSeconds => {
     const formattedTime = isFinite(timeInSeconds) ? timeInSeconds : 0
     const t = new Date(Math.abs(formattedTime) * 1000).toISOString().substr(11, 8),
@@ -387,6 +412,7 @@ class CustomController extends Component {
    * @payload type Object/JSON
    */
   _updateLocalStorage = (name, payload) => {
+    console.log('_updateLocalStorage', name, payload)
     try {
       const oldPayload = JSON.parse(localStorage.getItem(name))
       if (oldPayload) {
@@ -716,7 +742,7 @@ class CustomController extends Component {
       volume = _get(video, 'volume', 0),
       isMuted = _get(video, 'muted', false)
     // console.log(isPreroll, duration, currentTime)
-    const { bufferedPercentage, qualities, subtitles } = this.state
+    const { bufferedPercentage, qualities, subtitles, durationFormat } = this.state
 
     const progressbarPercentage = isLive ? '100%' : `${(currentTime / duration) * 100}%`,
       prerollProgressbarPercentage = `${(currentTime / duration) * 100}%`
@@ -726,7 +752,10 @@ class CustomController extends Component {
     // console.log(currentTime, duration)
 
     const recommendation = this.props.recommendation
-
+    const durationFormatValue = durationFormat.type === 'desc'
+      ? `-${this._formatTime(duration - currentTime)}`
+      : `${this._formatTime(currentTime)}`
+    console.log(durationFormatValue, durationFormat.type)
     return (
       <>
         {this.renderFeedback()}
@@ -747,7 +776,11 @@ class CustomController extends Component {
                 <div className={'live_indicator_beckground'} />
               </span>
             )}
-            {canShowDuration && this._formatTime(duration - currentTime)}
+            {canShowDuration && (
+              <p onClick={this._updateDurationFormat}>
+                {durationFormatValue}
+              </p>
+            )}
           </div>
           <div className={'progress'}>
             <div className={'progress_wrapper'}>
