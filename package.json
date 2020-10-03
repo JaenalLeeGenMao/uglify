@@ -1,6 +1,6 @@
 {
-  "name": "@supersoccer/gandalf",
-  "version": "3.0.1",
+  "name": "@supersoccer/uglify",
+  "version": "0.0.1",
   "description": "shared-package",
   "main": "lib/index.js",
   "directories": {
@@ -13,7 +13,8 @@
     "prepare": "rimraf build lib dist && npm run build && npm run minify"
   },
   "keywords": [
-    "gandalf"
+    "uglify",
+    "minify"
   ],
   "author": "SupersoccerTV <admin@supersoccertv.com> (http://www.supersoccer.tv)",
   "license": "ISC",
